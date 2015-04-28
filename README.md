@@ -19,7 +19,7 @@ Now run the build:
 ### Running dev server
     
     cd <repo directory>
-    npm run dev-server
+    npm start
 
 Point your browser to http://localhost:8000
 

@@ -1,6 +1,6 @@
 var webpack = require('webpack');
 var path = require('path')
-var glob = require("glob");
+var glob = require('glob');
 
 // This is required to init the baggage-loader
 require('baggage-loader')
@@ -22,7 +22,7 @@ module.exports = {
         loaders: [
             { test: /\.css$/, loader: 'style!css' },
             { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"},
-            { test: /\.html$/, loader: "ngtemplate?relativeTo=" + __dirname + "/!html" }
+            { test: /\.html$/, loader: 'ngtemplate?relativeTo=' + __dirname + '/!html' }
         ]
     }
 };

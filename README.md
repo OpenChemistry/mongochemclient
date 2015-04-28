@@ -2,6 +2,7 @@
 ### Requirements
 
 - [Node.js] (https://nodejs.org/download/)
+- [npm] (https://github.com/npm/npm)
 
 ### Building
 

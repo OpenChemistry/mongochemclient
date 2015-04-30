@@ -4,8 +4,9 @@ angular.module('chemPhyWebApp')
     .directive('chemPhyWebMain', ['$log', function($log) {
 
         return {
+            scope: {},
             controller: function($scope) {
-                $scope.message = "Welcome to Chemical-Physics Web!"
+                $scope.message = "MongoChemWeb Application"
             },
             templateUrl: require('./main.view.html')
         }

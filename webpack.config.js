@@ -19,7 +19,11 @@ module.exports = {
     },
     module: {
         preLoaders: [
-            { test: /\.js$/, loader: 'baggage?[file].html' }
+            { test: /\.js$/, loader: 'baggage?[file].html' },
+            { test: /\.js$/,
+              exclude: /node_modules/,
+              loader: "jshint-loader"
+            }
         ],
         loaders: [
             { test: /\.css$/, loader: 'style!css' },
@@ -28,5 +32,11 @@ module.exports = {
             { test: /\.jade$/, loader: 'ngtemplate?relativeTo=' + __dirname + '/!html!jade-html-loader' },
             { test: /\.styl$/, loader: 'style-loader!css-loader!stylus-loader' }
         ]
+    },
+    jshint: {
+        emitErrors: false,
+        failOnHint: false,
+        curly: true,
+        unused: true
     }
 };

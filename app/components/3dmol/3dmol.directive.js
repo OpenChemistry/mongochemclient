@@ -17,6 +17,7 @@ angular.module('chemPhyWebApp')
                 // Create GLViewer within 'gldiv'
                 $scope.viewer = $3Dmol.createViewer($($element), config);
                 $3Dmol.download('pdb:2POR', $scope.viewer);
+                $scope.viewer.resize();
             }
         }
     }]);

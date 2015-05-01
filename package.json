@@ -29,12 +29,12 @@
       "3dmol": "git://github.com/dkoes/3Dmol.js.git#a87a8be"
   },
   "config": {
-      "dev-server": {
-          "port": 8000
-      }
+    "dev-server": {
+       "port": 8000
+    }
   },
   "scripts": {
-      "build": "./node_modules/webpack/bin/webpack.js --progress --colors",
-      "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port $npm_package_config_dev_server_port --host 0.0.0.0 --progress --colors"
+    "build": "./node_modules/webpack/bin/webpack.js --progress --colors",
+    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port $npm_package_config_dev_server_port --host 0.0.0.0 --progress --colors"
   }
 }

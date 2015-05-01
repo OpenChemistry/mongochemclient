@@ -1,4 +1,5 @@
 var angular = require('angular')
+var templateUrl = require('./main.view.jade')
 
 angular.module('chemPhyWebApp')
     .directive('chemPhyWebMain', ['$log', function($log) {
@@ -8,7 +9,6 @@ angular.module('chemPhyWebApp')
             controller: function($scope) {
                 $scope.message = "MongoChemWeb Application"
             },
-            templateUrl: require('./main.view.html')
+            templateUrl:  templateUrl
         }
-
     }]);

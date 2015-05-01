@@ -1,4 +1,3 @@
-var angular = require('angular')
 var templateUrl = require('./main.view.jade')
 
 angular.module('chemPhyWebApp')

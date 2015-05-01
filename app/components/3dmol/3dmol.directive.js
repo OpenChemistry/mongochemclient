@@ -1,4 +1,3 @@
-var angular = require('angular')
 require('script!3Dmol/release/3Dmol.js')
 require('style/3dmol.styl')
 

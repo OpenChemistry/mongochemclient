@@ -1,6 +1,7 @@
 var webpack = require('webpack');
 var path = require('path')
 var glob = require('glob');
+var ngAnnotatePlugin = require('ng-annotate-webpack-plugin')
 
 // This is required to init the baggage-loader
 require('baggage-loader')
@@ -38,5 +39,10 @@ module.exports = {
         failOnHint: false,
         curly: true,
         unused: true
-    }
+    },
+    plugins: [
+        new ngAnnotatePlugin({
+            add: true,
+        })
+    ]
 };

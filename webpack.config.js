@@ -7,10 +7,11 @@ require('baggage-loader')
 
 appRoot = path.join(__dirname, 'app');
 
-console.log(glob.sync(appRoot + '/**/*.js'))
-
 module.exports = {
     entry: glob.sync(appRoot + '/**/*.js'),
+    resolve: {
+        alias: {style: path.join(__dirname, 'assets/style')}
+    },
     output: {
         path: __dirname,
         filename: 'bundle.js'

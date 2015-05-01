@@ -1,5 +1,6 @@
 var angular = require('angular')
 require('script!3Dmol/release/3Dmol.js')
+require('style/3dmol.styl')
 
 angular.module('chemPhyWebApp')
     .directive('chemPhyWeb3dmol', ['$log', '$http', function($log, $http) {
@@ -10,7 +11,6 @@ angular.module('chemPhyWebApp')
 
             },
             link: function($scope, $element) {
-                console.log('link');
                 // Viewer config - properties 'defaultcolors' and 'callback'
                 var config = {defaultcolors: $3Dmol.rasmolElementColors };
 

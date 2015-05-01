@@ -12,6 +12,7 @@ module.exports = {
     resolve: {
         alias: {style: path.join(__dirname, 'assets/style')}
     },
+    devtool: 'sourcemap',
     output: {
         path: __dirname,
         filename: 'bundle.js'

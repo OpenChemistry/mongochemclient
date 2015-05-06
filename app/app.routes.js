@@ -3,10 +3,10 @@ angular.module('chemPhyWebApp')
     function($routeProvider) {
       $routeProvider.
         when('/home', {
-          templateUrl: require('./partials/main.html')
+          templateUrl: require('./components/home/home.html')
         }).
         when('/about', {
-          templateUrl: require('./partials/about.html')
+          templateUrl: require('./components/about/about.html')
         }).
         otherwise({
           redirectTo: '/home'

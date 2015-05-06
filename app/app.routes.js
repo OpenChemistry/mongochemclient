@@ -3,7 +3,7 @@ angular.module('chemPhyWebApp')
     function($routeProvider) {
       $routeProvider.
         when('/home', {
-          templateUrl: require('./components/home/home.html')
+          templateUrl: require('./components/home/home.jade')
         }).
         when('/about', {
           templateUrl: require('./components/about/about.html')

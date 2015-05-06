@@ -12,11 +12,13 @@ angular.module('chemPhyWebApp')
 
                 // Create GLViewer within 'gldiv'
                 $scope.viewer = $3Dmol.createViewer($($element), config);
+                $scope.viewer.setBackgroundColor(0xeeeeee);
                 $scope.viewer.resize();
 
                 $http.get('/data/2POR.pdb')
                     .success(function(data) {
                         $scope.viewer.addModel(data, 'pdb');
+                        $scope.viewer.setStyle({}, {stick:{}});
                         $scope.viewer.zoomTo();
                         $scope.viewer.render();
                     })

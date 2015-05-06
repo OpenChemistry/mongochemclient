@@ -6,7 +6,7 @@ angular.module('chemPhyWebApp')
           templateUrl: require('./components/home/home.jade')
         }).
         when('/about', {
-          templateUrl: require('./components/about/about.html')
+          templateUrl: require('./components/about/about.jade')
         }).
         otherwise({
           redirectTo: '/home'

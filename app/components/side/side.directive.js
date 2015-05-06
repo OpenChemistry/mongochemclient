@@ -12,6 +12,6 @@ angular.module('chemPhyWebApp')
                    'url': '#/about'}
                 ];
             },
-            templateUrl: require('./side.view.html')
+            templateUrl: require('./side.view.jade')
         };
     }]);

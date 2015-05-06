@@ -1,0 +1,4 @@
+md-sidenav.md-sidenav-left(md-whiteframe-z2, md-component-id="left", md-is-locked-open="$mdMedia('gt-md')")
+  md-toolbar.md-theme-indigo
+    h1.md-toolbar-tools {{message}}
+  md-button.md-primary(ng-repeat="item in items", ng-href="{{item.url}}") {{item.name}}

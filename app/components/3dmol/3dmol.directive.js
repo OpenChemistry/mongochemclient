@@ -2,7 +2,7 @@ require('script!3Dmol/release/3Dmol.js');
 require('style/3dmol.styl');
 
 angular.module('chemPhyWebApp')
-    .directive('chemPhyWeb3dmol', [function() {
+    .directive('chemPhyWeb3dmol', ['$http', '$log', function($http, $log) {
 
         return {
             scope: {},
@@ -12,8 +12,17 @@ angular.module('chemPhyWebApp')
 
                 // Create GLViewer within 'gldiv'
                 $scope.viewer = $3Dmol.createViewer($($element), config);
-                $3Dmol.download('pdb:2POR', $scope.viewer);
                 $scope.viewer.resize();
+
+                $http.get('/data/2POR.pdb')
+                    .success(function(data) {
+                        $scope.viewer.addModel(data, 'pdb');
+                        $scope.viewer.zoomTo();
+                        $scope.viewer.render();
+                    })
+                    .error(function(data) {
+                        $log.error(data);
+                    });
             }
         };
     }]);

@@ -20,7 +20,7 @@ function extractRoutes() {
         }
     });
 
-    return requires;
+    return requires.filter(function(e) { return e != undefined });
 }
 
 /**

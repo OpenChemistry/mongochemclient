@@ -41,7 +41,7 @@ module.exports = {
     },
     devtool: 'sourcemap',
     output: {
-        path: __dirname,
+        path: path.join(__dirname, 'dist'),
         filename: 'bundle.js'
     },
     module: {

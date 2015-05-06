@@ -20,6 +20,7 @@ module.exports = {
     },
     module: {
         preLoaders: [
+            { test: /3Dmol.js$/, loader: '3dmol-patch'},
             { test: /\.js$/, loader: 'baggage?[file].html' },
             { test: /\.js$/,
               exclude: /node_modules/,

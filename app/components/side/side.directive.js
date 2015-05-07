@@ -7,9 +7,9 @@ angular.module('chemPhyWebApp')
                 $scope.message = "MCW Sidebar";
                 $scope.items = [
                   {'name': 'Home',
-                   'url': '#/home'},
+                   'state': 'home'},
                   {'name': 'About',
-                   'url': '#/about'}
+                   'state': 'about'}
                 ];
             },
             templateUrl: require('./side.view.jade')

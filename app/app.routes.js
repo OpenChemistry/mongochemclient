@@ -1,14 +1,24 @@
 angular.module('chemPhyWebApp')
-  .config(['$routeProvider',
-    function($routeProvider) {
-      $routeProvider.
-        when('/home', {
-          templateUrl: require('./components/home/home.jade')
-        }).
-        when('/about', {
-          templateUrl: require('./components/about/about.jade')
-        }).
-        otherwise({
-          redirectTo: '/home'
-        });
+  .config(['$stateProvider', '$urlRouterProvider',
+           function($stateProvider, $urlRouterProvider) {
+
+      $urlRouterProvider.otherwise("/home");
+
+      $stateProvider
+          .state('home', {
+            url: '/home',
+            views: {
+                main: {
+                    templateUrl: require('./components/home/home.jade')
+                }
+            }
+          })
+          .state('about', {
+            url: '/about',
+            views: {
+                main: {
+                    templateUrl: require('./components/about/about.jade')
+                }
+            }
+          });
   }]);

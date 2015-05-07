@@ -39,7 +39,7 @@
     }
   },
   "scripts": {
-    "build": "./node_modules/webpack/bin/webpack.js -p  --progress --colors && cp index.html dist/ && cp -r data dist/",
+    "build": "./node_modules/webpack/bin/webpack.js -p  --progress --colors && cp index.html dist/ && cp -r data dist/ && cp -r imgs/ dist/",
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port $npm_package_config_dev_server_port --host 0.0.0.0 --progress --colors"
   }
 }

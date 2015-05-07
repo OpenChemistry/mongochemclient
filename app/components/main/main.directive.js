@@ -4,7 +4,7 @@ angular.module('chemPhyWebApp')
         return {
             scope: {},
             controller: function($scope) {
-                $scope.message = "MongoChemWeb Application";
+                $scope.message = "MongoChem";
             },
             templateUrl:  require('./main.view.jade')
         };

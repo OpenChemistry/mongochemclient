@@ -1,6 +1,9 @@
 div.chem-phy-web-max-height(layout="column")
   md-toolbar(layout="row")
-    h1.md-toolbar-tools(layout-align-gt-sm="start") {{message}}
+    h1.md-toolbar-tools(layout-align-gt-sm="start")
+      md-button(class="md-icon-button")
+        md-icon(md-svg-src="/imgs/mongochem.svg", alt="MongoChem", layout="row", layout-align="end center")
+      {{message}}
     span(flex)
     h1.md-toolbar-tools(layout-align-gt-sm="end")
       md-button.md-icon-button(aria-label="Login")

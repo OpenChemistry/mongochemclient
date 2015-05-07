@@ -6,4 +6,4 @@ require('angular-material/angular-material.css');
 require('style/common.styl');
 require('angular-material-icons');
 
-angular.module('chemPhyWebApp', [require('angular-ui-router'), 'ngMaterial']);
+angular.module('chemPhyWebApp', [require('angular-ui-router'), 'ngMaterial', 'ngMdIcons']);

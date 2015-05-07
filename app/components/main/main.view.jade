@@ -1,6 +1,12 @@
 div.chem-phy-web-max-height(layout="column")
   md-toolbar(layout="row")
-    h1.md-toolbar-tools(layout-align-gt-sm="center") {{message}}
+    h1.md-toolbar-tools(layout-align-gt-sm="start") {{message}}
+    span(flex)
+    h1.md-toolbar-tools(layout-align-gt-sm="end")
+      md-button.md-icon-button(aria-label="Login")
+        md-tooltip Login
+        ng-md-icon(icon="input", style="fill:white", layout="row", layout-align="end center")
+
   div(flex, layout="row")
     chem-phy-web-side
     div(flex, layout="column", ui-view="main")

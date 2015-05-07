@@ -1,3 +1,5 @@
 md-toolbar(layout="row")
   h1.md-toolbar-tools(layout-align-gt-sm="center") {{message}}
-div.chem-phy-web-3dmol(chem-phy-web-3dmol)
+div(layout="row")
+  chem-phy-web-side
+  ng-view.chem-phy-web-max-height(flex)

@@ -1,11 +1,13 @@
 {
-  "name": "chemphyweb",
+  "name": "mongochemclient",
   "version": "0.0.1",
-  "description": "Chemical-Physics Web",
-  "author": "Kitware",
+  "description": "Mongochem client code",
+  "author": "Kitware, Inc.",
+  "license" : "BSD-3-Clause",
+  "homepage": "http://openchemistry.org/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cjh1/chemphyweb"
+    "url": "https://github.com/openchemistry/mongochemclient"
   },
   "devDependencies": {
     "webpack": "^1.8.10",

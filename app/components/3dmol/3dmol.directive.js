@@ -1,7 +1,7 @@
 require('script!3Dmol/release/3Dmol.js');
 
-angular.module('chemPhyWebApp')
-    .directive('chemPhyWeb3dmol', ['$http', '$log', '$timeout', function($http, $log, $timeout) {
+angular.module('mongochemApp')
+    .directive('mongochem3dmol', ['$http', '$log', '$timeout', function($http, $log, $timeout) {
 
         return {
             scope: {},

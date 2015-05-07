@@ -1,4 +1,4 @@
-angular.module('chemPhyWebApp')
+angular.module('mongochemApp')
   .config(['$stateProvider', '$urlRouterProvider',
            function($stateProvider, $urlRouterProvider) {
 

@@ -1,5 +1,5 @@
-angular.module('chemPhyWebApp')
-    .directive('chemPhyWebMain', [function() {
+angular.module('mongochemApp')
+    .directive('mongochemMain', [function() {
 
         return {
             scope: {},

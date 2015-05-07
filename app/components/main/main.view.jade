@@ -1,5 +1,6 @@
-md-toolbar(layout="row")
-  h1.md-toolbar-tools(layout-align-gt-sm="center") {{message}}
-div(layout="row")
-  chem-phy-web-side
-  div.chem-phy-web-max-height(flex, ui-view="main")
+div.chem-phy-web-max-height(layout="column")
+  md-toolbar(layout="row")
+    h1.md-toolbar-tools(layout-align-gt-sm="center") {{message}}
+  div(flex, layout="row")
+    chem-phy-web-side
+    div(flex, layout="column", ui-view="main")

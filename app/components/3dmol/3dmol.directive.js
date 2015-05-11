@@ -1,10 +1,14 @@
 require('script!3Dmol/release/3Dmol.js');
 
 angular.module('mongochemApp')
-    .directive('mongochem3dmol', ['$http', '$log', '$timeout', function($http, $log, $timeout) {
-
+    .controller('mongochemMoleculeHome', ['Molecule', '$scope', function(Molecule, $scope) {
+        $scope.inchi = 'methane';
+    }])
+    .controller('mongochemMoleculeDetail', ['Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {
+        $scope.inchi = $stateParams.moleculeId;
+    }])
+    .directive('mongochem3dmol', ['Molecule', '$stateParams', '$log', '$timeout', function(Molecule, $stateParams, $log, $timeout) {
         return {
-            scope: {},
             link: function postLink($scope, $element) {
 
                 // Run in next digest so we get the right element size
@@ -17,7 +21,14 @@ angular.module('mongochemApp')
                     $scope.viewer.setBackgroundColor(0xeeeeee);
                     $scope.viewer.resize();
 
-                    $http.get('/data/2POR.pdb')
+                    $scope.mol = Molecule.get({moleculeId: $scope.inchi}, function(mol) {
+                      $scope.viewer.addModel(mol.xyz, 'xyz');
+                      $scope.viewer.setStyle({}, {stick:{}});
+                      $scope.viewer.zoomTo();
+                      $scope.viewer.render();
+                    });
+
+/*		    $http.get('/data/2POR.pdb')
                         .success(function(data) {
                             $scope.viewer.addModel(data, 'pdb');
                             $scope.viewer.setStyle({}, {stick:{}});
@@ -26,7 +37,7 @@ angular.module('mongochemApp')
                         })
                         .error(function(data) {
                             $log.error(data);
-                        });
+                        }); */
                 });
             }
         };

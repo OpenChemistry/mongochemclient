@@ -1,7 +1,7 @@
 require('script!3Dmol/release/3Dmol.js');
 
 angular.module('mongochemApp')
-    .controller('mongochemMoleculeHome', ['Molecule', '$scope', function(Molecule, $scope) {
+    .controller('mongochemMoleculeHome', ['mongochem.Molecule', '$scope', function(Molecule, $scope) {
         $scope.mol = Molecule.get({moleculeId: 'TYQCGQRIZGCHNB-DUZGATOHSA-N'}, function(mol) {
             $scope.viewer.addModel(mol.xyz, 'xyz');
             $scope.viewer.setStyle({}, {stick:{}});
@@ -9,7 +9,7 @@ angular.module('mongochemApp')
             $scope.viewer.render();
         });
     }])
-    .controller('mongochemMoleculeDetail', ['Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {
+    .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {
         $scope.mol = Molecule.get({moleculeId: $stateParams.moleculeId}, function(mol) {
             $scope.viewer.addModel(mol.xyz, 'xyz');
             $scope.viewer.setStyle({}, {stick:{}});

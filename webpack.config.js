@@ -50,6 +50,7 @@ module.exports = {
             { test: /directive\.js$/, loader: 'baggage?[dir].view.html' },
             { test: /directive\.js$/, loader: 'baggage?[dir].view.jade' },
             { test: /\.js$/, loader: 'baggage?[file].html' },
+            { test: /\.js$/, loader: 'baggage?[file].jade' },
             { test: /app\.routes\.js$/, loader: 'baggage?' + generateBaggageQueryRoutes()},
             { test: /\.js$/,
               exclude: /node_modules/,
@@ -68,7 +69,8 @@ module.exports = {
         emitErrors: false,
         failOnHint: false,
         curly: true,
-        unused: true
+        unused: true,
+        esnext: true
     },
     plugins: [
         new ngAnnotatePlugin({

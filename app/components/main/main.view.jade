@@ -6,9 +6,10 @@ div.mongochem-max-height(layout="column")
         {{message}}
     span(flex)
     h1.md-toolbar-tools(layout-align-gt-sm="end")
-      md-button.md-icon-button(aria-label="Login")
+      md-button.md-icon-button(aria-label="Login", ng-click="showLogin($event)", ng-show="!isLoggedIn()")
         md-tooltip Login
         ng-md-icon(icon="input", style="fill:white", layout="row", layout-align="end center")
+      img.monogchem-gravatar(ng-src="{{gravatarUrl}}", alt="{{userName}}", ng-show="isLoggedIn()", ng-click="logout()")
 
   div(flex, layout="row")
     mongochem-side

@@ -15,12 +15,15 @@ angular.module('mongochemApp')
           })
           .state('molecules', {
             url: '/molecule/:moleculeId',
-	    views: {
+            views: {
                 main: {
                     templateUrl: require('./components/molecule/molecule.jade')
                 }
+            },
+            data: {
+                requireAuth: true
             }
-	  })
+          })
           .state('about', {
             url: '/about',
             views: {

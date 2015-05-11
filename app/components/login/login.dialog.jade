@@ -1,0 +1,6 @@
+md-dialog(ng-controller="mongochem.LoginDialogController")
+  md-dialog-content
+    p Sign in with an OAuth provider
+  div.md-actions
+    div(ng-repeat="(provider, url) in providers")
+      button.mongochem-oauth-button-google.md-button(ng-click="redirect(url)") Sign in with {{provider}}

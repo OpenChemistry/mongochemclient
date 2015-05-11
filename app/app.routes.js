@@ -14,7 +14,7 @@ angular.module('mongochemApp')
             }
           })
           .state('molecules', {
-            url: '/molecules/:moleculeId',
+            url: '/molecule/:moleculeId',
 	    views: {
                 main: {
                     templateUrl: require('./components/molecule/molecule.jade')

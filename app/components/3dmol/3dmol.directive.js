@@ -16,8 +16,9 @@ angular.module('mongochemApp')
             $scope.viewer.zoomTo();
             $scope.viewer.render();
         });
-
-        $scope.inchi = $stateParams.moleculeId;
+    }])
+    .controller('mongochemMolecules', ['Molecules', '$scope', function(Molecules, $scope) {
+        $scope.molecules = Molecules.query();
     }])
     .directive('mongochem3dmol', ['$timeout', function($timeout) {
         return {

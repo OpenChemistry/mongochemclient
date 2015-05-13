@@ -7,3 +7,9 @@ mongochemServices.factory('mongochem.Molecule', ['$resource',
       query: {method:'GET', params:{moleculeId:'molecules'}, isArray:true}
   });
 }]);
+mongochemServices.factory('Molecules', ['$resource',
+  function($resource){
+    return $resource('api/v1/molecules/:moleculeId', {}, {
+      query: {method:'GET', params:{moleculeId:''}, isArray:true}
+  });
+}]);

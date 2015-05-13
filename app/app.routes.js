@@ -13,7 +13,7 @@ angular.module('mongochemApp')
                 }
             }
           })
-          .state('molecules', {
+          .state('molecule', {
             url: '/molecule/:moleculeId',
             views: {
                 main: {

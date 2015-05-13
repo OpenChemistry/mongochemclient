@@ -7,7 +7,7 @@ div(layout="column")
         p Some details about the molecule
         ul
           li(ng-repeat="molecule in molecules")
-            a(href="#/molecule/{{molecule.inchikey}}") {{molecule.name}}
+            a(href="#/molecule/{{molecule.inchikey}}") {{molecule.name | mongochemUnderscores}}
       div.md-actions(layout="row" layout-align="end center")
         md-button Sticks
         md-button Balls

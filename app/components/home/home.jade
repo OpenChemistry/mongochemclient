@@ -1,2 +1,13 @@
-div(flex, layout="row")
-  mongochem-3dmol.mongochem-max-height(flex, ng-controller="mongochemMoleculeHome")
+div(layout="column")
+  md-content(style="background-color: #ddd")
+    md-card
+      mongochem-3dmol(ng-controller="mongochemMoleculeHome" style="height: 400px; width:600px")
+      md-card-content(ng-controller="mongochemMolecules")
+        h2.md-title Molecule
+        p Some links to molecules in the database...
+        ul
+          li(ng-repeat="molecule in molecules")
+            a(href="#/molecule/{{molecule.inchikey}}") {{molecule.name | mongochemUnderscores}}
+      div.md-actions(layout="row" layout-align="end center")
+        md-button Sticks
+        md-button Balls

@@ -1,6 +1,13 @@
 require('script!3Dmol/release/3Dmol.js');
 
 angular.module('mongochemApp')
+    .filter('mongochemUnderscores', function() {
+        return function(text) {
+            var str = text.replace(/_/g, ' ');
+	    return str.charAt(0).toUpperCase() + str.substr(1);
+	    return str;
+	}
+    })
     .controller('mongochemMoleculeHome', ['mongochem.Molecule', '$scope', function(Molecule, $scope) {
         $scope.mol = Molecule.get({moleculeId: 'TYQCGQRIZGCHNB-DUZGATOHSA-N'}, function(mol) {
             $scope.viewer.addModel(mol.xyz, 'xyz');
@@ -16,8 +23,9 @@ angular.module('mongochemApp')
             $scope.viewer.zoomTo();
             $scope.viewer.render();
         });
-
-        $scope.inchi = $stateParams.moleculeId;
+    }])
+    .controller('mongochemMolecules', ['Molecules', '$scope', function(Molecules, $scope) {
+        $scope.molecules = Molecules.query();
     }])
     .directive('mongochem3dmol', ['$timeout', function($timeout) {
         return {

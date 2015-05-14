@@ -12,8 +12,8 @@ require('./app.services.js');
 
 angular.module('mongochemApp', [require('angular-ui-router'), 'ngMaterial', 'ngMdIcons', 'mongochem.services',
                                 'ngCookies'])
-  .run(['$rootScope', '$log', '$state', 'mongochem.AuthenticationService',
-        function ($rootScope, $log, $state,  AuthService) {
+  .run(['$rootScope', '$log', '$state', '$window', 'mongochem.AuthenticationService',
+        function ($rootScope, $log, $state, $window, AuthService) {
 
     $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
         var requireAuth = toState.data ? toState.data.requireAuth : false;
@@ -23,7 +23,10 @@ angular.module('mongochemApp', [require('angular-ui-router'), 'ngMaterial', 'ngM
             AuthService.isAuthenticated().then(
                     function(isAuthenticated) {
                         if (!isAuthenticated) {
-                            AuthService.authenticate();
+                            let href = $state.href(toState, toParams);
+                            let origin = $window.location.origin;
+                            let url = `${origin}/${href}`;
+                            AuthService.authenticate(url);
                         }
                         else {
                             $state.go(toState.name, toParams, {notify: false});
@@ -32,8 +35,6 @@ angular.module('mongochemApp', [require('angular-ui-router'), 'ngMaterial', 'ngM
                     function(error) {
                         $log.error(error);
                     });
-
-            console.log('Login required ...');
         }
     });
 

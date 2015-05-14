@@ -9,11 +9,24 @@ angular.module('mongochemApp')
     })
     .controller('mongochemMoleculeHome', ['mongochem.Molecule', '$scope', function(Molecule, $scope) {
         $scope.mol = Molecule.get({moleculeId: 'TYQCGQRIZGCHNB-DUZGATOHSA-N'}, function(mol) {
+            $scope.molXyz = mol.xyz;
             $scope.viewer.addModel(mol.xyz, 'xyz');
             $scope.viewer.setStyle({}, {stick:{}});
             $scope.viewer.zoomTo();
             $scope.viewer.render();
         });
+
+        $scope.setViewStyle = function(style) {
+            if (style == 'ball')
+              $scope.viewer.setStyle({}, {sphere:{}});
+            else if (style == 'stick')
+                $scope.viewer.setStyle({}, {stick:{}});
+            else
+                $scope.viewer.setStyle({}, {line:{}});
+            // It seems that the model is not retained, add it back.
+            $scope.viewer.addModel($scope.molXyz, 'xyz');
+            $scope.viewer.render();
+        };
     }])
     .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {
         $scope.mol = Molecule.get({moleculeId: $stateParams.moleculeId}, function(mol) {

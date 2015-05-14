@@ -1,10 +1,10 @@
 div(layout="column")
   md-content(style="background-color: #ddd")
     md-card
-      mongochem-3dmol.mongochem-max-height(ng-controller="mongochemMoleculeHome" style="height: 600px; width:800px")
+      mongochem-3dmol(ng-controller="mongochemMoleculeHome" style="height: 400px; width:600px")
       md-card-content(ng-controller="mongochemMolecules")
         h2.md-title Molecule
-        p Some details about the molecule
+        p Some links to molecules in the database...
         ul
           li(ng-repeat="molecule in molecules")
             a(href="#/molecule/{{molecule.inchikey}}") {{molecule.name | mongochemUnderscores}}

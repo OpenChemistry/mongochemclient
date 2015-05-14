@@ -5,7 +5,7 @@ angular.module('mongochemApp')
         return function(text) {
             var str = text.replace(/_/g, ' ');
             return str.charAt(0).toUpperCase() + str.substr(1);
-        }
+        };
     })
     .controller('mongochemMoleculeHome', ['mongochem.Molecule', '$scope', function(Molecule, $scope) {
         $scope.mol = Molecule.getByInchiKey({moleculeId: 'TYQCGQRIZGCHNB-DUZGATOHSA-N'}, function(mol) {
@@ -17,12 +17,15 @@ angular.module('mongochemApp')
         });
 
         $scope.setViewStyle = function(style) {
-            if (style == 'ball')
+            if (style == 'ball') {
               $scope.viewer.setStyle({}, {sphere:{}});
-            else if (style == 'stick')
+            }
+            else if (style == 'stick') {
                 $scope.viewer.setStyle({}, {stick:{}});
-            else
+            }
+            else {
                 $scope.viewer.setStyle({}, {line:{}});
+            }
             // It seems that the model is not retained, add it back.
             $scope.viewer.addModel($scope.molXyz, 'xyz');
             $scope.viewer.render();

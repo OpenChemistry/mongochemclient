@@ -42,7 +42,8 @@ angular.module('mongochem.services')
                  })
                  // Now we can do the upload
                  .then(function(folderData) {
-                     uploadService.uploadFile('folder', folderData[0]._id, files[0]).then(function(id) {
+
+                     let updateMolecule = function(id) {
                          Molecule.getByInchiKey({moleculeId: $state.params.moleculeId})
                          .$promise.then(function(molecule) {
                              if (!('logs' in molecule)) {
@@ -54,10 +55,17 @@ angular.module('mongochem.services')
                          }, function(error) {
                              $log.error(error);
                          });
-                     },
-                     function(error) {
+                     };
+
+                     let handleError = function(error) {
                          $log.error(error);
-                     });
+                     };
+
+                     for(let i=0; i<files.length; i++) {
+                         uploadService.uploadFile('folder',
+                                 folderData[0]._id, files[i]).then(
+                                         updateMolecule, handleError);
+                     }
              });
         };
     }]);

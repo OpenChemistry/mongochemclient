@@ -29,7 +29,12 @@ angular.module('mongochemApp', [require('angular-ui-router'), 'ngMaterial', 'ngM
                             AuthService.authenticate(url);
                         }
                         else {
-                            $state.go(toState.name, toParams, {notify: false});
+                            $state.go(toState.name, toParams, {notify: false})
+                                .then(function() {
+                                    $rootScope.$broadcast('$stateChangeSuccess',
+                                            toState, toParams, $state.current,
+                                            $state.params);
+                                });
                         }
                     },
                     function(error) {

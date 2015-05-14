@@ -30,7 +30,7 @@ angular.module('mongochem.services')
                                  return rejection;
                              }
 
-                             authService.authenticate();
+                             authService.authenticate($state.current.url);
 
                              // Provide resoved promise ( we are going to be
                              // redirected anyway.
@@ -69,8 +69,11 @@ angular.module('mongochem.services')
             return 'girderToken' in $cookies;
         };
 
-        this.authenticate = function(evt) {
+        this.authenticate = function(redirectUrl, evt) {
             $mdDialog.show({
+                locals: {
+                    redirectUrl: redirectUrl
+                },
                 controller: 'mongochem.LoginDialogController',
                 templateUrl: loginTemplate,
                 targetEvent: evt

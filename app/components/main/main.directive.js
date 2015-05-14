@@ -2,17 +2,18 @@
 angular.module('mongochemApp')
 .directive('mongochemMain', [ '$log',
                               '$state',
+                              '$window',
                               'mongochem.AuthenticationService',
                               'mongochem.GravatarService',
                               'mongochem.girder.User',
-    function($log, $state, authService, gravatarService, user) {
+    function($log, $state, $window, authService, gravatarService, user) {
         return {
             scope: {},
             controller: function($scope) {
                 $scope.message = "MongoChemWeb";
 
                 $scope.showLogin = function(evt) {
-                    authService.authenticate(evt);
+                    authService.authenticate($window.location.href, evt);
                 };
 
                 $scope.isLoggedIn = function() {

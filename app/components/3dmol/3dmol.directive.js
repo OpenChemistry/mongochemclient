@@ -5,7 +5,6 @@ angular.module('mongochemApp')
         return function(text) {
             var str = text.replace(/_/g, ' ');
 	    return str.charAt(0).toUpperCase() + str.substr(1);
-	    return str;
 	}
     })
     .controller('mongochemMoleculeHome', ['mongochem.Molecule', '$scope', function(Molecule, $scope) {

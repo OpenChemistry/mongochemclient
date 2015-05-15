@@ -1,41 +1,21 @@
 angular.module('mongochem.services')
     .service('mongochem.MoleculeFileUploadService', ['mongochem.girder.UploadService',
                                                      'mongochem.Molecule', 'mongochem.girder.Collection',
-                                                     'mongochem.girder.Folder', '$state', '$log',
-                                                     '$timeout', '$q',
-        function(uploadService, Molecule, Collection, Folder,
+                                                     'mongochem.girder.Folder', 'mongochem.girder.User',
+                                                     '$state', '$log', '$timeout', '$q',
+        function(uploadService, Molecule, Collection, Folder, User,
                 $state, $log, $timeout, $q) {
 
             this.upload = function(files) {
-                // Make sure we have a collection
-                Collection.query({text: 'Logs'}).$promise.catch(
+                User.get().$promise.catch(
                         function(error) {
                             $log.error(error);
                         })
-               .then(function(data) {
-                   let deferred = $q.defer();
-                    if(data.length === 0) {
-                        Collection.create({name: 'Logs'}).$promise.then(
-                                function(data) {
-                                    deferred.resolve(data._id);
-                                },
-                                function(error) {
-                                    deferred.reject(error);
-                                });
-                    }
-                    else {
-                        $timeout(function() {
-                            deferred.resolve(data[0]._id);
-                        });
-                    }
-
-                    return deferred.promise;
-                })
                 // Now get the Private folder
-                .then(function(parentId) {
+                .then(function(userData) {
                     return Folder.query({text: 'Private',
-                            parentType: 'collection',
-                            parentId: parentId
+                            parentType: 'user',
+                            parentId: userData._id
                         }).$promise.catch(function(error) {
                             $log.error(error);
                     });

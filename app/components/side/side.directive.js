@@ -6,7 +6,6 @@ angular.module('mongochemApp')
 
         return {
             controller: function($scope) {
-                $scope.message = "MCW Sidebar";
                 $scope.items = [
                   {'name': 'Home',
                    'state': 'home'},

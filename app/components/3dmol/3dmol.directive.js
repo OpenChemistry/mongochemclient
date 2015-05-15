@@ -9,7 +9,6 @@ angular.module('mongochemApp')
     })
     .controller('mongochemMoleculeHome', ['mongochem.Molecule', '$scope', function(Molecule, $scope) {
         $scope.mol = Molecule.getByInchiKey({moleculeId: 'TYQCGQRIZGCHNB-DUZGATOHSA-N'}, function(mol) {
-            $scope.molXyz = mol.xyz;
             $scope.viewer.addModel(mol.xyz, 'xyz');
             $scope.viewer.setStyle({}, {stick:{}});
             $scope.viewer.zoomTo();
@@ -27,8 +26,17 @@ angular.module('mongochemApp')
                 $scope.viewer.setStyle({}, {line:{}});
             }
             // It seems that the model is not retained, add it back.
-            $scope.viewer.addModel($scope.molXyz, 'xyz');
+            $scope.viewer.addModel($scope.mol.xyz, 'xyz');
             $scope.viewer.render();
+        };
+        $scope.setInchiKey = function(inchikey) {
+            $scope.mol = Molecule.get({moleculeId: inchikey}, function(mol) {
+                $scope.viewer.clear();
+                $scope.viewer.addModel(mol.xyz, 'xyz');
+		$scope.viewer.setStyle({}, {stick:{}});
+		$scope.viewer.zoomTo();
+		$scope.viewer.render();
+	    });
         };
     }])
     .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {

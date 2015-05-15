@@ -7,7 +7,7 @@ div(layout="column")
         p Some links to molecules in the database...
         ul
           li(ng-repeat="molecule in molecules")
-            a(href="#/molecule/{{molecule.inchikey}}") {{molecule.name | mongochemUnderscores}}
+            a(href="#/home" ng-click="setInchiKey(molecule.inchikey)") {{molecule.name | mongochemUnderscores}}
       div.md-actions(layout="row" layout-align="end center")
         md-button(ng-click="setViewStyle('line')") Lines
         md-button(ng-click="setViewStyle('stick')") Sticks

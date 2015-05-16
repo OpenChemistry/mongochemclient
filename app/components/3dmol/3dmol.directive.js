@@ -30,7 +30,7 @@ angular.module('mongochemApp')
             $scope.viewer.render();
         };
         $scope.setInchiKey = function(inchikey) {
-            $scope.mol = Molecule.get({moleculeId: inchikey}, function(mol) {
+            $scope.mol = Molecule.getByInchiKey({moleculeId: inchikey}, function(mol) {
                 $scope.viewer.clear();
                 $scope.viewer.addModel(mol.xyz, 'xyz');
 		$scope.viewer.setStyle({}, {stick:{}});
@@ -48,7 +48,9 @@ angular.module('mongochemApp')
         });
     }])
     .controller('mongochemMolecules', ['Molecules', '$scope', function(Molecules, $scope) {
-        $scope.molecules = Molecules.query();
+        $scope.molecules = Molecules.query({}, function(molecules) {
+		$scope.selectedMolecule = molecules[0];
+	});
     }])
     .directive('mongochem3dmol', ['$timeout', function($timeout) {
         return {

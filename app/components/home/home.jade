@@ -3,7 +3,8 @@ div(layout="column")
     md-card(ng-controller="mongochemMoleculeHome")
       mongochem-3dmol(style="height: 400px; width:600px")
       md-card-content(ng-controller="mongochemMolecules")
-        h2.md-title Molecule
+        h2.md-title Molecule: {{selectedMolecule.name | mongochemUnderscores}}
+        select(ng-options="molecule.name | mongochemUnderscores for molecule in molecules", ng-model="selectedMolecule", ng-change="setInchiKey(selectedMolecule.inchikey)")
         p Some links to molecules in the database...
         ul
           li(ng-repeat="molecule in molecules")

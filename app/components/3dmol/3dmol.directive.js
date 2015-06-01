@@ -3,6 +3,11 @@ require('script!3Dmol/release/3Dmol.js');
 angular.module('mongochemApp')
     .filter('mongochemUnderscores', function() {
         return function(text) {
+
+            if (!text) {
+                return text;
+            }
+
             var str = text.replace(/_/g, ' ');
             return str.charAt(0).toUpperCase() + str.substr(1);
         };

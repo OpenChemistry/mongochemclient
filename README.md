@@ -44,7 +44,7 @@ Point your browser to http://localhost:8000
 The dev server will watch resources and rebuild as necessary.
 #### Setting dev server port
 
-    npm config set chemphyweb:dev_server:port <port>
+    npm config set mongochemclient:dev_server:port <port>
 
 Contributing
 ------------

@@ -1,3 +1,16 @@
+var uploadDialogUrl = require('../upload/upload.dialog.jade')
+
+//function UploadController($scope, $mdDialog) {
+//    $scope.hide = function() {
+//      $mdDialog.hide();          };
+//    $scope.cancel = function() {
+//      $mdDialog.cancel();
+//    };
+//    $scope.answer = function(answer) {
+//      $mdDialog.hide(answer);
+//    };
+//}
+
 angular.module('mongochemApp')
     .directive('mongochemSide', ['$state',
                                  'mongochem.AuthenticationService',
@@ -5,7 +18,7 @@ angular.module('mongochemApp')
                                  function($state, authService, uploadService) {
 
         return {
-            controller: function($scope) {
+            controller: function($scope, $mdDialog) {
                 $scope.items = [
                   {'name': 'Home',
                    'state': 'home'},
@@ -14,23 +27,29 @@ angular.module('mongochemApp')
                 ];
 
                 $scope.allowUpload = function() {
-                    return authService.hasToken() && $state.current.name === 'molecule';
+                    return authService.hasToken();
+                };
+
+                $scope.showUploadDialog = function(e) {
+                    $mdDialog.show({
+                        controller: 'mongochemUploadDialogController',
+                        templateUrl: uploadDialogUrl,
+                        targetEvent: e,
+                    });
+//                    $mdDialog.show(
+//                        $mdDialog.alert()
+//                        .parent(angular.element(document.body))
+//                        .title('This is an alert title')
+//                        .content('You can specify some description text in here.')
+//                        .ariaLabel('Alert Dialog Demo')
+//                        .ok('Got it!')
+//                        .targetEvent(e)
+//                   );
                 };
             },
             link: function() {
-                // Little bit of hackery to get the filebrowser to come up
-                var input = document.getElementById('mongochem-file-upload');
-                document.getElementById('mongochem-launch-filebrowser').onclick = function() {
-                    input.click();
-                };
 
-                input.onchange = function(evt) {
-                    let files = evt.target.files;
 
-                    if (files.length !== 0) {
-                        uploadService.upload(files);
-                    }
-                };
             },
             templateUrl: require('./side.view.jade')
         };

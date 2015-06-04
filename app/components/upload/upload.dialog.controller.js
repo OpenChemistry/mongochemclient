@@ -2,12 +2,17 @@ require('style/upload.styl');
 require('./upload-area.directive.js');
 
 angular.module('mongochemApp')
-    .controller('mongochemUploadDialogController', [ '$log', '$scope', '$mdDialog', '$http',
+    .controller('mongochemUploadDialogController', [ '$timeout', '$log', '$scope', '$mdDialog', '$http',
                                                      'mongochem.MoleculeFileUploadService',
                                                      'mongochem.Molecule',
-        function ($log, $scope, $mdDialog, $http, uploadService, Molecule) {
+        function ($timeout, $log, $scope, $mdDialog, $http, uploadService, Molecule) {
+
+          $scope.xyz = null;
+          $scope.title = 'Upload molecular data'
+
           $scope.hide = function() {
               $mdDialog.hide();          };
+
           $scope.cancel = function() {
               $mdDialog.cancel();
           };
@@ -20,7 +25,8 @@ angular.module('mongochemApp')
                   console.log(id);
 
                   $http.post('api/v1/molecules/conversions/xyz', {fileId: id}).then(function(xyz) {
-                      console.log(xyz);
+                      $scope.xyz = xyz.data;
+                      $scope.title = 'Preview of molecular structure'
                   }, function(error) {
                       $log.error(error);
                   });
@@ -28,4 +34,12 @@ angular.module('mongochemApp')
                   $log.error(error);
               });
           };
+
+          $scope.showPreview = function() {
+              return !!$scope.xyz;
+          };
+
+          $scope.startOver = function() {
+              $scope.xyz = null;
+          }
     }]);

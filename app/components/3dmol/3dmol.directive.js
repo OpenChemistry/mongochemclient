@@ -38,10 +38,10 @@ angular.module('mongochemApp')
             $scope.mol = Molecule.getByInchiKey({moleculeId: inchikey}, function(mol) {
                 $scope.viewer.clear();
                 $scope.viewer.addModel(mol.xyz, 'xyz');
-		$scope.viewer.setStyle({}, {stick:{}});
-		$scope.viewer.zoomTo();
-		$scope.viewer.render();
-	    });
+    $scope.viewer.setStyle({}, {stick:{}});
+    $scope.viewer.zoomTo();
+    $scope.viewer.render();
+      });
         };
     }])
     .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {
@@ -54,8 +54,22 @@ angular.module('mongochemApp')
     }])
     .controller('mongochemMolecules', ['Molecules', '$scope', function(Molecules, $scope) {
         $scope.molecules = Molecules.query({}, function(molecules) {
-		$scope.selectedMolecule = molecules[0];
-	});
+        $scope.selectedMolecule = molecules[0];
+        });
+    }])
+    .controller('mongochemMoleculeWatchScope', ['Molecules', '$scope', function(Molecules, $scope) {
+        $scope.$watch('xyz', function(newVal, oldVal) {
+
+            if (!$scope.viewer) {
+                return;
+            }
+            $scope.viewer.clear();
+            $scope.viewer.resize();
+            $scope.viewer.addModel(newVal, 'xyz');
+            $scope.viewer.setStyle({}, {stick:{}});
+            $scope.viewer.zoomTo();
+            $scope.viewer.render();
+        });
     }])
     .directive('mongochem3dmol', ['$timeout', function($timeout) {
         return {
@@ -67,6 +81,14 @@ angular.module('mongochemApp')
 
                     // Create GLViewer within $element
                     $scope.viewer = $3Dmol.createViewer($($element), config);
+
+                    // Remove postion:absolute from canvas
+                    // We should look at patching 3DMol
+                    let canvas = $element.find('canvas')
+                    let style = canvas.attr('style');
+                    style = style.replace(/position:\s*absolute/g, '');
+                    canvas.attr('style', style);
+
                     $scope.viewer.setBackgroundColor(0xefefef);
                     $scope.viewer.resize();
                 });

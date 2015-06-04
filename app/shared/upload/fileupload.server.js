@@ -6,8 +6,8 @@ angular.module('mongochem.services')
         function(uploadService, Molecule, Collection, Folder, User,
                 $state, $log, $timeout, $q) {
 
-            this.upload = function(files) {
-                User.get().$promise.catch(
+            this.upload = function(file) {
+                return User.get().$promise.catch(
                         function(error) {
                             $log.error(error);
                         })
@@ -23,29 +23,22 @@ angular.module('mongochem.services')
                  // Now we can do the upload
                  .then(function(folderData) {
 
-                     let updateMolecule = function(id) {
-                         Molecule.getByInchiKey({moleculeId: $state.params.moleculeId})
-                         .$promise.then(function(molecule) {
-                             if (!('logs' in molecule)) {
-                                 molecule.logs = [];
-                             }
+//                     let updateMolecule = function(id) {
+//                         Molecule.getByInchiKey({moleculeId: $state.params.moleculeId})
+//                         .$promise.then(function(molecule) {
+//                             if (!('logs' in molecule)) {
+//                                 molecule.logs = [];
+//                             }
+//
+//                             molecule.logs.push({_id: id});
+//                             molecule.$update();
+//                         }, function(error) {
+//                             $log.error(error);
+//                         });
+//                     };
 
-                             molecule.logs.push({_id: id});
-                             molecule.$update();
-                         }, function(error) {
-                             $log.error(error);
-                         });
-                     };
-
-                     let handleError = function(error) {
-                         $log.error(error);
-                     };
-
-                     for(let i=0; i<files.length; i++) {
-                         uploadService.uploadFile('folder',
-                                 folderData[0]._id, files[i]).then(
-                                         updateMolecule, handleError);
-                     }
+                     return uploadService.uploadFile('folder',
+                             folderData[0]._id, file);
              });
         };
     }]);

@@ -3,7 +3,8 @@ angular.module('mongochemApp')
     function() {
         return {
             scope: {
-                'label': '@'
+                'label': '@',
+                'action': '='
             },
             link: function($scope, $element) {
                 // Little bit of hackery to get the filebrowser to come up
@@ -16,9 +17,9 @@ angular.module('mongochemApp')
                     let files = evt.target.files;
 
                     if (files.length !== 0) {
-                        uploadService.upload(files);
-                    }
-                };
+                        $scope.action(files[0]);
+                    };
+                }
             },
             templateUrl: require('./filebrowse.view.jade')
 

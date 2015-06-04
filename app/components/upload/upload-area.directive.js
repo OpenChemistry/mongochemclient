@@ -31,7 +31,8 @@ angular.module('mongochemApp')
                     let file = e.dataTransfer.files[0];
 
                     areaDiv.removeClass('mongochem-upload-area-drag');
-                    console.log(file)
+
+                    $scope.uploadFile(file);
 
 //                    if (file.name.endsWith('.xyz')) {
 //                        let reader = new FileReader();

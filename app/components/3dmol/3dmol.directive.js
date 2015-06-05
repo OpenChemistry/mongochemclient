@@ -58,7 +58,7 @@ angular.module('mongochemApp')
         });
     }])
     .controller('mongochemMoleculeWatchScope', ['Molecules', '$scope', function(Molecules, $scope) {
-        $scope.$watch('xyz', function(newVal, oldVal) {
+        $scope.$watch('xyz', function(newVal) {
 
             if (!$scope.viewer) {
                 return;
@@ -84,7 +84,7 @@ angular.module('mongochemApp')
 
                     // Remove postion:absolute from canvas
                     // We should look at patching 3DMol
-                    let canvas = $element.find('canvas')
+                    let canvas = $element.find('canvas');
                     let style = canvas.attr('style');
                     style = style.replace(/position:\s*absolute/g, '');
                     canvas.attr('style', style);

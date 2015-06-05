@@ -1,21 +1,9 @@
-var uploadDialogUrl = require('../upload/upload.dialog.jade')
-
-//function UploadController($scope, $mdDialog) {
-//    $scope.hide = function() {
-//      $mdDialog.hide();          };
-//    $scope.cancel = function() {
-//      $mdDialog.cancel();
-//    };
-//    $scope.answer = function(answer) {
-//      $mdDialog.hide(answer);
-//    };
-//}
+var uploadDialogUrl = require('../upload/upload.dialog.jade');
 
 angular.module('mongochemApp')
     .directive('mongochemSide', ['$state',
                                  'mongochem.AuthenticationService',
-                                 'mongochem.MoleculeFileUploadService',
-                                 function($state, authService, uploadService) {
+                                 function($state, authService) {
 
         return {
             controller: function($scope, $mdDialog) {

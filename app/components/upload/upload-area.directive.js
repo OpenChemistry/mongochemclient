@@ -1,4 +1,4 @@
-var uploadAreaUrl = require('./upload-area.view.jade')
+var uploadAreaUrl = require('./upload-area.view.jade');
 
 angular.module('mongochemApp')
 .directive('mongochemUploadArea', [

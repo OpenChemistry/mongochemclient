@@ -18,8 +18,8 @@ angular.module('mongochemApp')
 
                     if (files.length !== 0) {
                         $scope.action(files[0]);
-                    };
-                }
+                    }
+                };
             },
             templateUrl: require('./filebrowse.view.jade')
 

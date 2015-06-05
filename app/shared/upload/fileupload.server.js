@@ -2,9 +2,9 @@ angular.module('mongochem.services')
     .service('mongochem.MoleculeFileUploadService', ['mongochem.girder.UploadService',
                                                      'mongochem.Molecule', 'mongochem.girder.Collection',
                                                      'mongochem.girder.Folder', 'mongochem.girder.User',
-                                                     '$state', '$log', '$timeout', '$q',
+                                                     '$state', '$log',
         function(uploadService, Molecule, Collection, Folder, User,
-                $state, $log, $timeout, $q) {
+                $state, $log) {
 
             this.upload = function(file) {
                 return User.get().$promise.catch(
@@ -22,21 +22,6 @@ angular.module('mongochem.services')
                  })
                  // Now we can do the upload
                  .then(function(folderData) {
-
-//                     let updateMolecule = function(id) {
-//                         Molecule.getByInchiKey({moleculeId: $state.params.moleculeId})
-//                         .$promise.then(function(molecule) {
-//                             if (!('logs' in molecule)) {
-//                                 molecule.logs = [];
-//                             }
-//
-//                             molecule.logs.push({_id: id});
-//                             molecule.$update();
-//                         }, function(error) {
-//                             $log.error(error);
-//                         });
-//                     };
-
                      return uploadService.uploadFile('folder',
                              folderData[0]._id, file);
              });

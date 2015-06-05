@@ -32,19 +32,10 @@ angular.module('mongochemApp')
 
                 $scope.showUploadDialog = function(e) {
                     $mdDialog.show({
-                        controller: 'mongochemUploadDialogController',
+                        controller: 'mongochem.UploadDialogController',
                         templateUrl: uploadDialogUrl,
                         targetEvent: e,
                     });
-//                    $mdDialog.show(
-//                        $mdDialog.alert()
-//                        .parent(angular.element(document.body))
-//                        .title('This is an alert title')
-//                        .content('You can specify some description text in here.')
-//                        .ariaLabel('Alert Dialog Demo')
-//                        .ok('Got it!')
-//                        .targetEvent(e)
-//                   );
                 };
             },
             link: function() {

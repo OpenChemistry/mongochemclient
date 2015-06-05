@@ -1,8 +1,10 @@
-div.mongochem-upload-area(layout="column", layout-align="center center")
+div.mongochem-upload-area(layout="column", layout-align="center center", z-index=9999)
   span(flex)
   div(layout="column", layout-align="center center")
-    ng-md-icon.mongochem-upload-icon(icon="cloud_upload", size="64")
-    h3.mongochem-upload-text.mongochem-upload-drag-text Drag file here
-  h4.mongochem-upload-text or
-  mongochem-filebrowse-button(label="Browse your computer", action="uploadFile")
+    ng-md-icon.mongochem-upload-icon(ng-show="!drop", icon="cloud_upload", size="64")
+    ng-md-icon.mongochem-upload-icon(ng-show="drop", icon="radio_button_on", size="64")
+    h3.mongochem-upload-text.mongochem-upload-drag-text(ng-show="drop") Drop file here
+    h3.mongochem-upload-text.mongochem-upload-drag-text(ng-show="!drop") Drag file here
+  h4.mongochem-upload-text(ng-show="!drop") or
+  mongochem-filebrowse-button(ng-show="!drop", label="Browse your computer", action="uploadFile")
   span(flex)

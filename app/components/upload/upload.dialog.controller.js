@@ -2,6 +2,20 @@ require('style/upload.styl');
 require('./upload-area.directive.js');
 
 angular.module('mongochemApp')
+    .controller('mongochem.MoleculeWatchScope', ['Molecules', '$scope', function(Molecules, $scope) {
+        $scope.$watch('xyz', function(newVal) {
+
+            if (!$scope.viewer) {
+                return;
+            }
+            $scope.viewer.clear();
+            $scope.viewer.resize();
+            $scope.viewer.addModel(newVal, 'xyz');
+            $scope.viewer.setStyle({}, {stick:{}});
+            $scope.viewer.zoomTo();
+            $scope.viewer.render();
+        });
+    }])
     .controller('mongochem.UploadDialogController', ['$timeout', '$log', '$scope', '$mdDialog', '$http',
                                                      '$mdToast', 'mongochem.MoleculeFileUploadService',
                                                      'mongochem.Molecule',

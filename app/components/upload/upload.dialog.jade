@@ -3,7 +3,7 @@ md-dialog(aria-label="Upload molecular data")
     h2.md-title {{ title }}
     div.mongochem-upload
       mongochem-upload-area(ng-show="!showPreview()")
-      mongochem-3dmol.mongochem-upload-preview(flex, ng-show="showPreview()", ng-controller="mongochemMoleculeWatchScope")
+      mongochem-3dmol.mongochem-upload-preview(flex, ng-show="showPreview()", ng-controller="mongochem.MoleculeWatchScope")
     div.md-actions(layout="row")
     span(flex)
     md-button.md-raised.md-primary(ng-click="upload()", ng-disabled="!showPreview()") Upload

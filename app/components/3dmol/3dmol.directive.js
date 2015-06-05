@@ -57,20 +57,6 @@ angular.module('mongochemApp')
         $scope.selectedMolecule = molecules[0];
         });
     }])
-    .controller('mongochemMoleculeWatchScope', ['Molecules', '$scope', function(Molecules, $scope) {
-        $scope.$watch('xyz', function(newVal) {
-
-            if (!$scope.viewer) {
-                return;
-            }
-            $scope.viewer.clear();
-            $scope.viewer.resize();
-            $scope.viewer.addModel(newVal, 'xyz');
-            $scope.viewer.setStyle({}, {stick:{}});
-            $scope.viewer.zoomTo();
-            $scope.viewer.render();
-        });
-    }])
     .directive('mongochem3dmol', ['$timeout', function($timeout) {
         return {
             link: function postLink($scope, $element) {

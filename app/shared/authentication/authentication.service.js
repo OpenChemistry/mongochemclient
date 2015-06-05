@@ -24,19 +24,13 @@ angular.module('mongochem.services')
                      return {
                          responseError: function (rejection) {
 
-                             var deferred = $q.deferred;
-
                              if (rejection.status !== 401) {
-                                 return rejection;
+                                 return $q.reject(rejection);
                              }
 
                              authService.authenticate($state.current.url);
 
-                             // Provide resoved promise ( we are going to be
-                             // redirected anyway.
-                             deferred.resolve({});
-
-                             return deferred.promise;
+                             return $q.resolve();
                          }
                      };
                  });

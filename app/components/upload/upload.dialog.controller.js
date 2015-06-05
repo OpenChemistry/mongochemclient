@@ -22,8 +22,7 @@ angular.module('mongochemApp')
           };
 
           $scope.upload = function() {
-              var mol = new Molecule();
-              mol.$save({fileId: $scope.fileId}).then(function() {
+              Molecule.create({}, {fileId: $scope.fileId}).$promise.then(function() {
                   $mdToast.show(
                           $mdToast.simple()
                               .content('Molecule successfully upload.')
@@ -31,7 +30,7 @@ angular.module('mongochemApp')
               }, function(error) {
                   $mdToast.show(
                           $mdToast.simple()
-                              .content(error)
+                              .content(error.data.message)
                               .position('top right'));
               });
 
@@ -40,16 +39,22 @@ angular.module('mongochemApp')
 
           $scope.uploadFile = function(file) {
               uploadService.upload(file).then(function(id) {
-                  console.log(id);
+                  $scope.fileId = id;
 
                   $http.post('api/v1/molecules/conversions/xyz', {fileId: id}).then(function(xyz) {
                       $scope.xyz = xyz.data;
                       $scope.title = $scope.previewTitle;
                   }, function(error) {
-                      $log.error(error);
+                      $mdToast.show(
+                              $mdToast.simple()
+                                  .content(error.data.message)
+                                  .position('top right'));
                   });
               },function(error) {
-                  $log.error(error);
+                  $mdToast.show(
+                          $mdToast.simple()
+                              .content(error.data.message)
+                              .position('top right'));
               });
           };
 

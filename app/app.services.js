@@ -6,7 +6,7 @@ mongochemServices.factory('mongochem.Molecule', ['$resource',
     return $resource('api/v1/molecules/:id', {id: '@id'}, {
       getByInchiKey: {url: 'api/v1/molecules/inchikey/:moleculeId', method:'GET'},
       update: {method: 'PATCH'},
-      save: {method: 'POST', url: 'api/v1/molecules'}
+      create: {method: 'POST', url: 'api/v1/molecules'}
   });
 }]);
 mongochemServices.factory('Molecules', ['$resource',

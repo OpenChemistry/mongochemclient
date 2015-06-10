@@ -22,26 +22,31 @@ angular.module('mongochemApp')
 
         $scope.setViewStyle = function(style) {
             if (style == 'ball') {
-              $scope.viewer.setStyle({}, {sphere:{}});
+                $scope.style = {sphere:{}};
             }
             else if (style == 'stick') {
-                $scope.viewer.setStyle({}, {stick:{}});
+                $scope.style = {stick:{}};
             }
             else {
-                $scope.viewer.setStyle({}, {line:{}});
+                $scope.style = {line:{}};
             }
+
+            $scope.viewer.setStyle({}, $scope.style);
+
             // It seems that the model is not retained, add it back.
             $scope.viewer.addModel($scope.mol.xyz, 'xyz');
             $scope.viewer.render();
         };
+
         $scope.setInchiKey = function(inchikey) {
             $scope.mol = Molecule.getByInchiKey({moleculeId: inchikey}, function(mol) {
+
                 $scope.viewer.clear();
                 $scope.viewer.addModel(mol.xyz, 'xyz');
-    $scope.viewer.setStyle({}, {stick:{}});
-    $scope.viewer.zoomTo();
-    $scope.viewer.render();
-      });
+                $scope.viewer.setStyle({}, $scope.style);
+                $scope.viewer.zoomTo();
+                $scope.viewer.render();
+            });
         };
     }])
     .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {

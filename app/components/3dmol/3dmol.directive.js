@@ -51,6 +51,14 @@ angular.module('mongochemApp')
                 $scope.viewer.render();
             });
         };
+
+        var dereg = $scope.$watch('selectedMolecule', function(selectedMolecule) {
+            if (selectedMolecule) {
+                $scope.setInchiKey(selectedMolecule.inchikey);
+                // ng-change will takeover now
+                dereg();
+            }
+        })
     }])
     .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {
         $scope.mol = Molecule.getByInchiKey({moleculeId: $stateParams.moleculeId}, function(mol) {

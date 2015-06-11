@@ -20,6 +20,9 @@ angular.module('mongochemApp')
             $scope.viewer.render();
         });
 
+        // Set the default style
+        $scope.style = {stick:{}};
+
         $scope.setViewStyle = function(style) {
             if (style == 'ball') {
                 $scope.style = {sphere:{}};

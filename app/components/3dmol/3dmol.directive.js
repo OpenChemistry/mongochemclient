@@ -71,7 +71,7 @@ angular.module('mongochemApp')
     .controller('mongochemMolecules', ['Molecules', '$scope', function(Molecules, $scope) {
         $scope.molecules = Molecules.query({}, function(molecules) {
             molecules.sort(function(a, b) {
-                return a.name > b.name;
+                return a.name.toLowerCase() > b.name.toLowerCase();
             });
             $scope.selectedMolecule = molecules[0];
         });

@@ -62,7 +62,7 @@ angular.module('mongochemApp')
     }])
     .controller('mongochemMolecules', ['Molecules', '$scope', function(Molecules, $scope) {
         $scope.molecules = Molecules.query({}, function(molecules) {
-        $scope.selectedMolecule = molecules[0];
+        $scope.selectedMolecule = molecules.sort()[0];
         });
     }])
     .directive('mongochem3dmol', ['$timeout', function($timeout) {

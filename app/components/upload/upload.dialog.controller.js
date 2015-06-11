@@ -130,5 +130,6 @@ angular.module('mongochemApp')
               $scope.xyz = null;
               $scope.title = $scope.uploadTitle;
               $scope.drop = false;
+              $scope.message = '';
           };
     }]);

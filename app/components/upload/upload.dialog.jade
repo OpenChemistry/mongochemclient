@@ -4,8 +4,9 @@ md-dialog(aria-label="Upload molecular data")
     div.mongochem-upload
       mongochem-upload-area(ng-show="!showPreview()")
       mongochem-3dmol.mongochem-upload-preview(flex, ng-show="showPreview()", ng-controller="mongochem.MoleculeWatchScope")
+    div.mongochem-upload-message
+      p {{ message }}
     div.md-actions(layout="row")
-    span(flex)
-    md-button.md-raised.md-primary(ng-click="upload()", ng-disabled="!showPreview()") Upload
-    md-button.md-raised.md-warn(ng-click="startOver()", ng-disabled="!showPreview()") Start Over
-    md-button.md-raised.md-warn(ng-click="cancel()") Cancel
+      md-button.md-raised.md-primary(ng-click="upload()", ng-disabled="!showPreview()") Upload
+      md-button.md-raised.md-warn(ng-click="startOver()", ng-disabled="!showPreview()") Start Over
+      md-button.md-raised.md-warn(ng-click="cancel()") Cancel

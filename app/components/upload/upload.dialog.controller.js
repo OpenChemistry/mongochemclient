@@ -90,11 +90,14 @@ angular.module('mongochemApp')
                               $mdToast.simple()
                                   .content(error.data.message)
                                   .position('top right'));
+                      $scope.error = true;
                   }).then(function(molecule) {
 
                       // Add to existing entry
                       $scope.message = 'A molecule with this structure already exists.' +
                                        'Your data will be added to this entry.';
+
+                      // TODO add to existing entry in some way ...
 
                   }, function(error) {
 
@@ -102,7 +105,7 @@ angular.module('mongochemApp')
                           // Create new molecule
                           $scope.message = 'No molecules with this structure exist. Uploading ' +
                                            'this file will result in the creation of a new ' +
-                                           'molecule entry.'
+                                           'molecule entry.';
 
                           $scope.newMolecule = true;
                       }
@@ -111,6 +114,7 @@ angular.module('mongochemApp')
                                   $mdToast.simple()
                                       .content(error.data.message)
                                       .position('top right'));
+                          $scope.error = true;
                       }
                   });
 
@@ -119,6 +123,7 @@ angular.module('mongochemApp')
                           $mdToast.simple()
                               .content(error.data.message)
                               .position('top right'));
+                  $scope.error = true;
               });
           };
 
@@ -131,5 +136,6 @@ angular.module('mongochemApp')
               $scope.title = $scope.uploadTitle;
               $scope.drop = false;
               $scope.message = '';
+              $scope.error = false;
           };
     }]);

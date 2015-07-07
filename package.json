@@ -31,7 +31,7 @@
       "angular-resource": "^1.3.15",
       "angular-cookies": "^1.3.15",
       "angular-ui-router": "^0.2.14",
-      "angular-material": "^0.9.7",
+      "angular-material": "^0.10.0",
       "3dmol": "git://github.com/dkoes/3Dmol.js.git#a87a8be",
       "angular-material-icons": "^0.4.0",
       "blueimp-md5": "^1.1.0"

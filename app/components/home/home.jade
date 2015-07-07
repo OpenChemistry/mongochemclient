@@ -1,18 +1,18 @@
-div(layout="column")
-  md-content(style="background-color: #ddd")
-    md-card(ng-controller="mongochemMolecules")
-      md-card-content(ng-controller="mongochemMoleculeHome", style="height: 75%;" )
-        div(layout="row")
-          div(layout="column", flex="100")
-            mongochem-3dmol(style="height: 400px; width:100%")
-            div.md-actions(layout="row" layout-align="end center")
-              md-button(ng-click="setViewStyle('line')") Lines
-              md-button(ng-click="setViewStyle('stick')") Sticks
-              md-button(ng-click="setViewStyle('ball')") Balls
-            h2.md-title Molecule: {{selectedMolecule.name | mongochemUnderscores}}
-            span(flex)
-        select(ng-options="molecule.name | mongochemUnderscores for molecule in molecules", ng-model="selectedMolecule", ng-change="setInchiKey(selectedMolecule.inchikey)")
-        p Some links to molecules in the database...
-          ul
-            li(ng-repeat="molecule in molecules")
-              a(href="#/molecule/{{molecule.inchikey}}") {{molecule.name | mongochemUnderscores}}
+md-content(ng-controller="mongochemMolecules", flex, layout="column")
+  md-content(ng-controller="mongochemMoleculeHome", layout="column", flex)
+    md-card(flex, style="background-color: #ddd", layout='column')
+      md-card-content(flex, layout='column')
+        md-content.mongochem-no-scroll(mongochem-3dmol, flex)
+        div.md-actions(layout="row", layout-align="end center")
+          md-button(ng-click="setViewStyle('line')") Lines
+          md-button(ng-click="setViewStyle('stick')") Sticks
+          md-button(ng-click="setViewStyle('ball')") Balls
+    md-card
+      md-card-content(layout="row", layout-align="start center")
+        h2.md-title Molecule:
+        md-select(ng-model="selectedMolecule", ng-change="setInchiKey(selectedMolecule.inchikey)")
+          md-option(ng-repeat="molecule in molecules", ng-value="molecule") {{ molecule.name | mongochemUnderscores }}
+        md-button.md-fab.md-primary.md-mini(aria-label="Show", ng-click="showMolecule(selectedMolecule.inchikey)")
+          ng-md-icon(icon="launch", size="24", style="fill: white")
+
+

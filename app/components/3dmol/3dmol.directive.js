@@ -12,7 +12,7 @@ angular.module('mongochemApp')
             return str.charAt(0).toUpperCase() + str.substr(1);
         };
     })
-    .controller('mongochemMoleculeHome', ['mongochem.Molecule', '$scope', function(Molecule, $scope) {
+    .controller('mongochemMoleculeHome', ['mongochem.Molecule', '$scope', '$state', '$timeout', function(Molecule, $scope, $state, $timeout) {
         $scope.mol = Molecule.getByInchiKey({moleculeId: 'TYQCGQRIZGCHNB-DUZGATOHSA-N'}, function(mol) {
             $scope.viewer.addModel(mol.xyz, 'xyz');
             $scope.viewer.setStyle({}, {stick:{}});
@@ -51,6 +51,10 @@ angular.module('mongochemApp')
                 $scope.viewer.render();
             });
         };
+
+        $scope.showMolecule = function(inchikey) {
+            $state.go('molecule', {moleculeId: $scope.selectedMolecule.inchikey });
+        }
 
         var dereg = $scope.$watch('selectedMolecule', function(selectedMolecule) {
             if (selectedMolecule) {

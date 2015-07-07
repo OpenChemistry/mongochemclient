@@ -26,6 +26,10 @@ angular.module('mongochemApp')
                     });
                 };
 
+                $scope.goTo = function(state) {
+                    $state.go(state);
+                };
+
                 user.get().$promise.then(function(user) {
                     $scope.gravatarUrl = gravatarService.gravatarUrl(user.email);
                     $scope.userName = `${user.firstName} ${user.lastName}`;

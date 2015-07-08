@@ -12,7 +12,10 @@ angular.module('mongochemApp')
             return str.charAt(0).toUpperCase() + str.substr(1);
         };
     })
-    .controller('mongochemMoleculeHome', ['mongochem.Molecule', '$scope', '$state', '$timeout', function(Molecule, $scope, $state, $timeout) {
+    .controller('mongochemMoleculeHome', ['mongochem.Molecule', '$scope', '$state',
+                                          '$timeout', '$log', '$http', '$interval',
+                                          function(Molecule, $scope, $state, $timeout,
+                                                   $log, $http, $interval) {
         $scope.mol = Molecule.getByInchiKey({moleculeId: 'TYQCGQRIZGCHNB-DUZGATOHSA-N'}, function(mol) {
             $scope.viewer.addModel(mol.xyz, 'xyz');
             $scope.viewer.setStyle({}, {stick:{}});
@@ -34,11 +37,13 @@ angular.module('mongochemApp')
                 $scope.style = {line:{}};
             }
 
-            $scope.viewer.setStyle({}, $scope.style);
-
             // It seems that the model is not retained, add it back.
-            $scope.viewer.addModel($scope.mol.xyz, 'xyz');
-            $scope.viewer.render();
+            if (!$scope.isAnimating) {
+                $scope.viewer.setStyle({}, $scope.style);
+                $scope.viewer.addModel($scope.mol.xyz, 'xyz');
+                $scope.viewer.render();
+            }
+
         };
 
         $scope.setInchiKey = function(inchikey) {
@@ -54,7 +59,75 @@ angular.module('mongochemApp')
 
         $scope.showMolecule = function(inchikey) {
             $state.go('molecule', {moleculeId: $scope.selectedMolecule.inchikey });
-        }
+        };
+
+        $scope.hasAnimation = function() {
+            return $scope.selectedMolecule && $scope.selectedMolecule.inchikey === 'RYYVLZVUVIJVGH-UHFFFAOYSA-N';
+        };
+
+        $scope.isAnimating = false;
+
+        $scope.animateMolecule = function() {
+
+            if ($scope.isAnimating) {
+
+                if ($scope.animationPromise) {
+                    $interval.cancel($scope.animationPromise);
+                }
+
+                $scope.isAnimating = false;
+            }
+            else {
+                $scope.isAnimating = true;
+
+                function animate() {
+                    $scope.animationPromise = $interval(function() {
+                        $scope.models[$scope.currmol].setStyle({},{hidden:true});
+                        $scope.currmol = ($scope.currmol+1) % $scope.models.length;
+                        $scope.models[$scope.currmol].setStyle({}, $scope.style);
+                        $scope.viewer.render();
+                    }, 100);
+                }
+
+                if (!$scope.models) {
+                    $scope.currmol = 0;
+                    $.get('/data/caffeine.json').
+                        success(function(data) {
+                            $scope.models = [];
+
+                            $scope.viewer.removeAllModels();
+                            angular.forEach(data.deltas, function(delta) {
+                                var model = $scope.viewer.createModelFrom({serial: -1}, false);
+                                $scope.models.push(model);
+
+                                var atoms = angular.copy(data.atoms);
+
+                                // Now add the delta to atom positions
+                                for(var i = 0; i < atoms.length; i++) {
+                                    atoms[i].model = model.getID();
+                                    atoms[i].color = $3Dmol.elementColors.rasmol[atoms[i].elem];
+                                    atoms[i].x += delta[i][0];
+                                    atoms[i].y += delta[i][1];
+                                }
+
+                                model.addAtoms(atoms);
+                                model.setStyle({}, {stick:{hidden: true}});
+
+                            });
+
+                            $scope.viewer.zoomTo();
+                            $scope.viewer.render();
+                            animate();
+                        }).
+                        error(function(data, status, headers, config) {
+                            $log.error(data);
+                        });
+                }
+                else {
+                    animate();
+                }
+            }
+        };
 
         var dereg = $scope.$watch('selectedMolecule', function(selectedMolecule) {
             if (selectedMolecule) {

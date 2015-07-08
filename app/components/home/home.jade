@@ -14,5 +14,8 @@ md-content(ng-controller="mongochemMolecules", flex, layout="column")
           md-option(ng-repeat="molecule in molecules", ng-value="molecule") {{ molecule.name | mongochemUnderscores }}
         md-button.md-fab.md-primary.md-mini(aria-label="Show", ng-click="showMolecule(selectedMolecule.inchikey)")
           ng-md-icon(icon="launch", size="24", style="fill: white")
+        md-button.md-fab.md-primary.md-mini(aria-label="Animate", ng-click="animateMolecule()", ng-show="hasAnimation()")
+          ng-md-icon(icon="play_arrow", size="24", style="fill: white", ng-hide="isAnimating")
+          ng-md-icon(icon="pause", size="24", style="fill: white", ng-show="isAnimating")
 
 

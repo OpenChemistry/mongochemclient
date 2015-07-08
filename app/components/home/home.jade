@@ -2,7 +2,13 @@ md-content(ng-controller="mongochemMolecules", flex, layout="column")
   md-content(ng-controller="mongochemMoleculeHome", layout="column", flex)
     md-card(flex, style="background-color: #ddd", layout='column')
       md-card-content(flex, layout='column')
-        md-content.mongochem-no-scroll(mongochem-3dmol, flex)
+        md-content(layout="row", layout-align="end center")
+          md-button.md-fab.md-primary.md-mini(aria-label="Animate", ng-click="animateMolecule()", ng-show="hasAnimation()")
+            ng-md-icon(icon="play_arrow",  style="fill: white", ng-hide="isAnimating")
+            ng-md-icon(icon="pause",  style="fill: white", ng-show="isAnimating")
+          md-button.md-fab.md-primary.md-mini(aria-label="Show", ng-click="showMolecule(selectedMolecule.inchikey)")
+            ng-md-icon(icon="launch", style="fill: white")
+        md-content.mongochem-no-scroll(mongochem-3dmol, flex, style="margin-top: -52px;")
         div.md-actions(layout="row", layout-align="end center")
           md-button(ng-click="setViewStyle('line')") Lines
           md-button(ng-click="setViewStyle('stick')") Sticks
@@ -12,10 +18,4 @@ md-content(ng-controller="mongochemMolecules", flex, layout="column")
         h2.md-title Molecule:
         md-select(ng-model="selectedMolecule", ng-change="setInchiKey(selectedMolecule.inchikey)")
           md-option(ng-repeat="molecule in molecules", ng-value="molecule") {{ molecule.name | mongochemUnderscores }}
-        md-button.md-fab.md-primary.md-mini(aria-label="Show", ng-click="showMolecule(selectedMolecule.inchikey)")
-          ng-md-icon(icon="launch", size="24", style="fill: white")
-        md-button.md-fab.md-primary.md-mini(aria-label="Animate", ng-click="animateMolecule()", ng-show="hasAnimation()")
-          ng-md-icon(icon="play_arrow", size="24", style="fill: white", ng-hide="isAnimating")
-          ng-md-icon(icon="pause", size="24", style="fill: white", ng-show="isAnimating")
-
 

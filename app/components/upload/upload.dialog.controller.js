@@ -91,7 +91,7 @@ angular.module('mongochemApp')
                                   .content(error.data.message)
                                   .position('top right'));
                       $scope.error = true;
-                  }).then(function(molecule) {
+                  }).then(function() {
 
                       // Add to existing entry
                       $scope.message = 'A molecule with this structure already exists.' +

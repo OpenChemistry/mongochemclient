@@ -57,7 +57,7 @@ angular.module('mongochemApp')
             });
         };
 
-        $scope.showMolecule = function(inchikey) {
+        $scope.showMolecule = function() {
             $state.go('molecule', {moleculeId: $scope.selectedMolecule.inchikey });
         };
 
@@ -80,14 +80,14 @@ angular.module('mongochemApp')
             else {
                 $scope.isAnimating = true;
 
-                function animate() {
+                let animate = function() {
                     $scope.animationPromise = $interval(function() {
                         $scope.models[$scope.currmol].setStyle({},{hidden:true});
                         $scope.currmol = ($scope.currmol+1) % $scope.models.length;
                         $scope.models[$scope.currmol].setStyle({}, $scope.style);
                         $scope.viewer.render();
                     }, 100);
-                }
+                };
 
                 if (!$scope.models) {
                     $scope.currmol = 0;
@@ -119,7 +119,7 @@ angular.module('mongochemApp')
                             $scope.viewer.render();
                             animate();
                         }).
-                        error(function(data, status, headers, config) {
+                        error(function(data) {
                             $log.error(data);
                         });
                 }

@@ -52,6 +52,10 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                 $scope.hasAnimationData = false;
                 $scope.isAnimating = false;
                 $scope.models = null;
+                if ($scope.animationPromise) {
+                    $interval.cancel($scope.animationPromise);
+                    $scope.animationPromise = null;
+                }
 
                 $scope.mol = Molecule.getByInchiKey({moleculeId: inchikey}, function(mol) {
                     $scope.viewer.clear();
@@ -78,6 +82,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
 
                     if ($scope.animationPromise) {
                         $interval.cancel($scope.animationPromise);
+                        $scope.animationPromise = null;
                     }
                     $rootScope.$broadcast('mongochem-frequency-histogram-selectbar', -1);
                     $scope.isAnimating = false;

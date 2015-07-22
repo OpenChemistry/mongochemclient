@@ -119,7 +119,7 @@ require.ensure(['d3'], function(require) {
             if (index > 0) {
                 d3.select(bars[0][index]).classed('selected', true);
             }
-        }
+        };
 
         this.resize = resize;
 
@@ -158,7 +158,7 @@ require.ensure(['d3'], function(require) {
 
                             $rootScope.$on('mongochem-frequency-histogram-selectbar', function(evt, index) {
                                 histogram.selectedBar(index);
-                            })
+                            });
                         }
 
                         histogram.render(data);

@@ -154,7 +154,8 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
 
                                 sampleData.x = {
                                     delta: max / bins
-                                }
+                                };
+
                                 if (!$scope.mouseoverbarHandler) {
                                     $scope.mouseoverbarHandler = $rootScope.$on('mongochem-frequency-histogram-mouseoverbar', function(evt, bar) {
                                         if (!$scope.isAnimating) {
@@ -163,12 +164,12 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                                             $scope.models[$scope.currmol].setStyle({}, $scope.style);
                                             $scope.viewer.render();
                                         }
-                                    })
+                                    });
                                 }
 
                                 $timeout(function() {
                                     $scope.frequencyData = sampleData;
-                                })
+                                });
 
                             }).
                             error(function(data) {
@@ -193,7 +194,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
 
             $scope.toggleFrequencies = function() {
                 $scope.showFrequenciesHistogram = !$scope.showFrequenciesHistogram;
-            }
+            };
         }])
         .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {
             $scope.mol = Molecule.getByInchiKey({moleculeId: $stateParams.moleculeId}, function(mol) {

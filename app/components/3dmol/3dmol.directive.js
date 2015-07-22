@@ -15,9 +15,9 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
             };
         })
         .controller('mongochemMoleculeHome', ['mongochem.Molecule', '$scope', '$state',
-                                              '$timeout', '$log', '$http', '$interval',
+                                              '$timeout', '$log', '$http', '$interval', '$rootScope',
                                               function(Molecule, $scope, $state, $timeout,
-                                                       $log, $http, $interval) {
+                                                       $log, $http, $interval, $rootScope) {
             $scope.mol = Molecule.getByInchiKey({moleculeId: 'TYQCGQRIZGCHNB-DUZGATOHSA-N'}, function(mol) {
                 $scope.viewer.addModel(mol.xyz, 'xyz');
                 $scope.viewer.setStyle({}, {stick:{}});
@@ -49,8 +49,11 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
             };
 
             $scope.setInchiKey = function(inchikey) {
-                $scope.mol = Molecule.getByInchiKey({moleculeId: inchikey}, function(mol) {
+                $scope.hasAnimationData = false;
+                $scope.isAnimating = false;
+                $scope.models = null;
 
+                $scope.mol = Molecule.getByInchiKey({moleculeId: inchikey}, function(mol) {
                     $scope.viewer.clear();
                     $scope.viewer.addModel(mol.xyz, 'xyz');
                     $scope.viewer.setStyle({}, $scope.style);
@@ -76,7 +79,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                     if ($scope.animationPromise) {
                         $interval.cancel($scope.animationPromise);
                     }
-
+                    $rootScope.$broadcast('mongochem-frequency-histogram-selectbar', -1);
                     $scope.isAnimating = false;
                 }
                 else {
@@ -88,9 +91,11 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                             $scope.currmol = ($scope.currmol+1) % $scope.models.length;
                             $scope.models[$scope.currmol].setStyle({}, $scope.style);
                             $scope.viewer.render();
+                            $rootScope.$broadcast('mongochem-frequency-histogram-selectbar', $scope.currmol);
                         }, 100);
                     };
 
+                    $scope.hasAnimationData = true;
                     if (!$scope.models) {
                         $scope.currmol = 0;
                         $.get('/data/caffeine.json').
@@ -120,6 +125,51 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                                 $scope.viewer.zoomTo();
                                 $scope.viewer.render();
                                 animate();
+
+                                // Generate some fake data for frequency histogram
+                                var sampleData = {
+                                };
+
+                                var min = 0,
+                                    max = 800,
+                                    stddev = 120,
+                                    bins = $scope.models.length,
+                                    generator = (function() {
+                                        var gen = d3.random.normal(max/2, stddev);
+                                        return function() {
+                                            return ~~Math.max(min, Math.min(gen(), max-1));
+                                        };
+                                    }());
+
+                                sampleData.bins = Array.apply(null, {length: bins}).map(function(current, index) {
+                                    return {x: max / bins * index, y: 0, i: index};
+                                });
+
+                                for(let i = 0; i < 10000; i++) {
+                                    let number = generator();
+                                    let index = ~~(number / max * bins);
+                                    let bin = sampleData.bins[index];
+                                    bin.y++;
+                                }
+
+                                sampleData.x = {
+                                    delta: max / bins
+                                }
+                                if (!$scope.mouseoverbarHandler) {
+                                    $scope.mouseoverbarHandler = $rootScope.$on('mongochem-frequency-histogram-mouseoverbar', function(evt, bar) {
+                                        if (!$scope.isAnimating) {
+                                            $scope.models[$scope.currmol].setStyle({},{hidden:true});
+                                            $scope.currmol = bar.i;
+                                            $scope.models[$scope.currmol].setStyle({}, $scope.style);
+                                            $scope.viewer.render();
+                                        }
+                                    })
+                                }
+
+                                $timeout(function() {
+                                    $scope.frequencyData = sampleData;
+                                })
+
                             }).
                             error(function(data) {
                                 $log.error(data);
@@ -138,6 +188,12 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                     dereg();
                 }
             });
+
+            $scope.showFrequenciesHistogram = true;
+
+            $scope.toggleFrequencies = function() {
+                $scope.showFrequenciesHistogram = !$scope.showFrequenciesHistogram;
+            }
         }])
         .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {
             $scope.mol = Molecule.getByInchiKey({moleculeId: $stateParams.moleculeId}, function(mol) {

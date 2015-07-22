@@ -34,7 +34,8 @@
       "angular-material": "^0.10.0",
       "3dmol": "git://github.com/dkoes/3Dmol.js.git#a87a8be",
       "angular-material-icons": "^0.4.0",
-      "blueimp-md5": "^1.1.0"
+      "blueimp-md5": "^1.1.0",
+      "d3": "^3.5.6"
   },
   "config": {
     "dev-server": {

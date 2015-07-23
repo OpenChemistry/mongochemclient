@@ -19,11 +19,21 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                                               function(Molecule, $scope, $state, $timeout,
                                                        $log, $http, $interval, $rootScope) {
             $scope.mol = Molecule.getByInchiKey({moleculeId: 'TYQCGQRIZGCHNB-DUZGATOHSA-N'}, function(mol) {
-                $scope.viewer.addModel(mol.xyz, 'xyz');
-                $scope.viewer.setStyle({}, {stick:{}});
+                $scope.displayMolecule(mol, {stick:{}});
+            });
+
+            $scope.displayMolecule = function(mol, style) {
+                // If we have it use SDF as it has bond information
+                if ('sdf' in mol) {
+                    $scope.viewer.addModel(mol.sdf, 'sdf');
+                }
+                else {
+                    $scope.viewer.addModel(mol.xyz, 'xyz');
+                }
+                $scope.viewer.setStyle({}, style);
                 $scope.viewer.zoomTo();
                 $scope.viewer.render();
-            });
+            }
 
             // Set the default style
             $scope.style = {stick:{}};
@@ -41,9 +51,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
 
                 // It seems that the model is not retained, add it back.
                 if (!$scope.isAnimating) {
-                    $scope.viewer.setStyle({}, $scope.style);
-                    $scope.viewer.addModel($scope.mol.xyz, 'xyz');
-                    $scope.viewer.render();
+                    $scope.displayMolecule($scope.mol, $scope.style);
                 }
 
             };
@@ -59,10 +67,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
 
                 $scope.mol = Molecule.getByInchiKey({moleculeId: inchikey}, function(mol) {
                     $scope.viewer.clear();
-                    $scope.viewer.addModel(mol.xyz, 'xyz');
-                    $scope.viewer.setStyle({}, $scope.style);
-                    $scope.viewer.zoomTo();
-                    $scope.viewer.render();
+                    $scope.displayMolecule(mol, $scope.style);
                 });
             };
 
@@ -203,10 +208,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
         }])
         .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {
             $scope.mol = Molecule.getByInchiKey({moleculeId: $stateParams.moleculeId}, function(mol) {
-                $scope.viewer.addModel(mol.xyz, 'xyz');
-                $scope.viewer.setStyle({}, {stick:{}});
-                $scope.viewer.zoomTo();
-                $scope.viewer.render();
+                $scope.displayMolecule(mol , {stick:{}});
             });
         }])
         .controller('mongochemMolecules', ['Molecules', '$scope', function(Molecules, $scope) {

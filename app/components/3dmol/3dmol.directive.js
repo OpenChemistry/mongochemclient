@@ -125,6 +125,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                                         atoms[i].color = $3Dmol.elementColors.rasmol[atoms[i].elem];
                                         atoms[i].x += delta[i][0];
                                         atoms[i].y += delta[i][1];
+                                        atoms[i].z += delta[i][2];
                                     }
 
                                     model.addAtoms(atoms);

@@ -33,7 +33,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                 $scope.viewer.setStyle({}, style);
                 $scope.viewer.zoomTo();
                 $scope.viewer.render();
-            }
+            };
 
             // Set the default style
             $scope.style = {stick:{}};

@@ -4,6 +4,18 @@ var glob = require('glob');
 var ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
 var fs = require('fs');
 
+var production = process.env.NODE_ENV === 'production' ||
+process.argv.indexOf('-p') > -1;
+var defines = {
+/* Definitely needed to make webpack inline NODE_ENV properly
+ * https://gitter.im/webpack/webpack/archives/2014/12/12
+ * https://github.com/facebook/react/issues/1921
+ */
+'process.env': {
+  'NODE_ENV': JSON.stringify(production ? 'production' : 'development')
+}
+};
+
 appRoot = path.join(__dirname, 'app');
 
 /**
@@ -75,6 +87,7 @@ module.exports = {
     plugins: [
         new ngAnnotatePlugin({
             add: true,
-        })
+        }),
+        new webpack.DefinePlugin(defines)
     ]
 };

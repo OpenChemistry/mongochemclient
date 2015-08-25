@@ -11,3 +11,23 @@
 
 md-toolbar .md-menu.mongochem-menu
   margin inherit
+
+#mongochem-3dmol.mongochem-frequency-overlay
+  canvas
+    margin-top: -316px
+
+.bar rect
+  fill: #7986CB
+  shape-rendering: crispEdges
+
+
+md-content[mongochem-frequency-histogram="mongochem-frequency-histogram"][mongochem-animating="false"] .bar rect:hover
+  fill: #3F51B5
+
+.bar.selected rect
+  fill: #3F51B5
+
+.axis path, .axis line
+  fill: none
+  stroke: #000
+  shape-rendering: crispEdges

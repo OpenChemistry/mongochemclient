@@ -15,6 +15,19 @@ angular.module('mongochemApp')
             $scope.viewer.zoomTo();
             $scope.viewer.render();
         });
+
+        $scope.$watch('sdf', function(newVal) {
+
+            if (!$scope.viewer) {
+                return;
+            }
+            $scope.viewer.clear();
+            $scope.viewer.resize();
+            $scope.viewer.addModel(newVal, 'sdf');
+            $scope.viewer.setStyle({}, {stick:{}});
+            $scope.viewer.zoomTo();
+            $scope.viewer.render();
+        });
     }])
     .controller('mongochem.UploadDialogController', ['$q', '$timeout', '$log', '$scope', '$mdDialog', '$http',
                                                      '$mdToast', 'mongochem.MoleculeFileUploadService',
@@ -23,6 +36,7 @@ angular.module('mongochemApp')
                   uploadService, Molecule) {
 
           $scope.xyz = null;
+          $scope.sdf = null;
           $scope.uploadTitle = 'Upload molecular data';
           $scope.previewTitle = 'Preview molecular structure';
           $scope.title = $scope.uploadTitle;
@@ -79,19 +93,38 @@ angular.module('mongochemApp')
                   $scope.fileId = id;
                   $scope.newMolecule = false;
 
-                  $http.post('api/v1/molecules/conversions/xyz', {fileId: id}).then(function(xyz) {
-                      $scope.xyz = xyz.data;
-                      $scope.title = $scope.previewTitle;
+                  (function() {
+                      if (file.name.match(/^.*\.cml$/)) {
+                          return $http.post('api/v1/molecules/conversions/sdf', {fileId: id}).then(function(sdf) {
+                              $scope.sdf = sdf.data;
+                              $scope.title = $scope.previewTitle;
 
-                      return fetchMolecule(id);
-                  },
-                  function(error) {
-                      $mdToast.show(
-                              $mdToast.simple()
-                                  .content(error.data.message)
-                                  .position('top right'));
-                      $scope.error = true;
-                  }).then(function(molecule) {
+                              return fetchMolecule(id);
+                          },
+                          function(error) {
+                              $mdToast.show(
+                                      $mdToast.simple()
+                                          .content(error.data.message)
+                                          .position('top right'));
+                              $scope.error = true;
+                          });
+                      }
+                      else {
+                          return $http.post('api/v1/molecules/conversions/xyz', {fileId: id}).then(function(xyz) {
+                              $scope.xyz = xyz.data;
+                              $scope.title = $scope.previewTitle;
+
+                              return fetchMolecule(id);
+                          },
+                          function(error) {
+                              $mdToast.show(
+                                      $mdToast.simple()
+                                          .content(error.data.message)
+                                          .position('top right'));
+                              $scope.error = true;
+                          });
+                      }
+                  })().then(function() {
 
                       // Add to existing entry
                       $scope.message = 'A molecule with this structure already exists.' +
@@ -128,7 +161,7 @@ angular.module('mongochemApp')
           };
 
           $scope.showPreview = function() {
-              return !!$scope.xyz;
+              return !!$scope.xyz || !!$scope.sdf;
           };
 
           $scope.startOver = function() {

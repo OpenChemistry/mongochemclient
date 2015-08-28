@@ -73,7 +73,8 @@ require.ensure(['d3'], function(require) {
 
 
         this.render = function(data) {
-            var range = [0, d3.max(data.bins, function(d) { return d.x; }) + data.x.delta];
+            var range = [0, d3.max(data.bins, function(d) { return d.x; }) + data.x.delta],
+                that = this;
 
             _x.domain(range)
                 .range([0, _width]);
@@ -96,7 +97,13 @@ require.ensure(['d3'], function(require) {
                 if (options.mouseoverbar) {
                     options.mouseoverbar(data);
                 }
-            });
+            })
+            .on('click', function(data) {
+                if(options.clickbar) {
+                    options.clickbar(data);
+                    that.selectedBar(data.i);
+                }
+            })
 
             bars.transition()
                 .duration(1000)
@@ -153,6 +160,10 @@ require.ensure(['d3'], function(require) {
                             options.mouseoverbar = function(bar) {
                                 $rootScope.$broadcast('mongochem-frequency-histogram-mouseoverbar', bar);
                             };
+
+                            options.clickbar = function(bar) {
+                                $rootScope.$broadcast('mongochem-frequency-histogram-clickbar', bar)
+                            }
 
                             histogram = new FrequencyHistogram(element[0], options);
 

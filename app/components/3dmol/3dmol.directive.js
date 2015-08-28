@@ -18,9 +18,54 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                                               '$timeout', '$log', '$http', '$interval', '$rootScope',
                                               function(Molecule, $scope, $state, $timeout,
                                                        $log, $http, $interval, $rootScope) {
-            $scope.mol = Molecule.getByInchiKey({moleculeId: 'TYQCGQRIZGCHNB-DUZGATOHSA-N'}, function(mol) {
+          $scope.mol = Molecule.getByInchiKey({moleculeId: 'TYQCGQRIZGCHNB-DUZGATOHSA-N'}, function(mol) {
                 $scope.displayMolecule(mol, {stick:{}});
             });
+
+            var generateFakeHistogramData = function() {
+                var sampleData = {
+                };
+
+                var min = 0,
+                    max = 800,
+                    stddev = 120,
+                    bins = 20,//$scope.models.length,
+                    generator = (function() {
+                        var gen = d3.random.normal(max/2, stddev);
+                        return function() {
+                            return ~~Math.max(min, Math.min(gen(), max-1));
+                        };
+                    }());
+
+                sampleData.bins = Array.apply(null, {length: bins}).map(function(current, index) {
+                    return {x: max / bins * index, y: 0, i: index};
+                });
+
+                for(let i = 0; i < 10000; i++) {
+                    let number = generator();
+                    let index = ~~(number / max * bins);
+                    let bin = sampleData.bins[index];
+                    bin.y++;
+                }
+
+                sampleData.x = {
+                    delta: max / bins
+                };
+
+                if (!$scope.clickbarHandler) {
+                    $scope.clickHandler = $rootScope.$on('mongochem-frequency-histogram-clickbar', function(evt, bar) {
+                        // Fetch animation data for the frequency
+                    });
+                }
+
+
+
+                $timeout(function() {
+                    $scope.frequencyData = sampleData;
+                });
+            };
+
+            generateFakeHistogramData();
 
             $scope.displayMolecule = function(mol, style) {
                 // If we have it use SDF as it has bond information
@@ -89,7 +134,6 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                         $interval.cancel($scope.animationPromise);
                         $scope.animationPromise = null;
                     }
-                    $rootScope.$broadcast('mongochem-frequency-histogram-selectbar', -1);
                     $scope.isAnimating = false;
                 }
                 else {
@@ -101,7 +145,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                             $scope.currmol = ($scope.currmol+1) % $scope.models.length;
                             $scope.models[$scope.currmol].setStyle({}, $scope.style);
                             $scope.viewer.render();
-                            $rootScope.$broadcast('mongochem-frequency-histogram-selectbar', $scope.currmol);
+                            //$rootScope.$broadcast('mongochem-frequency-histogram-selectbar', $scope.currmol);
                         }, 100);
                     };
 
@@ -136,51 +180,6 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                                 $scope.viewer.zoomTo();
                                 $scope.viewer.render();
                                 animate();
-
-                                // Generate some fake data for frequency histogram
-                                var sampleData = {
-                                };
-
-                                var min = 0,
-                                    max = 800,
-                                    stddev = 120,
-                                    bins = $scope.models.length,
-                                    generator = (function() {
-                                        var gen = d3.random.normal(max/2, stddev);
-                                        return function() {
-                                            return ~~Math.max(min, Math.min(gen(), max-1));
-                                        };
-                                    }());
-
-                                sampleData.bins = Array.apply(null, {length: bins}).map(function(current, index) {
-                                    return {x: max / bins * index, y: 0, i: index};
-                                });
-
-                                for(let i = 0; i < 10000; i++) {
-                                    let number = generator();
-                                    let index = ~~(number / max * bins);
-                                    let bin = sampleData.bins[index];
-                                    bin.y++;
-                                }
-
-                                sampleData.x = {
-                                    delta: max / bins
-                                };
-
-                                if (!$scope.mouseoverbarHandler) {
-                                    $scope.mouseoverbarHandler = $rootScope.$on('mongochem-frequency-histogram-mouseoverbar', function(evt, bar) {
-                                        if (!$scope.isAnimating) {
-                                            $scope.models[$scope.currmol].setStyle({},{hidden:true});
-                                            $scope.currmol = bar.i;
-                                            $scope.models[$scope.currmol].setStyle({}, $scope.style);
-                                            $scope.viewer.render();
-                                        }
-                                    });
-                                }
-
-                                $timeout(function() {
-                                    $scope.frequencyData = sampleData;
-                                });
 
                             }).
                             error(function(data) {

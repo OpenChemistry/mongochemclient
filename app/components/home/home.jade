@@ -10,13 +10,14 @@ md-content(ng-controller="mongochemMolecules", flex, layout="column")
             ng-md-icon(icon="equalizer",  style="fill: white")
           md-button.md-fab.md-primary.md-mini(aria-label="Show", ng-click="showMolecule(selectedMolecule.inchikey)")
             ng-md-icon(icon="launch", style="fill: white")
-        md-content.mongochem-no-scroll#mongochem-3dmol(mongochem-3dmol, flex, style="margin-top: -52px;", ng-class="{'mongochem-frequency-overlay': hasAnimationData && showFrequenciesHistogram}")
-          md-card(ng-show="hasAnimationData && showFrequenciesHistogram")
-            md-content(mongochem-frequency-histogram, data="frequencyData", style="width: 400px; height: 300px; background-color: transparent;", mongochem-animating="{{isAnimating}}")
+        md-content.mongochem-no-scroll#mongochem-3dmol(mongochem-3dmol, flex, style="margin-top: -52px;")
         div.md-actions(layout="row", layout-align="end center")
           md-button(ng-click="setViewStyle('line')") Lines
           md-button(ng-click="setViewStyle('stick')") Sticks
           md-button(ng-click="setViewStyle('ball')") Balls
+    md-card
+       md-card-content(layout="row", layout-align="start center")
+           md-content(mongochem-frequency-histogram, data="frequencyData", style="width: 400px; height: 300px; background-color: transparent;", mongochem-animating="{{isAnimating}}")
     md-card
       md-card-content(layout="row", layout-align="start center")
         h2.md-title Molecule:

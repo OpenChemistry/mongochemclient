@@ -1,10 +1,10 @@
 require.ensure(['d3'], function(require) {
     var d3 = require('d3');
 
-    var FrequencyHistogram = function(element, options) {
+    var VibrationalModesChart = function(element, options) {
 
-        if (!(this instanceof FrequencyHistogram)) {
-            return new FrequencyHistogram(element);
+        if (!(this instanceof VibrationalModesChart)) {
+            return new VibrationalModesChart(element);
         }
 
         var _svg = null,
@@ -12,24 +12,31 @@ require.ensure(['d3'], function(require) {
             _height = null,
             _x = null,
             _y = null,
-            _xAxis = null;
+            _xAxis = null,
+            _yAxis = null,
+            _margin;
 
         function init() {
-            var margin = {top: 30, right: 30, bottom: 30, left: 30},
-                width = d3.select(element).node().offsetWidth,
+            var width = d3.select(element).node().offsetWidth,
                 height = d3.select(element).node().offsetHeight;
 
-            _width = width - margin.left - margin.right;
-            _height = height - margin.top - margin.bottom;
+            _margin = {top: 30, right: 30, bottom: 70, left: 80}
 
-            _x = d3.scale.linear();
+            _width = width - _margin.left - _margin.right;
+            _height = height - _margin.top - _margin.bottom;
+
+            _x = d3.scale.linear()
             _y = d3.scale.linear();
 
             _xAxis = d3.svg.axis()
                 .scale(_x)
-                .orient('bottom');
+                .orient('bottom')
+                .tickFormat(d3.format("s"));
 
-    //        _xAxis.ticks(options.ticks);
+            _yAxis = d3.svg.axis()
+                .scale(_y)
+                .orient('left')
+                .tickFormat(d3.format("s"));
 
             _svg = d3.select(element)
                 .append('svg')
@@ -37,21 +44,33 @@ require.ensure(['d3'], function(require) {
                 .attr('height', '100%');
 
             _svg = _svg.append('g')
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+            .attr('transform', 'translate(' + _margin.left + ',' + _margin.top + ')');
 
             _svg.append("g")
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + _height + ")")
                 .call(_xAxis);
+            _svg.append("g")
+                .attr("class", "y axis")
+                .call(_yAxis);
+
+            _svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("transform", "translate("+ (_width/2) +","+(_height + 65)+")")
+                .text("Frequency");
+
+            _svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("transform", "translate(-60,"+(_height/2)+")rotate(-90)")
+                .text("Intensity");
         }
 
         function resize() {
-            var margin = {top: 30, right: 30, bottom: 30, left: 30},
-            width=d3.select(element).node().offsetWidth,
+            var width=d3.select(element).node().offsetWidth,
             height=d3.select(element).node().offsetHeight;
 
-            _width = width - margin.left - margin.right;
-            _height = height - margin.top - margin.bottom;
+            _width = width - _margin.left - _margin.right;
+            _height = height - _margin.top - _margin.bottom;
 
             // Only resize if are already initialized
             if (!_xAxis) {
@@ -60,33 +79,57 @@ require.ensure(['d3'], function(require) {
 
             d3.select('.x.axis')
                 .attr("transform", "translate(0," + _height + ")")
-                .call(_xAxis);
+                .call(_xAxis)
 
             _y.range([_height, 0]);
 
             _svg.selectAll('.bar')
                 .attr('transform', function(d) {
-                    return 'translate(' + _x(d.x) + ',' + _y(d.y) + ')'; })
+                    return 'translate(' + _x(d.frequency) + ',' + _y(d.intensity) + ')'; })
                 .select('rect')
-                .attr('height', function(d) { return _height - _y(d.y); });
+                .attr('height', function(d) { return _height - _y(d.intensity); });
         }
 
 
         this.render = function(data) {
-            var range = [0, d3.max(data.bins, function(d) { return d.x; }) + data.x.delta],
+            var frequencyRange = [0, d3.max(data.frequencies)],
+                intensityRange = [0, d3.max(data.intensities)],
                 that = this;
 
-            _x.domain(range)
+            _x.domain(frequencyRange)
                 .range([0, _width]);
-            _y.domain([0, d3.max(data.bins, function(d) { return d.y; })])
+            _y.domain(intensityRange)
                 .range([_height, 0]);
 
             _svg.select('.x.axis')
                 .transition().duration(200).ease('sin-in-out')
-                .call(_xAxis);
+                .call(_xAxis)
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", "-.55em")
+                .attr("transform", "rotate(-90)" );
+
+            _svg.select('.y.axis')
+                .transition().duration(200).ease('sin-in-out')
+                .call(_yAxis)
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dy", ".5em")
+
+            let chartData = []
+
+            for(let i=0; i<data.intensities.length; i++) {
+                chartData.push({
+                    'index': i,
+                    'frequency': data.frequencies[i],
+                    'intensity': data.intensities[i],
+                    'mode': data.modes[i]
+                })
+            }
 
             var bars = _svg.selectAll('.bar')
-                .data(data.bins);
+                .data(chartData);
 
             var g = bars.enter()
                 .append('g')
@@ -101,19 +144,20 @@ require.ensure(['d3'], function(require) {
             .on('click', function(data) {
                 if(options.clickbar) {
                     options.clickbar(data);
-                    that.selectedBar(data.i);
+                    that.selectedBar(data.index);
                 }
             })
+
+            var barWidth = 10;
 
             bars.transition()
                 .duration(1000)
                 .ease('cubic-in-out')
                 .attr('transform', function(d) {
-                    return 'translate(' + _x(d.x) + ',' + _y(d.y) + ')'; })
+                    return 'translate(' + (_x(d.frequency) - barWidth/2) + ',' + _y(d.intensity) + ')'; })
                 .select('rect')
-                .attr('x', 1)
-                .attr('width', _x(data.x.delta) - 1)
-                .attr('height', function(d) { return _height - _y(d.y); });
+                .attr('width', barWidth)
+                .attr('height', function(d) { return _height - _y(d.intensity); });
 
             bars.exit().transition().style({opacity: 0}).remove();
         };
@@ -128,6 +172,15 @@ require.ensure(['d3'], function(require) {
             }
         };
 
+        this.hide = function(hide) {
+            if (hide) {
+                _svg.attr('hide', true)
+            }
+            else {
+                _svg.attr('hide', null)
+            }
+        }
+
         this.resize = resize;
 
         init();
@@ -138,7 +191,7 @@ require.ensure(['d3'], function(require) {
 
 
     angular.module("mongochemApp")
-        .directive('mongochemFrequencyHistogram', ['$rootScope', function($rootScope) {
+        .directive('mongochemVibrationalModesChart', ['$rootScope', function($rootScope) {
             return {
                 restrict: 'EA',
                 scope: {
@@ -149,8 +202,10 @@ require.ensure(['d3'], function(require) {
                     var histogram = null;
 
                     function render(data) {
-
                         if (!data || d3.select(element).node().offsetWidth === 0) {
+                            if (histogram) {
+                                histogram.hide(true);
+                            }
                             return;
                         }
 
@@ -162,16 +217,17 @@ require.ensure(['d3'], function(require) {
                             };
 
                             options.clickbar = function(bar) {
-                                $rootScope.$broadcast('mongochem-frequency-histogram-clickbar', bar)
+                                $rootScope.$broadcast('mongochem-frequency-histogram-clickbar', bar);
                             }
 
-                            histogram = new FrequencyHistogram(element[0], options);
+                            histogram = new VibrationalModesChart(element[0], options);
 
                             $rootScope.$on('mongochem-frequency-histogram-selectbar', function(evt, index) {
                                 histogram.selectedBar(index);
                             });
                         }
 
+                        histogram.hide(false);
                         histogram.render(data);
                     }
 

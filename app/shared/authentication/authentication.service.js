@@ -24,13 +24,11 @@ angular.module('mongochem.services')
                      return {
                          responseError: function (rejection) {
 
-                             if (rejection.status !== 401) {
-                                 return $q.reject(rejection);
+                             if (rejection.status === 401) {
+                                 authService.authenticate($state.current.url);
                              }
 
-                             authService.authenticate($state.current.url);
-
-                             return $q.resolve();
+                             return $q.reject(rejection);
                          }
                      };
                  });

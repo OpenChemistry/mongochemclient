@@ -17,7 +17,7 @@ md-content(ng-controller="mongochemMolecules", flex, layout="column")
           md-button(ng-click="setViewStyle('ball')") Balls
     md-card
        md-card-content(layout="row", layout-align="start center")
-           md-content(mongochem-frequency-histogram, data="frequencyData", style="width: 400px; height: 300px; background-color: transparent;", mongochem-animating="{{isAnimating}}")
+           md-content(mongochem-vibrational-modes-chart, data="vibrationalModes", style="width: 600px; height: 300px; background-color: transparent;", mongochem-animating="{{isAnimating}}")
     md-card
       md-card-content(layout="row", layout-align="start center")
         h2.md-title Molecule:

@@ -1,8 +1,8 @@
 require('style/login.styl');
 
 angular.module('mongochemApp')
-    .controller('mongochem.LoginDialogController', ['$scope', '$window', 'mongochem.OAuthProvider', 'redirectUrl',
-        function($scope, $window, OAuthProvider, redirectUrl) {
+    .controller('mongochem.LoginDialogController', ['$log', '$scope', '$window', 'mongochem.OAuthProvider', 'redirectUrl',
+        function($log, $scope, $window, OAuthProvider, redirectUrl) {
         $scope.redirect = function(providerUrl) {
             $window.location.href = providerUrl;
         };

@@ -14,13 +14,31 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                 return str.charAt(0).toUpperCase() + str.substr(1);
             };
         })
-        .controller('mongochemMoleculeHome', ['mongochem.Molecule', '$scope', '$state',
-                                              '$timeout', '$log', '$http', '$interval', '$rootScope',
-                                              function(Molecule, $scope, $state, $timeout,
-                                                       $log, $http, $interval, $rootScope) {
-            $scope.mol = Molecule.getByInchiKey({moleculeId: 'TYQCGQRIZGCHNB-DUZGATOHSA-N'}, function(mol) {
-                $scope.displayMolecule(mol, {stick:{}});
-            });
+        .controller('mongochemMoleculeHome', ['mongochem.Molecule', 'mongochem.Calculations',
+                                              'mongochem.VibrationalModes', 'mongochem.Calculations.SDF',
+                                              '$scope', '$state', '$timeout', '$log',
+                                              '$http', '$interval', '$rootScope',
+                                              function(Molecule, Calculations, VibrationalModes,
+                                                      SDF, $scope, $state, $timeout, $log, $http,
+                                                      $interval, $rootScope) {
+
+            var fetchMolecule = function(inichikey) {
+                $scope.mol = Molecule.getByInchiKey({moleculeId: inichikey}, function(mol) {
+                    $scope.viewer.clear();
+                    $scope.displayMolecule(mol, {stick:{}});
+
+                    // Fetch the calculations associated with this molecule
+                    $scope.calcs = Calculations.query({moleculeId: mol._id}, function(calcs) {
+                        if (calcs.length > 0) {
+                            // Show the first vibrational modes for the first calculation
+                            $scope.vibrationalModes = calcs[0].vibrationalModes
+                        }
+                        else {
+                            $scope.vibrationalModes = null;
+                        }
+                    });
+                });
+            }
 
             $scope.displayMolecule = function(mol, style) {
                 // If we have it use SDF as it has bond information
@@ -57,18 +75,16 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
             };
 
             $scope.setInchiKey = function(inchikey) {
-                $scope.hasAnimationData = false;
                 $scope.isAnimating = false;
                 $scope.models = null;
+                $scope.modeFrames = null;
+                $scope.sdf = null
                 if ($scope.animationPromise) {
                     $interval.cancel($scope.animationPromise);
                     $scope.animationPromise = null;
                 }
 
-                $scope.mol = Molecule.getByInchiKey({moleculeId: inchikey}, function(mol) {
-                    $scope.viewer.clear();
-                    $scope.displayMolecule(mol, $scope.style);
-                });
+                fetchMolecule(inchikey);
             };
 
             $scope.showMolecule = function() {
@@ -76,7 +92,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
             };
 
             $scope.hasAnimation = function() {
-                return $scope.selectedMolecule && $scope.selectedMolecule.inchikey === 'RYYVLZVUVIJVGH-UHFFFAOYSA-N';
+                return $scope.modeFrames && $scope.sdf;
             };
 
             $scope.isAnimating = false;
@@ -89,7 +105,6 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                         $interval.cancel($scope.animationPromise);
                         $scope.animationPromise = null;
                     }
-                    $rootScope.$broadcast('mongochem-frequency-histogram-selectbar', -1);
                     $scope.isAnimating = false;
                 }
                 else {
@@ -101,91 +116,44 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                             $scope.currmol = ($scope.currmol+1) % $scope.models.length;
                             $scope.models[$scope.currmol].setStyle({}, $scope.style);
                             $scope.viewer.render();
-                            $rootScope.$broadcast('mongochem-frequency-histogram-selectbar', $scope.currmol);
+                            //$rootScope.$broadcast('mongochem-frequency-histogram-selectbar', $scope.currmol);
                         }, 100);
                     };
 
-                    $scope.hasAnimationData = true;
                     if (!$scope.models) {
                         $scope.currmol = 0;
-                        $.get('/data/caffeine.json').
-                            success(function(data) {
-                                $scope.models = [];
+                        $scope.models = [];
+                        let atoms = []
+                        $3Dmol.Parsers['sdf'](atoms, $scope.sdf, {})
 
-                                $scope.viewer.removeAllModels();
-                                angular.forEach(data.deltas, function(delta) {
-                                    var model = $scope.viewer.createModelFrom({serial: -1}, false);
-                                    $scope.models.push(model);
+                        $scope.viewer.removeAllModels();
 
-                                    var atoms = angular.copy(data.atoms);
+                        angular.forEach($scope.modeFrames, function(frame) {
+                            var model = $scope.viewer.createModelFrom({serial: -1}, false);
+                            $scope.models.push(model);
 
-                                    // Now add the delta to atom positions
-                                    for(var i = 0; i < atoms.length; i++) {
-                                        atoms[i].model = model.getID();
-                                        atoms[i].color = $3Dmol.elementColors.rasmol[atoms[i].elem];
-                                        atoms[i].x += delta[i][0];
-                                        atoms[i].y += delta[i][1];
-                                        atoms[i].z += delta[i][2];
-                                    }
+                            var frameAtoms = angular.copy(atoms);
 
-                                    model.addAtoms(atoms);
-                                    model.setStyle({}, {stick:{hidden: true}});
+                            // Now update the atoms positions
+                            let frameAtomIndex = 0;
+                            for(var i = 0; i < frameAtoms.length; i++) {
+                                frameAtoms[i].model = model.getID();
+                                frameAtoms[i].color = $3Dmol.elementColors.rasmol[frameAtoms[i].elem];
+                                frameAtoms[i].x = frame[frameAtomIndex];
+                                frameAtoms[i].y = frame[frameAtomIndex+1];
+                                frameAtoms[i].z = frame[frameAtomIndex+2];
+                                frameAtoms[i].index = i
+                                frameAtomIndex += 3
+                            }
 
-                                });
+                            model.addAtoms(frameAtoms);
+                            model.setStyle({}, {stick:{hidden: true}});
+                            //model.setStyle({}, $scope.style);
+                        });
 
-                                $scope.viewer.zoomTo();
-                                $scope.viewer.render();
-                                animate();
-
-                                // Generate some fake data for frequency histogram
-                                var sampleData = {
-                                };
-
-                                var min = 0,
-                                    max = 800,
-                                    stddev = 120,
-                                    bins = $scope.models.length,
-                                    generator = (function() {
-                                        var gen = d3.random.normal(max/2, stddev);
-                                        return function() {
-                                            return ~~Math.max(min, Math.min(gen(), max-1));
-                                        };
-                                    }());
-
-                                sampleData.bins = Array.apply(null, {length: bins}).map(function(current, index) {
-                                    return {x: max / bins * index, y: 0, i: index};
-                                });
-
-                                for(let i = 0; i < 10000; i++) {
-                                    let number = generator();
-                                    let index = ~~(number / max * bins);
-                                    let bin = sampleData.bins[index];
-                                    bin.y++;
-                                }
-
-                                sampleData.x = {
-                                    delta: max / bins
-                                };
-
-                                if (!$scope.mouseoverbarHandler) {
-                                    $scope.mouseoverbarHandler = $rootScope.$on('mongochem-frequency-histogram-mouseoverbar', function(evt, bar) {
-                                        if (!$scope.isAnimating) {
-                                            $scope.models[$scope.currmol].setStyle({},{hidden:true});
-                                            $scope.currmol = bar.i;
-                                            $scope.models[$scope.currmol].setStyle({}, $scope.style);
-                                            $scope.viewer.render();
-                                        }
-                                    });
-                                }
-
-                                $timeout(function() {
-                                    $scope.frequencyData = sampleData;
-                                });
-
-                            }).
-                            error(function(data) {
-                                $log.error(data);
-                            });
+                        //$scope.viewer.zoomTo();
+                        $scope.viewer.render();
+                        animate();
                     }
                     else {
                         animate();
@@ -206,6 +174,31 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
             $scope.toggleFrequencies = function() {
                 $scope.showFrequenciesHistogram = !$scope.showFrequenciesHistogram;
             };
+
+            $scope.$on('mongochem-frequency-histogram-clickbar', function(evt, data) {
+                // Cancel any existing animation loop
+                if ($scope.animationPromise) {
+                    $interval.cancel($scope.animationPromise);
+                    $scope.animationPromise = null;
+                }
+                $scope.isAnimating = false;
+                // Get the frames for this mode
+                $scope.mode = data.mode;
+
+                VibrationalModes.get({
+                    id: $scope.calcs[0]._id,
+                    mode: $scope.mode
+                }, function(data) {
+                    $scope.models = null;
+                    $scope.modeFrames = data.frames
+                });
+
+                SDF.get({
+                    id: $scope.calcs[0]._id
+                },function(data) {
+                    $scope.sdf = data.sdf;
+                });
+            })
         }])
         .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {
             $scope.mol = Molecule.getByInchiKey({moleculeId: $stateParams.moleculeId}, function(mol) {

@@ -24,7 +24,7 @@ mongochemServices.factory('mongochem.VibrationalModes', ['$resource',
     return $resource('api/v1/calculations/:id/vibrationalmodes/:mode', {}, {
        get: {
            method: 'GET',
-           transformResponse: function (data) {return {frames: angular.fromJson(data)}},
+           transformResponse: function (data) {return {frames: angular.fromJson(data)};},
        }
     });
 }]);
@@ -33,7 +33,7 @@ mongochemServices.factory('mongochem.Calculations.SDF', ['$resource',
     return $resource('api/v1/calculations/:id/sdf', {}, {
        get: {
            method: 'GET',
-           transformResponse: function (data) {return {sdf: data}},
+           transformResponse: function (data) {return {sdf: data};},
        }
    });
 }]);

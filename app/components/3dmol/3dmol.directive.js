@@ -31,14 +31,14 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                     $scope.calcs = Calculations.query({moleculeId: mol._id}, function(calcs) {
                         if (calcs.length > 0) {
                             // Show the first vibrational modes for the first calculation
-                            $scope.vibrationalModes = calcs[0].vibrationalModes
+                            $scope.vibrationalModes = calcs[0].vibrationalModes;
                         }
                         else {
                             $scope.vibrationalModes = null;
                         }
                     });
                 });
-            }
+            };
 
             $scope.displayMolecule = function(mol, style) {
                 // If we have it use SDF as it has bond information
@@ -78,7 +78,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                 $scope.isAnimating = false;
                 $scope.models = null;
                 $scope.modeFrames = null;
-                $scope.sdf = null
+                $scope.sdf = null;
                 if ($scope.animationPromise) {
                     $interval.cancel($scope.animationPromise);
                     $scope.animationPromise = null;
@@ -123,8 +123,8 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                     if (!$scope.models) {
                         $scope.currmol = 0;
                         $scope.models = [];
-                        let atoms = []
-                        $3Dmol.Parsers['sdf'](atoms, $scope.sdf, {})
+                        let atoms = [];
+                        $3Dmol.Parsers['sdf'](atoms, $scope.sdf, {});
 
                         $scope.viewer.removeAllModels();
 
@@ -142,8 +142,8 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                                 frameAtoms[i].x = frame[frameAtomIndex];
                                 frameAtoms[i].y = frame[frameAtomIndex+1];
                                 frameAtoms[i].z = frame[frameAtomIndex+2];
-                                frameAtoms[i].index = i
-                                frameAtomIndex += 3
+                                frameAtoms[i].index = i;
+                                frameAtomIndex += 3;
                             }
 
                             model.addAtoms(frameAtoms);
@@ -190,7 +190,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                     mode: $scope.mode
                 }, function(data) {
                     $scope.models = null;
-                    $scope.modeFrames = data.frames
+                    $scope.modeFrames = data.frames;
                 });
 
                 SDF.get({
@@ -198,7 +198,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                 },function(data) {
                     $scope.sdf = data.sdf;
                 });
-            })
+            });
         }])
         .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {
             $scope.mol = Molecule.getByInchiKey({moleculeId: $stateParams.moleculeId}, function(mol) {

@@ -20,12 +20,12 @@ require.ensure(['d3'], function(require) {
             var width = d3.select(element).node().offsetWidth,
                 height = d3.select(element).node().offsetHeight;
 
-            _margin = {top: 30, right: 30, bottom: 70, left: 80}
+            _margin = {top: 30, right: 30, bottom: 70, left: 80};
 
             _width = width - _margin.left - _margin.right;
             _height = height - _margin.top - _margin.bottom;
 
-            _x = d3.scale.linear()
+            _x = d3.scale.linear();
             _y = d3.scale.linear();
 
             _xAxis = d3.svg.axis()
@@ -79,7 +79,7 @@ require.ensure(['d3'], function(require) {
 
             d3.select('.x.axis')
                 .attr("transform", "translate(0," + _height + ")")
-                .call(_xAxis)
+                .call(_xAxis);
 
             _y.range([_height, 0]);
 
@@ -115,9 +115,9 @@ require.ensure(['d3'], function(require) {
                 .call(_yAxis)
                 .selectAll("text")
                 .style("text-anchor", "end")
-                .attr("dy", ".5em")
+                .attr("dy", ".5em");
 
-            let chartData = []
+            let chartData = [];
 
             for(let i=0; i<data.intensities.length; i++) {
                 chartData.push({
@@ -125,7 +125,7 @@ require.ensure(['d3'], function(require) {
                     'frequency': data.frequencies[i],
                     'intensity': data.intensities[i],
                     'mode': data.modes[i]
-                })
+                });
             }
 
             var bars = _svg.selectAll('.bar')
@@ -146,7 +146,7 @@ require.ensure(['d3'], function(require) {
                     options.clickbar(data);
                     that.selectedBar(data.index);
                 }
-            })
+            });
 
             var barWidth = 10;
 
@@ -174,12 +174,12 @@ require.ensure(['d3'], function(require) {
 
         this.hide = function(hide) {
             if (hide) {
-                _svg.attr('hide', true)
+                _svg.attr('hide', true);
             }
             else {
-                _svg.attr('hide', null)
+                _svg.attr('hide', null);
             }
-        }
+        };
 
         this.resize = resize;
 
@@ -218,7 +218,7 @@ require.ensure(['d3'], function(require) {
 
                             options.clickbar = function(bar) {
                                 $rootScope.$broadcast('mongochem-frequency-histogram-clickbar', bar);
-                            }
+                            };
 
                             histogram = new VibrationalModesChart(element[0], options);
 

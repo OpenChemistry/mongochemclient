@@ -139,11 +139,10 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                             for(var i = 0; i < frameAtoms.length; i++) {
                                 frameAtoms[i].model = model.getID();
                                 frameAtoms[i].color = $3Dmol.elementColors.rasmol[frameAtoms[i].elem];
-                                frameAtoms[i].x = frame[frameAtomIndex];
-                                frameAtoms[i].y = frame[frameAtomIndex+1];
-                                frameAtoms[i].z = frame[frameAtomIndex+2];
+                                frameAtoms[i].x = frame[frameAtomIndex++];
+                                frameAtoms[i].y = frame[frameAtomIndex++];
+                                frameAtoms[i].z = frame[frameAtomIndex++];
                                 frameAtoms[i].index = i;
-                                frameAtomIndex += 3;
                             }
 
                             model.addAtoms(frameAtoms);

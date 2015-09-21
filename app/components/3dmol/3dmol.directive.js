@@ -64,7 +64,7 @@ require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
                     $scope.style = {stick:{}};
                 }
                 else {
-                    $scope.style = {line:{}};
+                    $scope.style = {stick:{hidden: false}, sphere: {scale: 0.3}};
                 }
 
                 // It seems that the model is not retained, add it back.

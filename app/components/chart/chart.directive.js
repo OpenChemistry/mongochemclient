@@ -148,7 +148,7 @@ require.ensure(['d3'], function(require) {
                 }
             });
 
-            var barWidth = 10;
+            var barWidth = 4;
 
             bars.transition()
                 .duration(1000)
@@ -191,7 +191,8 @@ require.ensure(['d3'], function(require) {
 
 
     angular.module("mongochemApp")
-        .directive('mongochemVibrationalModesChart', ['$rootScope', function($rootScope) {
+        .directive('mongochemVibrationalModesChart', ['$rootScope', '$timeout',
+        function($rootScope, $timeout) {
             return {
                 restrict: 'EA',
                 scope: {
@@ -200,6 +201,7 @@ require.ensure(['d3'], function(require) {
                 link: function(scope, element) {
 
                     var histogram = null;
+                    var renderTimeout;
 
                     function render(data) {
                         if (!data || d3.select(element).node().offsetWidth === 0) {
@@ -207,6 +209,9 @@ require.ensure(['d3'], function(require) {
                                 histogram.hide(true);
                             }
                             return;
+                        }
+                        if (renderTimeout) {
+                            clearTimeout(renderTimeout);
                         }
 
                         if (!histogram) {
@@ -227,8 +232,10 @@ require.ensure(['d3'], function(require) {
                             });
                         }
 
-                        histogram.hide(false);
-                        histogram.render(data);
+                        renderTimeout = $timeout(function() {
+                            histogram.hide(false);
+                            histogram.render(data);
+                        }, 200);
                     }
 
                     // watch for data changes

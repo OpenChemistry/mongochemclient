@@ -1,4 +1,4 @@
-require.ensure(['script!3Dmol/release/3Dmol.js'], function(require) {
+require.ensure(['script!3Dmol/release/3Dmol-min.js'], function(require) {
 
     require('script!3Dmol/release/3Dmol.js');
 

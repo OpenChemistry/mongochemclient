@@ -1,6 +1,6 @@
 md-content(ng-controller="mongochemMolecules", flex, layout="column")
   md-content(ng-controller="mongochemMoleculeHome", layout="column", flex)
-    md-card(flex, style="background-color: #ddd", layout='row')
+    md-card(flex, layout='row')
       md-card-content(flex='50', layout='column')
         md-content(layout="row", layout-align="end center")
           md-button.md-fab.md-primary.md-mini(aria-label="Animate", ng-click="animateMolecule()", ng-show="hasAnimation()")
@@ -15,9 +15,23 @@ md-content(ng-controller="mongochemMolecules", flex, layout="column")
           md-button(ng-click="setViewStyle('line')") Ball & Stick
           md-button(ng-click="setViewStyle('stick')") Stick
           md-button(ng-click="setViewStyle('ball')") Ball
-      md-card(flex='50')
-        md-card-content(layout="row", layout-align="start center")
-          md-content(mongochem-vibrational-modes-chart, data="vibrationalModes", style="width: 100%; height: 300px; background-color: transparent;", mongochem-animating="{{isAnimating}}")
+      md-card-content(flex='50', layout='column')
+        table
+          tbody
+            tr
+              td Name:
+              td {{ mol.name | mongochemUnderscores}}
+            tr
+              td InChI:
+              td {{ mol.inchi }}
+            tr
+              td InChI Key:
+              td {{ mol.inchikey }}
+            tr
+              td Spectra:
+              td(ng-if='hasSpectra()') Yes
+              td(ng-if='!hasSpectra()') No
+        md-content(mongochem-vibrational-modes-chart, data="vibrationalModes", style="width: 100%; height: 300px; background-color: transparent;", mongochem-animating="{{isAnimating}}")
     md-card
       md-card-content(layout="row", layout-align="start center")
         h2.md-title Molecule:

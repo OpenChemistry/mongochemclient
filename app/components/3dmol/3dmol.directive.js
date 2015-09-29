@@ -95,6 +95,10 @@ require.ensure(['script!3Dmol/release/3Dmol-min.js'], function(require) {
                 return $scope.modeFrames && $scope.sdf;
             };
 
+            $scope.hasSpectra = function() {
+                return $scope.vibrationalModes;
+            }
+
             $scope.isAnimating = false;
 
             $scope.animateMolecule = function() {

@@ -58,7 +58,7 @@ angular.module('mongochem.services')
         };
 
         this.hasToken = function() {
-            return 'girderToken' in $cookies;
+            return $cookies.get('girderToken');
         };
 
         this.authenticate = function(redirectUrl, evt) {

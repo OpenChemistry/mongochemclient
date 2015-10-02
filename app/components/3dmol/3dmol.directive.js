@@ -1,6 +1,6 @@
-require.ensure(['script!3Dmol/release/3Dmol-min.js'], function(require) {
+require.ensure(['script!3Dmol/build/3Dmol-min.js'], function(require) {
 
-    require('script!3Dmol/release/3Dmol.js');
+    require('script!3Dmol/build/3Dmol-min.js');
 
     angular.module('mongochemApp')
         .filter('mongochemUnderscores', function() {

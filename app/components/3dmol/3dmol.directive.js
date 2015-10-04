@@ -17,10 +17,10 @@ require.ensure(['script!3Dmol/build/3Dmol-min.js'], function(require) {
         .controller('mongochemMoleculeHome', ['mongochem.Molecule', 'mongochem.Calculations',
                                               'mongochem.VibrationalModes', 'mongochem.Calculations.SDF',
                                               '$scope', '$state', '$timeout', '$log',
-                                              '$http', '$interval', '$rootScope',
+                                              '$http', '$interval',
                                               function(Molecule, Calculations, VibrationalModes,
                                                       SDF, $scope, $state, $timeout, $log, $http,
-                                                      $interval, $rootScope) {
+                                                      $interval) {
 
             var fetchMolecule = function(inichikey) {
                 $scope.mol = Molecule.getByInchiKey({moleculeId: inichikey}, function(mol) {
@@ -97,7 +97,7 @@ require.ensure(['script!3Dmol/build/3Dmol-min.js'], function(require) {
 
             $scope.hasSpectra = function() {
                 return $scope.vibrationalModes;
-            }
+            };
 
             $scope.isAnimating = false;
 
@@ -128,7 +128,7 @@ require.ensure(['script!3Dmol/build/3Dmol-min.js'], function(require) {
                         $scope.currmol = 0;
                         $scope.models = [];
                         let atoms = [];
-                        $3Dmol.Parsers['sdf'](atoms, $scope.sdf, {});
+                        $3Dmol.Parsers.sdf(atoms, $scope.sdf, {});
 
                         $scope.viewer.removeAllModels();
 

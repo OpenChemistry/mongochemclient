@@ -45,7 +45,7 @@
     }
   },
   "scripts": {
-    "install": "./node_modules/napa/bin/napa git://github.com/dkoes/3Dmol.js.git#83df12c:3Dmol",
+    "install": "./node_modules/napa/bin/napa git://github.com/dkoes/3Dmol.js.git#ac8abd03:3Dmol",
     "build": "./node_modules/webpack/bin/webpack.js -p --progress --colors && cp index.html dist/ && cp -r data dist/ && cp -r imgs/ dist/",
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port $npm_package_config_dev_server_port --host 0.0.0.0 --progress --colors",
     "postinstall": "cd node_modules/3Dmol && npm install && ../grunt-cli/bin/grunt build"

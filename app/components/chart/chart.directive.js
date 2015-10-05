@@ -14,17 +14,11 @@ require.ensure(['d3'], function(require) {
             _y = null,
             _xAxis = null,
             _yAxis = null,
-            _margin;
+            _margin,
+            _xLabel = null,
+            _yLabel = null;
 
         function init() {
-            var width = d3.select(element).node().offsetWidth,
-                height = d3.select(element).node().offsetHeight;
-
-            _margin = {top: 30, right: 30, bottom: 70, left: 80};
-
-            _width = width - _margin.left - _margin.right;
-            _height = height - _margin.top - _margin.bottom;
-
             _x = d3.scale.linear();
             _y = d3.scale.linear();
 
@@ -43,58 +37,40 @@ require.ensure(['d3'], function(require) {
                 .attr('width', '100%')
                 .attr('height', '100%');
 
-            _svg = _svg.append('g')
-            .attr('transform', 'translate(' + _margin.left + ',' + _margin.top + ')');
+            _svg = _svg.append('g');
 
             _svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + _height + ")")
-                .call(_xAxis);
+                .attr("class", "x axis");
+
             _svg.append("g")
                 .attr("class", "y axis")
                 .call(_yAxis);
 
-            _svg.append("text")
+            _xLabel = _svg.append("text")
                 .attr("text-anchor", "middle")
-                .attr("transform", "translate("+ (_width/2) +","+(_height + 65)+")")
                 .text("Frequency");
 
-            _svg.append("text")
+            _yLabel = _svg.append("text")
                 .attr("text-anchor", "middle")
-                .attr("transform", "translate(-60,"+(_height/2)+")rotate(-90)")
                 .text("Intensity");
         }
-
-        function resize() {
-            var width=d3.select(element).node().offsetWidth,
-            height=d3.select(element).node().offsetHeight;
-
-            _width = width - _margin.left - _margin.right;
-            _height = height - _margin.top - _margin.bottom;
-
-            // Only resize if are already initialized
-            if (!_xAxis) {
-                return;
-            }
-
-            d3.select('.x.axis')
-                .attr("transform", "translate(0," + _height + ")")
-                .call(_xAxis);
-
-            _y.range([_height, 0]);
-
-            _svg.selectAll('.bar')
-                .attr('transform', function(d) {
-                    return 'translate(' + _x(d.frequency) + ',' + _y(d.intensity) + ')'; })
-                .select('rect')
-                .attr('height', function(d) { return _height - _y(d.intensity); });
-        }
-
 
         this.render = function(data) {
             var frequencyRange = [0, d3.max(data.frequencies)],
                 intensityRange = [0, d3.max(data.intensities)],
-                that = this;
+                that = this, width = d3.select(element).node().offsetWidth,
+                height = d3.select(element).node().offsetHeight;
+
+            if (width === 0 || height === 0) {
+                return;
+            }
+
+            _margin = {top: 30, right: 30, bottom: 70, left: 80};
+
+            _width = width - _margin.left - _margin.right;
+            _height = height - _margin.top - _margin.bottom;
+
+            _svg.attr('transform', 'translate(' + _margin.left + ',' + _margin.top + ')');
 
             _x.domain(frequencyRange)
                 .range([0, _width]);
@@ -102,6 +78,7 @@ require.ensure(['d3'], function(require) {
                 .range([_height, 0]);
 
             _svg.select('.x.axis')
+                .attr("transform", "translate(0," + _height + ")")
                 .transition().duration(200).ease('sin-in-out')
                 .call(_xAxis)
                 .selectAll("text")
@@ -160,6 +137,9 @@ require.ensure(['d3'], function(require) {
                 .attr('height', function(d) { return _height - _y(d.intensity); });
 
             bars.exit().transition().style({opacity: 0}).remove();
+
+            _xLabel.attr("transform", "translate("+ (_width/2) +","+(_height + 65)+")");
+            _yLabel.attr("transform", "translate(-60,"+(_height/2)+")rotate(-90)");
         };
 
         this.selectedBar = function(index) {
@@ -180,8 +160,6 @@ require.ensure(['d3'], function(require) {
                 _svg.attr('hide', null);
             }
         };
-
-        this.resize = resize;
 
         init();
 

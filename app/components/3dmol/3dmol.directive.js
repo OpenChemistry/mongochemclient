@@ -182,8 +182,8 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                         //$scope.viewer.zoomTo();
                         $scope.animModel.setStyle({}, $scope.style);
                         $scope.viewer.render();
-                        $scope.viewer.animate({interval: 75, loop: "forward", reps: 0});
                     }
+                    $scope.viewer.animate({interval: 75, loop: "forward", reps: 0});
                 }
             };
 

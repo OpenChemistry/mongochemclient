@@ -1,6 +1,6 @@
-require.ensure(['script!3Dmol/build/3Dmol-min.js'], function(require) {
+require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
 
-    require('script!3Dmol/build/3Dmol-min.js');
+    require('script!3Dmol/build/3Dmol.js');
 
     // Define our own parser for chemical JSON files, using cjson extension.
     $3Dmol.Parsers.cjson = function(jsonMol) {

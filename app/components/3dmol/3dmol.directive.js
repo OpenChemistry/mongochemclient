@@ -1,6 +1,56 @@
-require.ensure(['script!3Dmol/build/3Dmol-min.js'], function(require) {
+require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
 
-    require('script!3Dmol/build/3Dmol-min.js');
+    require('script!3Dmol/build/3Dmol.js');
+
+    // Define our own parser for chemical JSON files, using cjson extension.
+    $3Dmol.Parsers.cjson = function(jsonMol) {
+
+        var elementSymbols = [
+            "Xx", "H", "He", "Li", "Be", "B", "C", "N", "O", "F",
+            "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K",
+            "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu",
+            "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y",
+            "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In",
+            "Sn", "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr",
+            "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm",
+            "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au",
+            "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac",
+            "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es",
+            "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt",
+            "Ds", "Rg", "Cn", "Uut", "Uuq", "Uup", "Uuh", "Uus", "Uuo" ];
+
+        var atoms = [[]];
+        var coords = jsonMol.atoms.coords['3d'];
+        var elements = jsonMol.atoms.elements.number;
+        var bonds = jsonMol.bonds.connections.index;
+        var order = jsonMol.bonds.order;
+        for (var i = 0; i < elements.length; ++i) {
+            var atom = {};
+            atom.index = i;
+            atom.serial = i;
+            atom.elem = elementSymbols[elements[i]];
+            atom.x = coords[3 * i + 0];
+            atom.y = coords[3 * i + 1];
+            atom.z = coords[3 * i + 2];
+
+            atom.bonds = [];
+            atom.bondOrder = [];
+
+            atoms[0].push(atom);
+        }
+        for (var j = 0; j < order.length; ++j) {
+            var atom1 = atoms[0][bonds[2 * j + 0]];
+            var atom2 = atoms[0][bonds[2 * j + 1]];
+            if (typeof(atom1) != 'undefined' && typeof(atom2) != 'undefined') {
+                atom1.bonds.push(atom2.serial);
+                atom1.bondOrder.push(order[j]);
+                atom2.bonds.push(atom1.serial);
+                atom2.bondOrder.push(order[j]);
+            }
+
+        }
+        return atoms;
+    };
 
     angular.module('mongochemApp')
         .filter('mongochemUnderscores', function() {
@@ -16,11 +66,10 @@ require.ensure(['script!3Dmol/build/3Dmol-min.js'], function(require) {
         })
         .controller('mongochemMoleculeHome', ['mongochem.Molecule', 'mongochem.Calculations',
                                               'mongochem.VibrationalModes', 'mongochem.Calculations.SDF',
-                                              '$scope', '$state', '$timeout', '$log',
-                                              '$http', '$interval',
-                                              function(Molecule, Calculations, VibrationalModes,
-                                                      SDF, $scope, $state, $timeout, $log, $http,
-                                                      $interval) {
+                                              '$scope', '$state',
+                                              function(Molecule, Calculations,
+                                                       VibrationalModes,
+                                                       SDF, $scope, $state) {
 
             var fetchMolecule = function(inichikey) {
                 $scope.mol = Molecule.getByInchiKey({moleculeId: inichikey}, function(mol) {
@@ -42,7 +91,10 @@ require.ensure(['script!3Dmol/build/3Dmol-min.js'], function(require) {
 
             $scope.displayMolecule = function(mol, style) {
                 // If we have it use SDF as it has bond information
-                if ('sdf' in mol) {
+                if ('cjson' in mol) {
+                    $scope.viewer.addModel(mol.cjson, 'cjson');
+                }
+                else if ('sdf' in mol) {
                     $scope.viewer.addModel(mol.sdf, 'sdf');
                 }
                 else {
@@ -68,20 +120,19 @@ require.ensure(['script!3Dmol/build/3Dmol-min.js'], function(require) {
                 }
 
                 // It seems that the model is not retained, add it back.
-                if (!$scope.isAnimating) {
+                if (!$scope.viewer.isAnimated()) {
                     $scope.displayMolecule($scope.mol, $scope.style);
                 }
 
             };
 
             $scope.setInchiKey = function(inchikey) {
-                $scope.isAnimating = false;
-                $scope.models = null;
+                $scope.animModel = null;
                 $scope.modeFrames = null;
                 $scope.sdf = null;
-                if ($scope.animationPromise) {
-                    $interval.cancel($scope.animationPromise);
-                    $scope.animationPromise = null;
+
+                if ($scope.viewer) {
+                    $scope.viewer.stopAnimate();
                 }
 
                 fetchMolecule(inchikey);
@@ -99,49 +150,25 @@ require.ensure(['script!3Dmol/build/3Dmol-min.js'], function(require) {
                 return $scope.vibrationalModes;
             };
 
-            $scope.isAnimating = false;
-
             $scope.animateMolecule = function() {
 
-                if ($scope.isAnimating) {
-
-                    if ($scope.animationPromise) {
-                        $interval.cancel($scope.animationPromise);
-                        $scope.animationPromise = null;
-                    }
-                    $scope.isAnimating = false;
+                if ($scope.viewer.isAnimated()) {
+                    $scope.viewer.stopAnimate();
                 }
                 else {
-                    $scope.isAnimating = true;
-
-                    let animate = function() {
-                        $scope.animationPromise = $interval(function() {
-                            $scope.models[$scope.currmol].setStyle({},{hidden:true});
-                            $scope.currmol = ($scope.currmol+1) % $scope.models.length;
-                            $scope.models[$scope.currmol].setStyle({}, $scope.style);
-                            $scope.viewer.render();
-                            //$rootScope.$broadcast('mongochem-frequency-histogram-selectbar', $scope.currmol);
-                        }, 100);
-                    };
-
-                    if (!$scope.models) {
-                        $scope.currmol = 0;
-                        $scope.models = [];
+                    if (!$scope.animModel) {
                         let atoms = [];
-                        $3Dmol.Parsers.sdf(atoms, $scope.sdf, {});
+                        atoms = $3Dmol.Parsers.sdf($scope.sdf, {})[0];
 
                         $scope.viewer.removeAllModels();
+                        $scope.animModel = $scope.viewer.createModelFrom({serial: -1}, false);
 
                         angular.forEach($scope.modeFrames, function(frame) {
-                            var model = $scope.viewer.createModelFrom({serial: -1}, false);
-                            $scope.models.push(model);
-
                             var frameAtoms = angular.copy(atoms);
-
                             // Now update the atoms positions
                             let frameAtomIndex = 0;
-                            for(var i = 0; i < frameAtoms.length; i++) {
-                                frameAtoms[i].model = model.getID();
+                            for (var i = 0; i < frameAtoms.length; ++i) {
+                                frameAtoms[i].model = $scope.animModel.getID();
                                 frameAtoms[i].color = $3Dmol.elementColors.rasmol[frameAtoms[i].elem];
                                 frameAtoms[i].x = frame[frameAtomIndex++];
                                 frameAtoms[i].y = frame[frameAtomIndex++];
@@ -149,17 +176,13 @@ require.ensure(['script!3Dmol/build/3Dmol-min.js'], function(require) {
                                 frameAtoms[i].index = i;
                             }
 
-                            model.addAtoms(frameAtoms);
-                            model.setStyle({}, {stick:{hidden: true}});
-                            //model.setStyle({}, $scope.style);
+                            $scope.animModel.addFrame(frameAtoms);
                         });
 
                         //$scope.viewer.zoomTo();
+                        $scope.animModel.setStyle({}, $scope.style);
                         $scope.viewer.render();
-                        animate();
-                    }
-                    else {
-                        animate();
+                        $scope.viewer.animate({interval: 75, loop: "forward", reps: 0});
                     }
                 }
             };
@@ -180,11 +203,7 @@ require.ensure(['script!3Dmol/build/3Dmol-min.js'], function(require) {
 
             $scope.$on('mongochem-frequency-histogram-clickbar', function(evt, data) {
                 // Cancel any existing animation loop
-                if ($scope.animationPromise) {
-                    $interval.cancel($scope.animationPromise);
-                    $scope.animationPromise = null;
-                }
-                $scope.isAnimating = false;
+                $scope.viewer.stopAnimate();
                 // Get the frames for this mode
                 $scope.mode = data.mode;
 
@@ -192,7 +211,8 @@ require.ensure(['script!3Dmol/build/3Dmol-min.js'], function(require) {
                     id: $scope.calcs[0]._id,
                     mode: $scope.mode
                 }, function(data) {
-                    $scope.models = null;
+                    $scope.viewer.stopAnimate();
+                    $scope.animModel = null;
                     $scope.modeFrames = data.frames;
                 });
 

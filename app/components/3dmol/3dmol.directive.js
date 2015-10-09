@@ -65,11 +65,11 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             };
         })
         .controller('mongochemMoleculeHome', ['mongochem.Molecule', 'mongochem.Calculations',
-                                              'mongochem.VibrationalModes', 'mongochem.Calculations.SDF',
+                                              'mongochem.VibrationalModes', 'mongochem.Calculations.CJSON',
                                               '$scope', '$state',
                                               function(Molecule, Calculations,
                                                        VibrationalModes,
-                                                       SDF, $scope, $state) {
+                                                       CJSON, $scope, $state) {
 
             var fetchMolecule = function(inichikey) {
                 $scope.mol = Molecule.getByInchiKey({moleculeId: inichikey}, function(mol) {
@@ -143,7 +143,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             };
 
             $scope.hasAnimation = function() {
-                return $scope.modeFrames && $scope.sdf;
+                return $scope.modeFrames && $scope.cjson;
             };
 
             $scope.hasSpectra = function() {
@@ -158,7 +158,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 else {
                     if (!$scope.animModel) {
                         let atoms = [];
-                        atoms = $3Dmol.Parsers.sdf($scope.sdf, {})[0];
+                        atoms = $3Dmol.Parsers.cjson($scope.cjson, {})[0];
 
                         $scope.viewer.removeAllModels();
                         $scope.animModel = $scope.viewer.createModelFrom({serial: -1}, false);
@@ -166,13 +166,12 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                         angular.forEach($scope.modeFrames, function(frame) {
                             var frameAtoms = angular.copy(atoms);
                             // Now update the atoms positions
-                            let frameAtomIndex = 0;
                             for (var i = 0; i < frameAtoms.length; ++i) {
                                 frameAtoms[i].model = $scope.animModel.getID();
                                 frameAtoms[i].color = $3Dmol.elementColors.rasmol[frameAtoms[i].elem];
-                                frameAtoms[i].x = frame[frameAtomIndex++];
-                                frameAtoms[i].y = frame[frameAtomIndex++];
-                                frameAtoms[i].z = frame[frameAtomIndex++];
+                                frameAtoms[i].x = frame[i].x;
+                                frameAtoms[i].y = frame[i].y;
+                                frameAtoms[i].z = frame[i].z;
                                 frameAtoms[i].index = i;
                             }
 
@@ -185,6 +184,69 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     }
                     $scope.viewer.animate({interval: 75, loop: "forward", reps: 0});
                 }
+            };
+
+            $scope.generateFrames = function(vibrationalMode) {
+                let eigenVector = $scope.cjson.vibrations.eigenVectors[vibrationalMode];
+                let amplitude =  200;
+                let numberOfFrames = 5;
+                let factor = 0.01 * amplitude;
+                let coords =  $scope.cjson.atoms.coords['3d'];
+                let numberOfAtoms = coords.length / 3;
+                let frames = [];
+
+                let atomPositions = [];
+                let atomDisplacements = [];
+                let atomPositionIndex = 0;
+                for (let atom = 0; atom < numberOfAtoms; ++atom) {
+                    let pos = new $3Dmol.Vector3(coords[atomPositionIndex], coords[atomPositionIndex + 1], coords[atomPositionIndex + 2]);
+                    atomPositions.push(pos);
+                    let displacement  = new $3Dmol.Vector3(eigenVector[atomPositionIndex], eigenVector[atomPositionIndex + 1], eigenVector[atomPositionIndex + 2]);
+                    atomDisplacements.push(displacement);
+                    atomPositionIndex += 3;
+                }
+
+                // Current coords + displacement.
+                for (let i = 1; i <= numberOfFrames; ++i) {
+                    let framePositions = [];
+
+                    for (let atom = 0; atom < numberOfAtoms; ++atom) {
+                        framePositions.push(atomPositions[atom].clone().add(atomDisplacements[atom]
+                                .multiplyScalar(factor * (i / numberOfFrames))));
+                    }
+                    frames.push(framePositions);
+                }
+                // + displacement back to original.
+                for (let i = numberOfFrames - 1; i >=0; --i) {
+                    let framePositions = [];
+
+                    for (let atom = 0; atom < numberOfAtoms; ++atom) {
+                        framePositions.push(atomPositions[atom].clone().add(atomDisplacements[atom]
+                                .multiplyScalar(factor *(i / numberOfFrames))));
+                    }
+                    frames.push(framePositions);
+                }
+                // Current coords - displacement.
+                for (let i = 1; i <= numberOfFrames; ++i) {
+                    let framePositions = [];
+
+                    for (let atom = 0; atom < numberOfAtoms; ++atom) {
+                        framePositions.push(atomPositions[atom].clone().sub(atomDisplacements[atom]
+                                .multiplyScalar(factor *(i / numberOfFrames))));
+                    }
+                    frames.push(framePositions);
+                }
+                // - displacement back to original.
+                for (let i = numberOfFrames - 1; i >=0; --i) {
+                    let framePositions = [];
+                    for (let atom = 0; atom < numberOfAtoms; ++atom) {
+                        framePositions.push(atomPositions[atom].clone().sub(atomDisplacements[atom]
+                                .multiplyScalar(factor *(i / numberOfFrames))));
+                    }
+                    frames.push(framePositions);
+                }
+
+                return frames;
             };
 
             var dereg = $scope.$watch('selectedMolecule', function(selectedMolecule) {
@@ -207,20 +269,14 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 // Get the frames for this mode
                 $scope.mode = data.mode;
 
-                VibrationalModes.get({
-                    id: $scope.calcs[0]._id,
-                    mode: $scope.mode
-                }, function(data) {
-                    $scope.viewer.stopAnimate();
-                    $scope.animModel = null;
-                    $scope.modeFrames = data.frames;
-                });
-
-                SDF.get({
-                    id: $scope.calcs[0]._id
-                },function(data) {
-                    $scope.sdf = data.sdf;
-                });
+                $scope.viewer.stopAnimate();
+                CJSON.get({
+                      id: $scope.calcs[0]._id
+                  },function(data) {
+                      $scope.cjson = data.cjson;
+                      $scope.modeFrames = $scope.generateFrames($scope.mode);
+                      $scope.animModel = null;
+                  });
             });
         }])
         .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {

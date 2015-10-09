@@ -51,7 +51,7 @@ module.exports = {
             style: path.join(__dirname, 'assets/style')
         }
     },
-    devtool: 'sourcemap',
+    devtool: 'eval-source-map',
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'bundle.js'

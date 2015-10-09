@@ -130,7 +130,10 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 $scope.animModel = null;
                 $scope.modeFrames = null;
                 $scope.sdf = null;
-                $scope.viewer.stopAnimate();
+
+                if ($scope.viewer) {
+                    $scope.viewer.stopAnimate();
+                }
 
                 fetchMolecule(inchikey);
             };

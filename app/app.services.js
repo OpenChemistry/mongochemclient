@@ -37,3 +37,14 @@ mongochemServices.factory('mongochem.Calculations.SDF', ['$resource',
        }
    });
 }]);
+mongochemServices.factory('mongochem.Calculations.CJSON', ['$resource',
+  function($resource){
+    return $resource('api/v1/calculations/:id/cjson', {}, {
+      get: {
+          method: 'GET',
+         transformResponse: function (data) {return {cjson: JSON.parse(data)};},
+      }
+  });
+}]);
+
+

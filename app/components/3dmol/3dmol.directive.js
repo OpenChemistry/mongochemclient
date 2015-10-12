@@ -186,9 +186,17 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 }
             };
 
+            $scope.addDisplacementVector = function(position, displacement, factor) {
+                let newVector = displacement.clone();
+                let starting = position.clone();
+                newVector.multiplyScalar(factor);
+                starting.add(newVector);
+                return starting;
+	    };
+
             $scope.generateFrames = function(vibrationalMode) {
-                let eigenVector = $scope.cjson.vibrations.eigenVectors[vibrationalMode];
-                let amplitude =  200;
+                let eigenVector = $scope.cjson.vibrations.eigenVectors[vibrationalMode - 1];
+                let amplitude =  20;
                 let numberOfFrames = 5;
                 let factor = 0.01 * amplitude;
                 let coords =  $scope.cjson.atoms.coords['3d'];
@@ -209,30 +217,30 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 // Current coords + displacement.
                 for (let i = 1; i <= numberOfFrames; ++i) {
                     let framePositions = [];
-
                     for (let atom = 0; atom < numberOfAtoms; ++atom) {
-                        framePositions.push(atomPositions[atom].clone().add(atomDisplacements[atom]
-                                .multiplyScalar(factor * (i / numberOfFrames))));
+                        framePositions.push($scope.addDisplacementVector(atomPositions[atom],
+                                                                         atomDisplacements[atom],
+                                                                         factor * i / numberOfFrames));
                     }
                     frames.push(framePositions);
                 }
                 // + displacement back to original.
                 for (let i = numberOfFrames - 1; i >=0; --i) {
                     let framePositions = [];
-
                     for (let atom = 0; atom < numberOfAtoms; ++atom) {
-                        framePositions.push(atomPositions[atom].clone().add(atomDisplacements[atom]
-                                .multiplyScalar(factor *(i / numberOfFrames))));
+                        framePositions.push($scope.addDisplacementVector(atomPositions[atom],
+                                                                         atomDisplacements[atom],
+                                                                         factor * i / numberOfFrames));
                     }
                     frames.push(framePositions);
                 }
                 // Current coords - displacement.
                 for (let i = 1; i <= numberOfFrames; ++i) {
                     let framePositions = [];
-
                     for (let atom = 0; atom < numberOfAtoms; ++atom) {
-                        framePositions.push(atomPositions[atom].clone().sub(atomDisplacements[atom]
-                                .multiplyScalar(factor *(i / numberOfFrames))));
+                        framePositions.push($scope.addDisplacementVector(atomPositions[atom],
+                                                                         atomDisplacements[atom],
+                                                                        -factor * i / numberOfFrames));
                     }
                     frames.push(framePositions);
                 }
@@ -240,8 +248,9 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 for (let i = numberOfFrames - 1; i >=0; --i) {
                     let framePositions = [];
                     for (let atom = 0; atom < numberOfAtoms; ++atom) {
-                        framePositions.push(atomPositions[atom].clone().sub(atomDisplacements[atom]
-                                .multiplyScalar(factor *(i / numberOfFrames))));
+                        framePositions.push($scope.addDisplacementVector(atomPositions[atom],
+                                                                         atomDisplacements[atom],
+                                                                        -factor * i / numberOfFrames));
                     }
                     frames.push(framePositions);
                 }

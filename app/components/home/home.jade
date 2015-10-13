@@ -17,6 +17,13 @@ md-content(ng-controller="mongochemMolecules", flex, layout="column")
           md-button(ng-click="setViewStyle('ball')") Ball
       md-card-content(flex='50', layout='column')
         md-content(mongochem-vibrational-modes-chart, ng-show="hasSpectra()", data="vibrationalModes", style="width: 100%; height: 300px; background-color: transparent;", mongochem-animating="{{isAnimating}}")
+        div(layout='row', flex)
+          div(flex='20', layout-align='center center')
+            span(class='md-body-1') Scalar:
+          md-slider(flex, min='0', max='100', ng-model='spectra.scale', aria-label='scale', id='scale-slider')
+          div(flex='20', layout-align='center center')
+            input(flex, ng-model='spectra.scale', aria-label='scale', aria-controls='scale-slider', type='number')
+
         table
           tbody
             tr

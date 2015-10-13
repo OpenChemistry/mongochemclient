@@ -66,10 +66,10 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
         })
         .controller('mongochemMoleculeHome', ['mongochem.Molecule', 'mongochem.Calculations',
                                               'mongochem.VibrationalModes', 'mongochem.Calculations.CJSON',
-                                              '$scope', '$state',
+                                              '$scope', '$state', '$timeout',
                                               function(Molecule, Calculations,
                                                        VibrationalModes,
-                                                       CJSON, $scope, $state) {
+                                                       CJSON, $scope, $state, $timeout) {
 
             var fetchMolecule = function(inichikey) {
                 $scope.mol = Molecule.getByInchiKey({moleculeId: inichikey}, function(mol) {
@@ -107,6 +107,10 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
 
             // Set the default style
             $scope.style = {stick:{}};
+
+            // Set the default scale factor for vibrations.
+            $scope.spectra = {};
+            $scope.spectra.scale = 20;
 
             $scope.setViewStyle = function(style) {
                 if (style == 'ball') {
@@ -186,17 +190,43 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 }
             };
 
+            $scope.$watch('spectra.scale', function(scale) {
+                var frameTimeout;
+                var wasAnimated = false;
+                if ($scope.viewer && $scope.viewer.isAnimated()) {
+                    $scope.viewer.stopAnimate();
+                    wasAnimated = true;
+                }
+
+                if (frameTimeout) {
+                    clearTimeout(frameTimeout);
+                }
+
+                // Only want to generate new frames once they have done changing the slider.
+                frameTimeout = $timeout(function() {
+                    if ($scope.cjson) {
+                      $scope.animModel = null;
+                      $scope.modeFrames = $scope.generateFrames();
+                    }
+                    if (wasAnimated) {
+                        $scope.animateMolecule();
+                    }
+                }, 200);
+            });
+
             $scope.addDisplacementVector = function(position, displacement, factor) {
                 let newVector = displacement.clone();
                 let starting = position.clone();
                 newVector.multiplyScalar(factor);
                 starting.add(newVector);
                 return starting;
-	    };
+            };
 
-            $scope.generateFrames = function(vibrationalMode) {
-                let eigenVector = $scope.cjson.vibrations.eigenVectors[vibrationalMode - 1];
-                let amplitude =  20;
+            $scope.generateFrames = function(mode) {
+                mode = typeof mode !== 'undefined' ? mode -1 : $scope.spectra.mode;
+                $scope.spectra.mode = mode;
+                let eigenVector = $scope.cjson.vibrations.eigenVectors[mode];
+                let amplitude = $scope.spectra.scale;
                 let numberOfFrames = 5;
                 let factor = 0.01 * amplitude;
                 let coords =  $scope.cjson.atoms.coords['3d'];

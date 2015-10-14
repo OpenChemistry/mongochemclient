@@ -174,12 +174,17 @@ require.ensure(['d3'], function(require) {
                 })
                 .interpolate('basis');
 
-            _svg.append("svg:path")
-                .attr("d", lineFunc(lineFreqData))
-                .attr("stroke", "black")
-                .attr("stroke-width", 2)
-                .attr("fill", "none")
-                .attr("class", "line");
+            let line = _svg.select('.line')
+            if (line.empty()) {
+                line = _svg.append("svg:path");
+                line.attr("stroke", "black")
+                    .attr("stroke-width", 2)
+                    .attr("fill", "none")
+                    .attr("class", "line");
+            }
+
+            line.attr("d", lineFunc(lineFreqData))
+
 
             _xLabel.attr("transform", "translate("+ (_width/2) +","+(_height + 65)+")");
             _yLabel.attr("transform", "translate(-60,"+(_height/2)+")rotate(-90)");

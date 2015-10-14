@@ -96,7 +96,7 @@ require.ensure(['d3'], function(require) {
 
             let chartData = [];
 
-            for(let i=0; i<data.intensities.length; i++) {
+            for(let i = 0; i < data.intensities.length; i++) {
                 chartData.push({
                     'index': i,
                     'frequency': data.frequencies[i],
@@ -137,6 +137,49 @@ require.ensure(['d3'], function(require) {
                 .attr('height', function(d) { return _height - _y(d.intensity); });
 
             bars.exit().transition().style({opacity: 0}).remove();
+
+            var gamma = 40;
+            var freqRange = [];
+            freqRange[0] = 0.0;
+            freqRange[1] = 0.0;
+            var prefactor = gamma / 3.14;
+            var lineFreqData = [];
+            let increment = (frequencyRange[1] - frequencyRange[0]) / 99.0;
+            for (let i = 0; i < 100; ++i) {
+                let freqIntensity = 0.0;
+                let currentFreq = frequencyRange[0] + i * increment;
+                for (let j = 0; j < data.intensities.length; ++j) {
+                    let xx0 = currentFreq - data.frequencies[j];
+                    freqIntensity += prefactor * data.intensities[j] / (xx0*xx0 + gamma*gamma);
+                }
+                if (freqIntensity > freqRange[1]) {
+                    freqRange[1] = freqIntensity;
+                }
+                lineFreqData.push({
+                    'x': currentFreq,
+                    'y': freqIntensity
+                });
+            }
+            let normalization = intensityRange[1] / freqRange[1];
+            for (let i = 0; i < 100; ++i) {
+                lineFreqData[i].y = lineFreqData[i].y * normalization;
+            }
+
+            var lineFunc = d3.svg.line()
+                .x(function (d) {
+                    return _x(d.x);
+                })
+                .y(function (d) {
+                    return _y(d.y);
+                })
+                .interpolate('basis');
+
+            _svg.append("svg:path")
+                .attr("d", lineFunc(lineFreqData))
+                .attr("stroke", "black")
+                .attr("stroke-width", 2)
+                .attr("fill", "none")
+                .attr("class", "line");
 
             _xLabel.attr("transform", "translate("+ (_width/2) +","+(_height + 65)+")");
             _yLabel.attr("transform", "translate(-60,"+(_height/2)+")rotate(-90)");

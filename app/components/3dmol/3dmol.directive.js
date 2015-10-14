@@ -190,29 +190,28 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 }
             };
 
-            $scope.$watch('spectra.scale', function(scale) {
-                var frameTimeout;
+            $scope.updateFrames = function() {
                 var wasAnimated = false;
                 if ($scope.viewer && $scope.viewer.isAnimated()) {
                     $scope.viewer.stopAnimate();
                     wasAnimated = true;
                 }
-
-                if (frameTimeout) {
-                    clearTimeout(frameTimeout);
+                if ($scope.cjson) {
+                    $scope.animModel = null;
+                    $scope.modeFrames = $scope.generateFrames();
                 }
-
-                // Only want to generate new frames once they have done changing the slider.
-                frameTimeout = $timeout(function() {
-                    if ($scope.cjson) {
-                      $scope.animModel = null;
-                      $scope.modeFrames = $scope.generateFrames();
-                    }
-                    if (wasAnimated) {
-                        $scope.animateMolecule();
-                    }
-                }, 200);
-            });
+                if (wasAnimated) {
+                    // This timeout is required because of a "feature" of the
+                    // 3Dmol animation. The stopAnimate(...) only sets the
+                    // animate flag to false, is doesn't terminate the animation
+                    // loop. This flag is checked by the animation loop in order to
+                    // break out, however, if we don't wait for the animate loop
+                    // todo this check and break out before called animate(...)
+                    // again ( which resets this flag ) we end up with two
+                    // animation loops!
+                    $timeout($scope.animateMolecule, 100);
+                }
+            };
 
             $scope.addDisplacementVector = function(position, displacement, factor) {
                 let newVector = displacement.clone();
@@ -317,7 +316,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                       $scope.animModel = null;
                       if (wasAnimated) {
                           $scope.animateMolecule();
-		      }
+          }
                   });
             });
         }])

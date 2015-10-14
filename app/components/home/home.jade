@@ -20,7 +20,7 @@ md-content(ng-controller="mongochemMolecules", flex, layout="column")
         div(layout='row', ng-show='hasSpectra()')
           div(flex='15', layout, layout-align='center center')
             span Scalar:
-          md-slider(flex, min='0', max='100', ng-model='spectra.scale', aria-label='scale', id='scale-slider')
+          md-slider(flex, min='0', max='100', ng-model='spectra.scale', aria-label='scale', id='scale-slider', ng-mouseup="updateFrames()")
 
         table
           tbody

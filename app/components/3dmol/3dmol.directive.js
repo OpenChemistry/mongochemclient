@@ -110,7 +110,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
 
             // Set the default scale factor for vibrations.
             $scope.spectra = {};
-            $scope.spectra.scale = 20;
+            $scope.spectra.scale = 50;
 
             $scope.setViewStyle = function(style) {
                 if (style == 'ball') {

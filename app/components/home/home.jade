@@ -20,7 +20,7 @@ md-content(ng-controller="mongochemMolecules", flex, layout="column")
         div(layout='row', ng-show='hasSpectra()')
           div(flex='15', layout, layout-align='center center')
             span Scalar:
-          md-slider(flex, min='0', max='100', ng-model='spectra.scale', aria-label='scale', id='scale-slider', ng-mouseup="updateFrames()")
+          md-slider(flex, min='0', max='100', ng-model='spectra.scale', class='md-primary', aria-label='scale', id='scale-slider', ng-mouseup="updateFrames()")
 
         table
           tbody
@@ -37,9 +37,10 @@ md-content(ng-controller="mongochemMolecules", flex, layout="column")
               td Spectra:
               td(ng-if='hasSpectra()') Yes
               td(ng-if='!hasSpectra()') No
-            tr(ng-show='viewer.isAnimated()')
+            tr
               td Current mode:
-              td {{ spectra.mode + 1 }}
+              td(ng-if='viewer.isAnimated()') {{ spectra.mode + 1 }}
+              td(ng-if='!viewer.isAnimated()') None
     md-card
       md-card-content(layout="row", layout-align="start center")
         h2.md-title Molecule:

@@ -71,10 +71,13 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                                                        VibrationalModes,
                                                        CJSON, $scope, $state, $timeout) {
 
+            // Set the default style
+            $scope.style = {stick:{}, sphere: {scale: 0.3}};
+
             var fetchMolecule = function(inichikey) {
                 $scope.mol = Molecule.getByInchiKey({moleculeId: inichikey}, function(mol) {
                     $scope.viewer.clear();
-                    $scope.displayMolecule(mol, {stick:{}});
+                    $scope.displayMolecule(mol, $scope.style);
 
                     // Fetch the calculations associated with this molecule
                     $scope.calcs = Calculations.query({moleculeId: mol._id}, function(calcs) {
@@ -105,9 +108,6 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 $scope.viewer.render();
             };
 
-            // Set the default style
-            $scope.style = {stick:{}};
-
             // Set the default scale factor for vibrations.
             $scope.spectra = {};
             $scope.spectra.scale = 50;
@@ -120,7 +120,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     $scope.style = {stick:{}};
                 }
                 else {
-                    $scope.style = {stick:{hidden: false}, sphere: {scale: 0.3}};
+                    $scope.style = {stick:{}, sphere: {scale: 0.3}};
                 }
 
                 // It seems that the model is not retained, add it back.
@@ -322,7 +322,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
         }])
         .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {
             $scope.mol = Molecule.getByInchiKey({moleculeId: $stateParams.moleculeId}, function(mol) {
-                $scope.displayMolecule(mol , {stick:{}});
+                $scope.displayMolecule(mol , $scope.style);
             });
         }])
         .controller('mongochemMolecules', ['Molecules', '$scope', function(Molecules, $scope) {

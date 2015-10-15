@@ -56,7 +56,7 @@ require.ensure(['d3'], function(require) {
         }
 
         this.render = function(data) {
-            var frequencyRange = [0, d3.max(data.frequencies)],
+            var frequencyRange = [0, d3.max(data.frequencies) * 1.1],
                 intensityRange = [0, d3.max(data.intensities)],
                 that = this, width = d3.select(element).node().offsetWidth,
                 height = d3.select(element).node().offsetHeight;

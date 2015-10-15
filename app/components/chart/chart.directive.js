@@ -144,8 +144,9 @@ require.ensure(['d3'], function(require) {
             freqRange[1] = 0.0;
             var prefactor = gamma / 3.14;
             var lineFreqData = [];
-            let increment = (frequencyRange[1] - frequencyRange[0]) / 99.0;
-            for (let i = 0; i < 100; ++i) {
+            var numberOfPoints = 400;
+            let increment = (frequencyRange[1] - frequencyRange[0]) / (numberOfPoints - 1);
+            for (let i = 0; i < numberOfPoints; ++i) {
                 let freqIntensity = 0.0;
                 let currentFreq = frequencyRange[0] + i * increment;
                 for (let j = 0; j < data.intensities.length; ++j) {
@@ -161,7 +162,7 @@ require.ensure(['d3'], function(require) {
                 });
             }
             let normalization = intensityRange[1] / freqRange[1];
-            for (let i = 0; i < 100; ++i) {
+            for (let i = 0; i < numberOfPoints; ++i) {
                 lineFreqData[i].y = lineFreqData[i].y * normalization;
             }
 
@@ -172,7 +173,7 @@ require.ensure(['d3'], function(require) {
                 .y(function (d) {
                     return _y(d.y);
                 })
-                .interpolate('basis');
+                .interpolate('linear');
 
             let line = _svg.select('.line')
             if (line.empty()) {

@@ -318,9 +318,9 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             };
 
             $scope.modeSelected = function() {
-                $rootScope.$broadcast('mongochem-frequency-histogram-selectbar', $scope.spectra.mode - 1)
+                $rootScope.$broadcast('mongochem-frequency-histogram-selectbar', $scope.spectra.mode - 1);
                 $scope.animateMode($scope.spectra.mode);
-            }
+            };
 
             $scope.$on('mongochem-frequency-histogram-clickbar', function(evt, data) {
                 $scope.animateMode(data.mode);

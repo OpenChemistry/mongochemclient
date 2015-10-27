@@ -175,7 +175,7 @@ require.ensure(['d3'], function(require) {
                 })
                 .interpolate('linear');
 
-            let line = _svg.select('.line')
+            let line = _svg.select('.line');
             if (line.empty()) {
                 line = _svg.append("svg:path");
                 line.attr("stroke", "black")
@@ -184,7 +184,7 @@ require.ensure(['d3'], function(require) {
                     .attr("class", "line");
             }
 
-            line.attr("d", lineFunc(lineFreqData))
+            line.attr("d", lineFunc(lineFreqData));
 
 
             _xLabel.attr("transform", "translate("+ (_width/2) +","+(_height + 65)+")");

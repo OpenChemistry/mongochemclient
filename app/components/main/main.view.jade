@@ -8,6 +8,9 @@ div.mongochem-max-height(layout="column")
         md-menu-content(width="4")
           md-menu-item(ng-repeat="item in items")
             md-button.md-primary(ng-click="goTo(item.state)") {{item.name}}
+          md-menu-item(ng-show="allowUpload()")
+            md-button#mongochem-launch-filebrowser.md-primary(ng-show="allowUpload()", ng-click="showUploadDialog($event)") Upload
+            input#mongochem-file-upload(type="file", multiple="true", style="display:none")
       a(href="#/", flex="", hide-sm)
         md-icon(md-svg-src="/imgs/mongochem.svg", alt="MongoChem", class="md-default-theme mongochem-logo", aria-hidden="true")
         {{message}}

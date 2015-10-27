@@ -66,10 +66,10 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
         })
         .controller('mongochemMoleculeHome', ['mongochem.Molecule', 'mongochem.Calculations',
                                               'mongochem.VibrationalModes', 'mongochem.Calculations.CJSON',
-                                              '$scope', '$state', '$timeout',
+                                              '$scope', '$state', '$timeout', '$rootScope',
                                               function(Molecule, Calculations,
                                                        VibrationalModes,
-                                                       CJSON, $scope, $state, $timeout) {
+                                                       CJSON, $scope, $state, $timeout, $rootScope) {
 
             // Set the default style
             $scope.style = {stick:{}, sphere: {scale: 0.3}};
@@ -222,9 +222,9 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             };
 
             $scope.generateFrames = function(mode) {
-                mode = typeof mode !== 'undefined' ? mode -1 : $scope.spectra.mode;
+                mode = typeof mode !== 'undefined' ? mode : $scope.spectra.mode;
                 $scope.spectra.mode = mode;
-                let eigenVector = $scope.cjson.vibrations.eigenVectors[mode];
+                let eigenVector = $scope.cjson.vibrations.eigenVectors[mode-1];
                 let amplitude = $scope.spectra.scale;
                 let numberOfFrames = 5;
                 let factor = 0.01 * amplitude;
@@ -301,21 +301,29 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 $scope.showFrequenciesHistogram = !$scope.showFrequenciesHistogram;
             };
 
-            $scope.$on('mongochem-frequency-histogram-clickbar', function(evt, data) {
+            $scope.animateMode = function(mode) {
                 // Cancel any existing animation loop
                 $scope.viewer.stopAnimate();
-                // Get the frames for this mode
-                $scope.mode = data.mode;
 
+                // TODO We shouldn't need to get the CJSON everytime
                 CJSON.get({
-                      id: $scope.calcs[0]._id
-                  },function(data) {
-                      $scope.cjson = data.cjson;
-                      $scope.modeFrames = $scope.generateFrames($scope.mode);
-                      $scope.animModel = null;
-                      // Ensure we don't start two animation timers, use timeout.
-                      $timeout($scope.animateMolecule, 100);
-                  });
+                    id: $scope.calcs[0]._id
+                },function(data) {
+                    $scope.cjson = data.cjson;
+                    $scope.modeFrames = $scope.generateFrames(mode);
+                    $scope.animModel = null;
+                    // Ensure we don't start two animation timers, use timeout.
+                    $timeout($scope.animateMolecule, 100);
+                });
+            };
+
+            $scope.modeSelected = function() {
+                $rootScope.$broadcast('mongochem-frequency-histogram-selectbar', $scope.spectra.mode - 1)
+                $scope.animateMode($scope.spectra.mode);
+            }
+
+            $scope.$on('mongochem-frequency-histogram-clickbar', function(evt, data) {
+                $scope.animateMode(data.mode);
             });
         }])
         .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {

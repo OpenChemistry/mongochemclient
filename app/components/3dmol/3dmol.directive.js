@@ -303,7 +303,6 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
 
             $scope.$on('mongochem-frequency-histogram-clickbar', function(evt, data) {
                 // Cancel any existing animation loop
-                var wasAnimated = $scope.viewer.isAnimated();
                 $scope.viewer.stopAnimate();
                 // Get the frames for this mode
                 $scope.mode = data.mode;
@@ -314,9 +313,8 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                       $scope.cjson = data.cjson;
                       $scope.modeFrames = $scope.generateFrames($scope.mode);
                       $scope.animModel = null;
-                      if (wasAnimated) {
-                          $scope.animateMolecule();
-          }
+                      // Ensure we don't start two animation timers, use timeout.
+                      $timeout($scope.animateMolecule, 100);
                   });
             });
         }])

@@ -184,8 +184,57 @@ require.ensure(['d3'], function(require) {
                     .attr("class", "line");
             }
 
-            line.attr("d", lineFunc(lineFreqData));
+            if (data.simulateExperimental) {
+                // TODO This will be replaced with real data
+                let experimentalLineData = lineFreqData.slice();
+                let dragStart = null;
+                let experimentalScaleFactor = 1;
+                let experimentalLine = _svg.select('.experimental-line');
+                if (experimentalLine.empty()) {
+                    experimentalLine = _svg.append("svg:path");
+                    experimentalLine.attr("stroke", "#74C365")
+                        .attr("stroke-width", 4)
+                        .attr("fill", "none")
+                        .attr("class", "experimental-line");
+                }
 
+                var expDrag = d3.behavior.drag().on('drag', function() {
+                    var pixelDelta = d3.event.sourceEvent.pageY - dragStart,
+                        pixelY = d3.event.y, pixelYStart = pixelY - pixelDelta,
+                        intensityStart = _y.invert(pixelYStart),
+                        intensity = _y.invert(pixelY);
+
+                    // Calculate scale factor
+                    experimentalScaleFactor = intensity / intensityStart;
+                    experimentalScaleFactor = Math.max(0, experimentalScaleFactor);
+
+                    experimentalLine.attr("d", experimentalLineFunc(experimentalLineData));
+                }).on('dragstart', function() {
+                    dragStart = d3.event.sourceEvent.pageY;
+                }).on('dragend', function() {
+                    for (let i = 0; i < numberOfPoints; ++i) {
+                        experimentalLineData[i].y = experimentalLineData[i].y * experimentalScaleFactor;
+                    }
+                });
+
+                experimentalLine.call(expDrag);
+
+                var experimentalLineFunc = d3.svg.line()
+                .x(function (d) {
+                    return _x(d.x);
+                })
+                .y(function (d) {
+                    return _y(d.y * experimentalScaleFactor);
+                })
+                .interpolate('linear');
+
+                experimentalLine.attr("d", experimentalLineFunc(experimentalLineData));
+            }
+            else {
+                _svg.select('.experimental-line').remove();
+            }
+
+            line.attr("d", lineFunc(lineFreqData));
 
             _xLabel.attr("transform", "translate("+ (_width/2) +","+(_height + 65)+")");
             _yLabel.attr("transform", "translate(-60,"+(_height/2)+")rotate(-90)");

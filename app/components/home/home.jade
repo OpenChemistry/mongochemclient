@@ -42,10 +42,9 @@ md-content(ng-controller="mongochemMolecules", flex, layout="column")
               td InChI Key:
               td {{ mol.inchikey }}
             tr
-              td Spectra:
-              td(ng-if='hasSpectra()') Yes
-              td(ng-if='!hasSpectra()') No
-            tr
               td Current mode:
-              td(ng-if='viewer.isAnimated()') {{ spectra.mode + 1 }}
-              td(ng-if='!viewer.isAnimated()') None
+              td(ng-if='hasSpectra()')
+                md-select(id="mongochem-select-mode", ng-model="spectra.mode", ng-change="modeSelected()" placeholder="Select mode")
+                  md-option(ng-repeat="m in vibrationalModes.modes", ng-value="{{m}}")
+                    {{m}} ({{ vibrationalModes.frequencies[m-1] }})
+              td(ng-if='!hasSpectra()') None

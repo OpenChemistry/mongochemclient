@@ -16,7 +16,9 @@ require.ensure(['d3'], function(require) {
             _yAxis = null,
             _margin,
             _xLabel = null,
-            _yLabel = null;
+            _yLabel = null,
+            _data = null;
+
 
         function init() {
             _x = d3.scale.linear();
@@ -56,6 +58,19 @@ require.ensure(['d3'], function(require) {
         }
 
         this.render = function(data) {
+
+            // If we are not passed data then this if for resize so used
+            // cached data ...
+            if (!data) {
+                data = _data;
+            }
+            // Save the data for resize events
+            _data = data;
+
+            if (!data) {
+                return;
+            }
+
             var frequencyRange = [0, d3.max(data.frequencies) * 1.1],
                 intensityRange = [0, d3.max(data.intensities)],
                 that = this, width = d3.select(element).node().offsetWidth,
@@ -267,8 +282,8 @@ require.ensure(['d3'], function(require) {
 
 
     angular.module('mongochemApp')
-        .directive('mongochemVibrationalModesChart', ['$rootScope', '$timeout',
-        function($rootScope, $timeout) {
+        .directive('mongochemVibrationalModesChart', ['$rootScope', '$timeout', '$window',
+        function($rootScope, $timeout, $window) {
             return {
                 restrict: 'EA',
                 scope: {
@@ -280,7 +295,7 @@ require.ensure(['d3'], function(require) {
                     var renderTimeout;
 
                     function render(data) {
-                        if (!data || d3.select(element).node().offsetWidth === 0) {
+                        if (d3.select(element).node().offsetWidth === 0) {
                             if (histogram) {
                                 histogram.hide(true);
                             }
@@ -319,10 +334,10 @@ require.ensure(['d3'], function(require) {
                         return render(newData);
                     }, true);
 
-                    window.onresize = function() {
-                        scope.$apply();
-                    };
-                }
+                    angular.element($window).bind('resize', function() {
+                        render();
+                    });
+               }
             };
         }]);
 });

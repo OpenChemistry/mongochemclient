@@ -331,12 +331,20 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 $scope.displayMolecule(mol , $scope.style);
             });
         }])
-        .controller('mongochemMolecules', ['Molecules', '$scope', function(Molecules, $scope) {
-            $scope.molecules = Molecules.query({}, function(molecules) {
-                molecules.sort(function(a, b) {
-                    return a.name.toLowerCase() > b.name.toLowerCase();
+        .controller('mongochemMolecules', ['Molecules', '$scope', '$rootScope', function(Molecules, $scope, $rootScope) {
+            function fetchMolecules() {
+                $scope.molecules = Molecules.query({}, function(molecules) {
+                    molecules.sort(function(a, b) {
+                        return a.name.toLowerCase() > b.name.toLowerCase();
+                    });
+                    $scope.selectedMolecule = molecules[0];
                 });
-                $scope.selectedMolecule = molecules[0];
+            }
+
+            fetchMolecules();
+            // Fetch the molecule list again if one has been added
+            $rootScope.$on('mongochem-molecule-created', function() {
+                fetchMolecules();
             });
         }])
         .directive('mongochem3dmol', ['$timeout', function($timeout) {

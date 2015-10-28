@@ -30,9 +30,9 @@ angular.module('mongochemApp')
         });
     }])
     .controller('mongochem.UploadDialogController', ['$q', '$timeout', '$log', '$scope', '$mdDialog', '$http',
-                                                     '$mdToast', 'mongochem.MoleculeFileUploadService',
+                                                     '$mdToast', '$rootScope', 'mongochem.MoleculeFileUploadService',
                                                      'mongochem.Molecule',
-        function ($q, $timeout, $log, $scope, $mdDialog, $http, $mdToast,
+        function ($q, $timeout, $log, $scope, $mdDialog, $http, $mdToast, $rootScope,
                   uploadService, Molecule) {
 
           $scope.xyz = null;
@@ -57,6 +57,7 @@ angular.module('mongochemApp')
                               $mdToast.simple()
                                   .content('Molecule successfully upload.')
                                   .position('bottom right'));
+                      $rootScope.$broadcast('mongochem-molecule-created');
                   }, function(error) {
                       $mdToast.show(
                               $mdToast.simple()

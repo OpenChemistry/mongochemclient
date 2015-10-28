@@ -48,7 +48,7 @@ require.ensure(['d3'], function(require) {
 
             _xLabel = _svg.append('text')
                 .attr('text-anchor', 'middle')
-                .text('Frequency');
+                .html('Frequency (cm\u207B\u00B9)');
 
             _yLabel = _svg.append('text')
                 .attr('text-anchor', 'middle')

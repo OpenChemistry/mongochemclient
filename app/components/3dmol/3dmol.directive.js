@@ -73,6 +73,9 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
 
             // Set the default style
             $scope.style = {stick:{}, sphere: {scale: 0.3}};
+            $scope.experiments = [{
+                name: 'Simulated'
+            }];
 
             var fetchMolecule = function(inichikey) {
                 $scope.mol = Molecule.getByInchiKey({moleculeId: inichikey}, function(mol) {
@@ -320,6 +323,10 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             $scope.modeSelected = function() {
                 $rootScope.$broadcast('mongochem-frequency-histogram-selectbar', $scope.spectra.mode - 1);
                 $scope.animateMode($scope.spectra.mode);
+            };
+
+            $scope.experimentSelected = function() {
+                $scope.vibrationalModes.simulateExperimental = $scope.spectra.experiment === 'Simulated';
             };
 
             $scope.$on('mongochem-frequency-histogram-clickbar', function(evt, data) {

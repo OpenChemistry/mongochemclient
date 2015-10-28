@@ -25,12 +25,12 @@ require.ensure(['d3'], function(require) {
             _xAxis = d3.svg.axis()
                 .scale(_x)
                 .orient('bottom')
-                .tickFormat(d3.format("s"));
+                .tickFormat(d3.format('s'));
 
             _yAxis = d3.svg.axis()
                 .scale(_y)
                 .orient('left')
-                .tickFormat(d3.format("s"));
+                .tickFormat(d3.format('s'));
 
             _svg = d3.select(element)
                 .append('svg')
@@ -39,20 +39,20 @@ require.ensure(['d3'], function(require) {
 
             _svg = _svg.append('g');
 
-            _svg.append("g")
-                .attr("class", "x axis");
+            _svg.append('g')
+                .attr('class', 'x axis');
 
-            _svg.append("g")
-                .attr("class", "y axis")
+            _svg.append('g')
+                .attr('class', 'y axis')
                 .call(_yAxis);
 
-            _xLabel = _svg.append("text")
-                .attr("text-anchor", "middle")
-                .text("Frequency");
+            _xLabel = _svg.append('text')
+                .attr('text-anchor', 'middle')
+                .text('Frequency');
 
-            _yLabel = _svg.append("text")
-                .attr("text-anchor", "middle")
-                .text("Intensity");
+            _yLabel = _svg.append('text')
+                .attr('text-anchor', 'middle')
+                .text('Intensity');
         }
 
         this.render = function(data) {
@@ -78,21 +78,21 @@ require.ensure(['d3'], function(require) {
                 .range([_height, 0]);
 
             _svg.select('.x.axis')
-                .attr("transform", "translate(0," + _height + ")")
+                .attr('transform', 'translate(0,' + _height + ')')
                 .transition().duration(200).ease('sin-in-out')
                 .call(_xAxis)
-                .selectAll("text")
-                .style("text-anchor", "end")
-                .attr("dx", "-.8em")
-                .attr("dy", "-.55em")
-                .attr("transform", "rotate(-90)" );
+                .selectAll('text')
+                .style('text-anchor', 'end')
+                .attr('dx', '-.8em')
+                .attr('dy', '-.55em')
+                .attr('transform', 'rotate(-90)' );
 
             _svg.select('.y.axis')
                 .transition().duration(200).ease('sin-in-out')
                 .call(_yAxis)
-                .selectAll("text")
-                .style("text-anchor", "end")
-                .attr("dy", ".5em");
+                .selectAll('text')
+                .style('text-anchor', 'end')
+                .attr('dy', '.5em');
 
             let chartData = [];
 
@@ -177,18 +177,67 @@ require.ensure(['d3'], function(require) {
 
             let line = _svg.select('.line');
             if (line.empty()) {
-                line = _svg.append("svg:path");
-                line.attr("stroke", "black")
-                    .attr("stroke-width", 2)
-                    .attr("fill", "none")
-                    .attr("class", "line");
+                line = _svg.append('svg:path');
+                line.attr('stroke', 'black')
+                    .attr('stroke-width', 2)
+                    .attr('fill', 'none')
+                    .attr('class', 'line');
             }
 
-            line.attr("d", lineFunc(lineFreqData));
+            if (data.simulateExperimental) {
+                // TODO This will be replaced with real data
+                let experimentalLineData = lineFreqData.slice();
+                let dragStart = null;
+                let experimentalScaleFactor = 1;
+                let experimentalLine = _svg.select('.experimental-line');
+                if (experimentalLine.empty()) {
+                    experimentalLine = _svg.append('svg:path');
+                    experimentalLine.attr('stroke', '#74C365')
+                        .attr('stroke-width', 4)
+                        .attr('fill', 'none')
+                        .attr('class', 'experimental-line');
+                }
 
+                var expDrag = d3.behavior.drag().on('drag', function() {
+                    var pixelDelta = d3.event.sourceEvent.pageY - dragStart,
+                        pixelY = d3.event.y, pixelYStart = pixelY - pixelDelta,
+                        intensityStart = _y.invert(pixelYStart),
+                        intensity = _y.invert(pixelY);
 
-            _xLabel.attr("transform", "translate("+ (_width/2) +","+(_height + 65)+")");
-            _yLabel.attr("transform", "translate(-60,"+(_height/2)+")rotate(-90)");
+                    // Calculate scale factor
+                    experimentalScaleFactor = intensity / intensityStart;
+                    experimentalScaleFactor = Math.max(0, experimentalScaleFactor);
+
+                    experimentalLine.attr('d', experimentalLineFunc(experimentalLineData));
+                }).on('dragstart', function() {
+                    dragStart = d3.event.sourceEvent.pageY;
+                }).on('dragend', function() {
+                    for (let i = 0; i < numberOfPoints; ++i) {
+                        experimentalLineData[i].y = experimentalLineData[i].y * experimentalScaleFactor;
+                    }
+                });
+
+                experimentalLine.call(expDrag);
+
+                var experimentalLineFunc = d3.svg.line()
+                .x(function (d) {
+                    return _x(d.x);
+                })
+                .y(function (d) {
+                    return _y(d.y * experimentalScaleFactor);
+                })
+                .interpolate('linear');
+
+                experimentalLine.attr('d', experimentalLineFunc(experimentalLineData));
+            }
+            else {
+                _svg.select('.experimental-line').remove();
+            }
+
+            line.attr('d', lineFunc(lineFreqData));
+
+            _xLabel.attr('transform', 'translate('+ (_width/2) +','+(_height + 65)+')');
+            _yLabel.attr('transform', 'translate(-60,'+(_height/2)+')rotate(-90)');
         };
 
         this.selectedBar = function(index) {
@@ -217,7 +266,7 @@ require.ensure(['d3'], function(require) {
 
 
 
-    angular.module("mongochemApp")
+    angular.module('mongochemApp')
         .directive('mongochemVibrationalModesChart', ['$rootScope', '$timeout',
         function($rootScope, $timeout) {
             return {

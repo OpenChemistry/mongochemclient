@@ -25,12 +25,12 @@ require.ensure(['d3'], function(require) {
             _xAxis = d3.svg.axis()
                 .scale(_x)
                 .orient('bottom')
-                .tickFormat(d3.format('s'));
+                .tickFormat(d3.format('.0f'));
 
             _yAxis = d3.svg.axis()
                 .scale(_y)
                 .orient('left')
-                .tickFormat(d3.format('s'));
+                .tickFormat(d3.format('.2f'));
 
             _svg = d3.select(element)
                 .append('svg')
@@ -48,7 +48,7 @@ require.ensure(['d3'], function(require) {
 
             _xLabel = _svg.append('text')
                 .attr('text-anchor', 'middle')
-                .text('Frequency');
+                .html('Frequency (cm\u207B\u00B9)');
 
             _yLabel = _svg.append('text')
                 .attr('text-anchor', 'middle')

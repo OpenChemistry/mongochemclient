@@ -1,12 +1,12 @@
-md-content(ng-controller="mongochemMolecules", flex, layout="column")
-  md-content(ng-controller="mongochemMoleculeHome", layout="column", flex)
+div(ng-controller="mongochemMolecules")
+  div(ng-controller="mongochemMoleculeHome")
     md-card
       md-card-content(layout="row", layout-align="start center", style="padding: 7px")
         div.md-title Molecule:
         md-select(id="mongochem-select-molecule", ng-model="selectedMolecule", ng-change="setInchiKey(selectedMolecule.inchikey)")
           md-option(ng-repeat="molecule in molecules", ng-value="molecule") {{ molecule.name | mongochemUnderscores }}
 
-    md-content(flex, layout='column', layout-gt-md='row')
+    div(layout-gt-md='row')
      md-card(flex, layout='row', style='height: 600px')
       md-card-content(flex, layout='column')
         md-content(layout="row", layout-align="end center", style="position: static; background-color: transparent; z-index: 1000;")

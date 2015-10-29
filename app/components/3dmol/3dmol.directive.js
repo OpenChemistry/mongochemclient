@@ -137,6 +137,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 $scope.animModel = null;
                 $scope.modeFrames = null;
                 $scope.sdf = null;
+                $scope.spectra.experiment = '';
 
                 if ($scope.viewer) {
                     $scope.viewer.stopAnimate();

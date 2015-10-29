@@ -21,6 +21,6 @@ div(layout="column")
         ng-md-icon(icon="input", style="fill:white", layout="row", layout-align="end center")
       img.monogchem-gravatar(ng-src="{{gravatarUrl}}", alt="{{userName}}", ng-show="isLoggedIn()", ng-click="logout()")
 
-  div(flex, layout="row")
+  div(layout="row")
     mongochem-side
     div(flex, layout="column", ui-view="main")

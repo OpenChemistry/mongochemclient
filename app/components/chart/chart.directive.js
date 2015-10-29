@@ -220,8 +220,11 @@ require.ensure(['d3'], function(require) {
                         intensity = _y.invert(pixelY);
 
                     // Calculate scale factor
-                    experimentalScaleFactor = intensity / intensityStart;
-                    experimentalScaleFactor = Math.max(0, experimentalScaleFactor);
+                    if (intensityStart > 0) {
+                        experimentalScaleFactor = intensity / intensityStart;
+                    }
+
+                    experimentalScaleFactor = Math.max(0.01, experimentalScaleFactor);
 
                     experimentalLine.attr('d', experimentalLineFunc(experimentalLineData));
                 }).on('dragstart', function() {

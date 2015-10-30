@@ -46,7 +46,7 @@ div(ng-controller="mongochemMolecules")
                 td(ng-if='hasSpectra()')
                   md-select(id="mongochem-select-mode", ng-model="spectra.mode", ng-change="modeSelected()", placeholder="Select mode")
                     md-option(ng-repeat="m in vibrationalModes.modes", ng-value="{{m}}")
-                      {{m}} ({{ vibrationalModes.frequencies[m-1] }})
+                      {{m}} ({{ vibrationalModes.frequencies[m-1].toFixed(2) }}, {{ vibrationalModes.intensities[m-1].toFixed(2) }})
                 td(ng-if='!hasSpectra()') None
               tr(ng-if='hasSpectra()')
                 td Experimental:

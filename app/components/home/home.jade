@@ -29,7 +29,6 @@ div(ng-controller="mongochemMolecules")
             div(flex='15', layout, layout-align='center center')
               span Scalar:
             md-slider(flex, min='0', max='100', ng-model='spectra.scale', class='md-primary', aria-label='scale', id='scale-slider', ng-mouseup="updateFrames()")
-
           table
             tbody
               tr
@@ -55,3 +54,11 @@ div(ng-controller="mongochemMolecules")
                     md-option(ng-repeat="experiment in experiments", ng-value="experiment.name")
                       {{ experiment.name }}
                     md-option(ng-value="None")
+          md-content(layout='row', layout-align="end end")
+            md-menu(md-offset="0 -5")
+              md-button(aria-label="Download", class="md-icon-button", ng-click="openDownloadMenu($mdOpenMenu, $event)")
+                ng-md-icon(icon="cloud_download", style="fill: black")
+              md-menu-content(width="4")
+                md-menu-item(ng-repeat="format in ['CJSON', 'CML', 'XYZ']")
+                  md-button(href="api/v1/molecules/{{selectedMolecule.id}}/{{format | lowercase}}", download="{{selectedMolecule.name}}.{{format |lowercase}}")
+                    span {{format}}

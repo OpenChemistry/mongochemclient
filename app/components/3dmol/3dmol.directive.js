@@ -330,6 +330,10 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 $scope.vibrationalModes.simulateExperimental = $scope.spectra.experiment === 'Simulated';
             };
 
+            $scope.openDownloadMenu = function($mdOpenMenu, ev) {
+                $mdOpenMenu(ev);
+            };
+
             $scope.$on('mongochem-frequency-histogram-clickbar', function(evt, data) {
                 $scope.animateMode(data.mode);
             });

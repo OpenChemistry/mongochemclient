@@ -35,8 +35,14 @@ div(ng-controller="mongochemMolecules")
                 td Name:
                 td {{ mol.name | mongochemUnderscores}}
               tr
-                td InChI:
-                td {{ mol.inchi }}
+                td Formula:
+                td {{ mol.properties.formula | mongochemFormatFormula }}
+              tr
+                td Mass:
+                td {{ mol.properties.mass }}
+              //tr
+              //  td InChI:
+              //  td {{ mol.inchi }}
               tr
                 td InChI Key:
                 td {{ mol.inchikey }}

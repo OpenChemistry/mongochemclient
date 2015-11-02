@@ -64,6 +64,31 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 return str.charAt(0).toUpperCase() + str.substr(1);
             };
         })
+        .filter('mongochemFormatFormula', function() {
+            return function(formula) {
+
+                if (!formula) {
+                    return "Not found";
+                }
+
+                var subChars = [ '\u2080', '\u2081', '\u2082', '\u2083',
+                    '\u2084', '\u2085', '\u2086', '\u2087', '\u2088', '\u2089' ];
+
+                var output = [];
+                var isDigit = /[\d]{1}/;
+
+                for (var i = 0; i < formula.length; i++) {
+                    var c = formula[i];
+                    if (isDigit.test(c)) {
+                        output.push(subChars[parseInt(c)]);
+                    }
+                    else {
+                        output.push(c);
+                    }
+                }
+                return output.join('');
+            };
+        })
         .controller('mongochemMoleculeHome', ['mongochem.Molecule', 'mongochem.Calculations',
                                               'mongochem.VibrationalModes', 'mongochem.Calculations.CJSON',
                                               '$scope', '$state', '$timeout', '$rootScope',

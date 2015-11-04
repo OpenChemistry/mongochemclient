@@ -5,6 +5,9 @@ div(ng-controller="mongochemMolecules")
         div.md-title Molecule:
         md-select(id="mongochem-select-molecule", ng-model="selectedMolecule", ng-change="setInchiKey(selectedMolecule.inchikey)")
           md-option(ng-repeat="molecule in molecules", ng-value="molecule") {{ molecule.name | mongochemUnderscores }}
+        div.md-title Calculation:
+        md-select(id='mongochem-select-calculation', ng-model='selectedCalculation', ng-change='setCalculation(selectedCalculation._id)')
+          md-option(ng-repeat='calculation in calcs', ng-value='calculation') {{ calculation.properties.theory }} ({{ calculation.properties.type }})
 
     div(layout-gt-md='row')
       md-card(flex, layout='row', style='height: 600px')

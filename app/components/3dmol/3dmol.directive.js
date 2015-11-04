@@ -111,6 +111,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     $scope.calcs = Calculations.query({moleculeId: mol._id}, function(calcs) {
                         if (calcs.length > 0) {
                             // Show the first vibrational modes for the first calculation
+                            $scope.selectedCalculation = calcs[0];
                             $scope.vibrationalModes = calcs[0].vibrationalModes;
                         }
                         else {
@@ -169,6 +170,25 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 }
 
                 fetchMolecule(inchikey);
+            };
+
+            $scope.setCalculation = function(id) {
+                $scope.animModel = null;
+                $scope.modeFrames = null;
+                $scope.sdf = null;
+                $scope.spectra.experiment = '';
+
+                if ($scope.viewer) {
+                    $scope.viewer.stopAnimate();
+                }
+
+                for (let i = 0; i < $scope.calcs.length; ++i) {
+                    if ($scope.calcs[i]._id == id) {
+                        $scope.selectedCalculation = $scope.calcs[i];
+                        $scope.vibrationalModes = $scope.calcs[i].vibrationalModes;
+                        return;
+                    }
+                }
             };
 
             $scope.showMolecule = function() {
@@ -321,6 +341,13 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     $scope.setInchiKey(selectedMolecule.inchikey);
                     // ng-change will takeover now
                     dereg();
+                }
+            });
+            var dereg2 = $scope.$watch('selectedCalculation', function(selectedCalculation) {
+                if (selectedCalculation) {
+                    $scope.setCalculation(selectedCalculation._id);
+                    // ng-change will takeover now
+                    dereg2();
                 }
             });
 

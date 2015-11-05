@@ -179,7 +179,6 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 }, function(data) {
                     $scope.viewer.removeAllModels();
                     $scope.cjson = data.cjson;
-                    console.log(data.cjson);
                     $scope.viewer.addModel($scope.cjson, 'cjson');
                     $scope.viewer.setStyle({}, $scope.style);
                     $scope.viewer.zoomTo();

@@ -174,6 +174,20 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 fetchMolecule(inchikey);
             };
 
+            $scope.displayCalculation = function() {
+                CJSON.get({
+                    id: $scope.selectedCalculation._id
+                }, function(data) {
+                    $scope.viewer.removeAllModels();
+                    $scope.cjson = data.cjson;
+                    console.log(data.cjson);
+                    $scope.viewer.addModel($scope.cjson, 'cjson');
+                    $scope.viewer.setStyle({}, $scope.style);
+                    $scope.viewer.zoomTo();
+                    $scope.viewer.render();
+                });
+            };
+
             $scope.setCalculation = function(id) {
                 $scope.animModel = null;
                 $scope.modeFrames = null;
@@ -189,6 +203,8 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     if ($scope.calcs[i]._id == id) {
                         $scope.selectedCalculation = $scope.calcs[i];
                         $scope.vibrationalModes = $scope.calcs[i].vibrationalModes;
+                        // Update the geometry to use the calculation geometry
+                        $scope.displayCalculation();
                         return;
                     }
                 }

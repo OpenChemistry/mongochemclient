@@ -3,15 +3,17 @@ md-dialog(aria-label="Query syntax")
     div(class="md-toolbar-tools")
       h2.md-title Molecular query syntax
   md-dialog-content
-    p The query syntax is as follows
-    p There are six comparison operators:
+    p The query syntax is documented below, where different fields may be combined.
+    p There are two comparison operators for strings and numerics:
     ul
-      li <b>=</b> - string or numeric equals in the case of string equals <b>*</b> can be used as a wildcard.
-      li <b>!=</b> - string or numeric not equals.
-      li <b>&gt;</b> - numeric greater than, has no meaning for strings.
-      li <b>&gt;=</b> - numeric greater than or equal , has no meaning for strings.
-      li <b>&lt;</b> - numeric less than, has no meaning for strings.
-      li <b>&lt;=</b> - numeric less than or equal , has no meaning for strings.
+      li <b>=</b> - equals, in the case of string equals <b>*</b> can be used as a wildcard
+      li <b>!=</b> - not equals
+    p There are four additional operators for numerics (with no meaning for strings):
+    ul
+      li <b>&gt;</b> - greater than
+      li <b>&gt;=</b> - greater than or equal
+      li <b>&lt;</b> - less than
+      li <b>&lt;=</b> - less than or equal
 
     p The comparison operators can be using with the follow string fields:
     ul
@@ -26,7 +28,7 @@ md-dialog(aria-label="Query syntax")
       li <b>atomCount</b>
       li <b>heavyAtomCount</b>
 
-    p The comparison operators can be combine using the following two boolean operator, precedence is left to right:
+    p The comparison operators can be combined using the following two boolean operators, where precedence is left to right:
     ul
       li <b>|</b> - logical OR
       li <b>&</b> - logical AND

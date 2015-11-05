@@ -113,8 +113,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     $scope.calcs = Calculations.query({moleculeId: mol._id}, function(calcs) {
                         if (calcs.length > 0) {
                             // Show the first vibrational modes for the first calculation
-                            $scope.selectedCalculation = calcs[0];
-                            $scope.vibrationalModes = calcs[0].vibrationalModes;
+                            $scope.setCalculation(calcs[0]._id);
                         }
                         else {
                             $scope.vibrationalModes = null;
@@ -380,16 +379,11 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 // Cancel any existing animation loop
                 $scope.viewer.stopAnimate();
 
-                // TODO We shouldn't need to get the CJSON everytime
-                CJSON.get({
-                    id: $scope.selectedCalculation._id
-                },function(data) {
-                    $scope.cjson = data.cjson;
-                    $scope.modeFrames = $scope.generateFrames(mode);
-                    $scope.animModel = null;
-                    // Ensure we don't start two animation timers, use timeout.
-                    $timeout($scope.animateMolecule, 100);
-                });
+                // Generate the frames and animate the model once ready.
+                $scope.modeFrames = $scope.generateFrames(mode);
+                $scope.animModel = null;
+                // Ensure we don't start two animation timers, use timeout.
+                $timeout($scope.animateMolecule, 100);
             };
 
             $scope.modeSelected = function() {

@@ -12,7 +12,7 @@ div(ng-controller="mongochemMolecules")
 
         md-input-container(id='mongochem-search', md-no-float, layout="row", layout-aligin="start center", ng-class="{'md-input-invalid': !search.valid}")
           md-button(aria-label="Help", class="md-icon-button", ng-click="showQueryHelpDialog($event)")
-            ng-md-icon(icon="search", size="30", style="display:inline-block;")
+            ng-md-icon(icon="search", style="display:inline-block;")
             md-tooltip(md-direction="left") Click for query syntax
           input(id="mongochem-query-input", ng-model="search.queryString", type="text", placeholder="Enter query")
 

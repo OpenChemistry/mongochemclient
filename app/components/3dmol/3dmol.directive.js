@@ -1,3 +1,5 @@
+var querySyntaxDialogUrl = require('../querysyntax/querysyntax.dialog.jade');
+
 require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
 
     require('script!3Dmol/build/3Dmol.js');
@@ -389,19 +391,64 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             $scope.$on('mongochem-frequency-histogram-clickbar', function(evt, data) {
                 $scope.animateMode(data.mode);
             });
+
+            $scope.$watch('molecules', function(molecules) {
+                if (molecules) {
+                    let selectedMolecule = null;
+                    for (let i=0; i<molecules.length; i++) {
+                        if ($scope.selectedMolecule && $scope.selectedMolecule.id === molecules[i].id) {
+                            selectedMolecule = molecules[i];
+                            break;
+                        }
+                    }
+
+                    if (!selectedMolecule && molecules.length > 0) {
+                        selectedMolecule = molecules[0];
+                    }
+
+                    // If we have nothing selected reset everything
+                    if (!selectedMolecule) {
+                        $scope.selectedMolecule = null;
+                        $scope.spectra.mode = null;
+                        $scope.spectra.experimental = null;
+                        $scope.mol = null;
+                        $scope.modeFrames = null;
+                        $scope.sdf = null;
+                        $scope.vibrationalModes = null;
+                        $scope.animModel = null;
+
+                        if ($scope.viewer) {
+                            $scope.viewer.clear();
+                        }
+
+                        $rootScope.$broadcast('mongochem-frequency-histogram-selectbar', -1);
+                    }
+                    else if (!$scope.selectedMolecule || selectedMolecule.id != $scope.selectedMolecule.id)  {
+                        $scope.setInchiKey(selectedMolecule.inchikey);
+                    }
+                    $scope.selectedMolecule = selectedMolecule;
+                }
+            });
         }])
         .controller('mongochemMoleculeDetail', ['mongochem.Molecule', '$scope', '$stateParams', function(Molecule, $scope, $stateParams) {
             $scope.mol = Molecule.getByInchiKey({moleculeId: $stateParams.moleculeId}, function(mol) {
                 $scope.displayMolecule(mol , $scope.style);
             });
         }])
-        .controller('mongochemMolecules', ['Molecules', '$scope', '$rootScope', function(Molecules, $scope, $rootScope) {
+        .controller('mongochemMolecules', ['Molecules', '$scope', '$rootScope', '$http', '$q', '$mdDialog', function(Molecules, $scope, $rootScope, $http, $q, $mdDialog) {
+            $scope.search = {valid: true};
+            $scope.molecules = null;
+
+            function updateMolecules(molecules) {
+                molecules.sort(function(a, b) {
+                    return a.name.toLowerCase() > b.name.toLowerCase();
+                });
+                $scope.molecules = molecules;
+            }
+
             function fetchMolecules() {
-                $scope.molecules = Molecules.query({}, function(molecules) {
-                    molecules.sort(function(a, b) {
-                        return a.name.toLowerCase() > b.name.toLowerCase();
-                    });
-                    $scope.selectedMolecule = molecules[0];
+                Molecules.query({}, function(molecules) {
+                    updateMolecules(molecules);
                 });
             }
 
@@ -410,6 +457,90 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             $rootScope.$on('mongochem-molecule-created', function() {
                 fetchMolecules();
             });
+
+            function processQuery(query) {
+                var replaceMap = {
+                    '~' : '~slr~',
+                    '>=' : '~gte~',
+                    '<=' : '~lte~',
+                    '<' : '~lt~',
+                    '>' : '~gt~',
+                    '!=' : '~ne~',
+                    '&' : '~and~',
+                    '|' : '~or~'
+                };
+
+                // If the the user has typed an inchi the run inchi=* query
+                if (/^InChI=.*/.test(query)) {
+                    query = 'inchi='+query;
+                }
+
+                // Strip of prefix
+                query = query.replace('InChI=', '');
+
+                for ( let op in replaceMap) {
+                    query = query.replace(op, replaceMap[op]);
+                }
+
+                // SMILES can have = in them
+                if (!/^\s*smiles\s*~.*/.test(query)) {
+                    query = query.replace('=', '~eq~');
+                }
+
+                return query;
+            }
+
+
+
+            function search() {
+                let queryString = processQuery($scope.search.queryString);
+
+                if ($scope.canceller) {
+                    $scope.canceller.resolve();
+                }
+
+                $scope.canceller = $q.defer();
+
+                $scope.currentQuery = $http.get('api/v1/molecules/search', {
+                    params: {
+                        q: queryString
+                    },
+                    timeout: $scope.canceller.promise
+                }).then(function(response) {
+                    $scope.search.valid = true;
+                    updateMolecules(response.data);
+                }, function(errorResponse) {
+                    // The request was cancelled
+                    if (errorResponse.status === -1) {
+                        return;
+                    }
+                    $scope.search.valid = false;
+                    updateMolecules([]);
+                });
+            }
+
+            $scope.$watch('search.queryString', function(newValue, oldValue) {
+
+                if (typeof newValue === 'undefined' || newValue === oldValue) {
+                    return;
+                }
+
+                if (newValue.length === 0) {
+                    fetchMolecules();
+                    $scope.search.valid = true;
+                }
+                else {
+                    search();
+                }
+            });
+
+            $scope.showQueryHelpDialog = function(evt) {
+                $mdDialog.show({
+                    templateUrl: querySyntaxDialogUrl,
+                    targetEvent: evt,
+                    clickOutsideToClose: true
+                });
+            };
         }])
         .directive('mongochem3dmol', ['$timeout', function($timeout) {
             return {

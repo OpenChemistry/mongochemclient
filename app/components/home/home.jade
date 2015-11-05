@@ -1,13 +1,20 @@
 div(ng-controller="mongochemMolecules")
   div(ng-controller="mongochemMoleculeHome")
     md-card
-      md-card-content(layout="row", layout-align="start center", style="padding: 7px")
-        div.md-title Molecule:
-        md-select(id="mongochem-select-molecule", ng-model="selectedMolecule", ng-change="setInchiKey(selectedMolecule.inchikey)")
-          md-option(ng-repeat="molecule in molecules", ng-value="molecule") {{ molecule.name | mongochemUnderscores }}
-        div.md-title Calculation:
-        md-select(id='mongochem-select-calculation', ng-model='selectedCalculation', ng-change='setCalculation(selectedCalculation._id)')
-          md-option(ng-repeat='calculation in calcs', ng-value='calculation') {{ calculation.properties.theory }} ({{ calculation.properties.type }})
+      md-card-content(layout="row", layout-align="space-between center", style="padding: 7px")
+        div(layout="row", layout-align="start center")
+            div.md-title Molecule:
+            md-select(id="mongochem-select-molecule", ng-model="selectedMolecule", ng-change="setInchiKey(selectedMolecule.inchikey)")
+              md-option(ng-repeat="molecule in molecules", ng-value="molecule") {{ molecule.name | mongochemUnderscores }}
+            div.md-title Calculation:
+            md-select(id='mongochem-select-calculation', ng-model='selectedCalculation', ng-change='setCalculation(selectedCalculation._id)')
+              md-option(ng-repeat='calculation in calcs', ng-value='calculation') {{ calculation.properties.theory }} ({{ calculation.properties.type }})
+
+        md-input-container(id='mongochem-search', md-no-float, layout="row", layout-aligin="start center", ng-class="{'md-input-invalid': !search.valid}")
+          md-button(aria-label="Help", class="md-icon-button", ng-click="showQueryHelpDialog($event)")
+            ng-md-icon(icon="search", size="30", style="display:inline-block;")
+            md-tooltip(md-direction="left") Click for query syntax
+          input(id="mongochem-query-input", ng-model="search.queryString", type="text", placeholder="Enter query")
 
     div(layout-gt-md='row')
       md-card(flex, layout='row', style='height: 600px')

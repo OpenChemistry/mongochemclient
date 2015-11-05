@@ -23,6 +23,7 @@ angular.module('mongochemApp')
                         controller: 'mongochem.UploadDialogController',
                         templateUrl: uploadDialogUrl,
                         targetEvent: e,
+                        clickOutsideToClose: true
                     });
                 };
             },

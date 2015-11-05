@@ -68,7 +68,8 @@ angular.module('mongochem.services')
                 },
                 controller: 'mongochem.LoginDialogController',
                 templateUrl: loginTemplate,
-                targetEvent: evt
+                targetEvent: evt,
+                clickOutsideToClose: true
             });
         };
 

@@ -99,7 +99,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                                                        CJSON, $scope, $state, $timeout, $rootScope) {
 
             // Set the default style
-            $scope.style = {stick:{}, sphere: {scale: 0.3}};
+            $scope.style = {stick: {radius: 0.14}, sphere: {scale: 0.3}};
             $scope.experiments = [{
                 name: 'Simulated'
             }];
@@ -150,7 +150,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     $scope.style = {stick:{}};
                 }
                 else {
-                    $scope.style = {stick:{}, sphere: {scale: 0.3}};
+                    $scope.style = {stick: {radius: 0.14}, sphere: {scale: 0.3}};
                 }
 
                 // It seems that the model is not retained, add it back.

@@ -363,7 +363,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
 
                 // TODO We shouldn't need to get the CJSON everytime
                 CJSON.get({
-                    id: $scope.calcs[0]._id
+                    id: $scope.selectedCalculation._id
                 },function(data) {
                     $scope.cjson = data.cjson;
                     $scope.modeFrames = $scope.generateFrames(mode);

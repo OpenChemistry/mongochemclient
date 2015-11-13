@@ -265,6 +265,14 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 $scope.viewer.removeAllShapes();
                 $scope.viewer.stopAnimate();
                 $scope.viewer.render();
+                if (calcType == 'Energy') {
+                    $scope.showFrequenciesHistogram = false;
+                    $scope.vibrationalModes = null;
+                }
+                else {
+                    $scope.showFrequenciesHistogram = true;
+                    $scope.vibrationalModes = $scope.cjson.vibrations;
+                }
             };
 
             $scope.setCalculation = function(id) {

@@ -314,7 +314,12 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             };
 
             $scope.hasSpectra = function() {
-                return $scope.vibrationalModes && $scope.selectedCalculationType == 'Vibrational';
+                if ($scope.selectedCalculationType) {
+                    return $scope.vibrationalModes && $scope.selectedCalculationType == 'Vibrational';
+                }
+                else {
+                    return $scope.vibrationalModes;
+                 }
             };
 
             $scope.animateMolecule = function() {

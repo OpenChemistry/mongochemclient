@@ -28,6 +28,15 @@ mongochemServices.factory('mongochem.VibrationalModes', ['$resource',
        }
     });
 }]);
+mongochemServices.factory('mongochem.MolecularOrbitals', ['$resource',
+  function($resource){
+    return $resource('api/v1/calculations/:id/cube/:mo', {}, {
+       get: {
+           method: 'GET',
+           transformResponse: function (data) {return {cjson: JSON.parse(data)};},
+       }
+    });
+}]);
 mongochemServices.factory('mongochem.Calculations.SDF', ['$resource',
   function($resource){
     return $resource('api/v1/calculations/:id/sdf', {}, {

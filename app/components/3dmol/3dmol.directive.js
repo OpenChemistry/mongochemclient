@@ -54,6 +54,19 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
         return atoms;
     };
 
+    $3Dmol.VolumeData.prototype.cjson = function(cjson) {
+        this.size = new $3Dmol.Vector3(cjson.cube.dimensions[0],
+                                       cjson.cube.dimensions[1],
+                                       cjson.cube.dimensions[2]);
+        this.origin = new $3Dmol.Vector3(cjson.cube.origin[0],
+                                         cjson.cube.origin[1],
+                                         cjson.cube.origin[2]);
+        this.unit = new $3Dmol.Vector3(cjson.cube.spacing[0],
+                                       cjson.cube.spacing[1],
+                                       cjson.cube.spacing[2]);
+        this.data = new Float32Array(cjson.cube.scalars);
+    }
+
     angular.module('mongochemApp')
         .filter('mongochemUnderscores', function() {
             return function(text) {
@@ -92,10 +105,12 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             };
         })
         .controller('mongochemMoleculeHome', ['mongochem.Molecule', 'mongochem.Calculations',
-                                              'mongochem.VibrationalModes', 'mongochem.Calculations.CJSON',
+                                              'mongochem.VibrationalModes',
+                                              'mongochem.MolecularOrbitals',
+                                              'mongochem.Calculations.CJSON',
                                               '$scope', '$state', '$timeout', '$rootScope',
                                               function(Molecule, Calculations,
-                                                       VibrationalModes,
+                                                       VibrationalModes, MolecularOrbitals,
                                                        CJSON, $scope, $state, $timeout, $rootScope) {
 
             // Set the default style
@@ -173,6 +188,35 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 fetchMolecule(inchikey);
             };
 
+	    $scope.displayMolecularOrbital = function(selectedMO) {
+                MolecularOrbitals.get({
+                    id: $scope.selectedCalculation._id,
+		    mo: selectedMO
+                }, function(data) {
+                    $scope.cjson = data.cjson;
+                    $scope.viewer.removeAllShapes();
+		    $scope.volData = new $3Dmol.VolumeData(data.cjson, 'cjson');
+                    $scope.viewer.addIsosurface($scope.volData, {isoval: 0.02,
+                                                                 color: 'blue',
+                                                                 alpha: 0.9,
+                                                                 smoothness: 10});
+                    $scope.viewer.addIsosurface($scope.volData, {isoval: -0.02,
+                                                                 color: 'red',
+                                                                 alpha: 0.9,
+                                                                 smoothness: 10});
+                    $scope.viewer.setStyle({}, $scope.style);
+                    $scope.viewer.render();
+                });
+            };
+
+            $scope.hasOrbitals = function() {
+                return $scope.selectedCalculationType == 'Energy';
+            };
+
+            $scope.moSelected = function() {
+                $scope.displayMolecularOrbital($scope.orbitals.mo);
+            }
+
             $scope.displayCalculation = function() {
                 CJSON.get({
                     id: $scope.selectedCalculation._id
@@ -183,7 +227,44 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     $scope.viewer.setStyle({}, $scope.style);
                     $scope.viewer.zoomTo();
                     $scope.viewer.render();
+		    // Figure out what types of data the molecule contains
+                    $scope.calculationTypes = [];
+                    $scope.selectedCalculationType = null;
+                    $scope.orbitals = null;
+                    if ($scope.cjson.vibrations) {
+                        $scope.calculationTypes.push('Vibrational');
+                        if (!$scope.selectedCalculationType) {
+                            $scope.selectedCalculationType = 'Vibrational';
+                        }
+                    }
+                    if ($scope.cjson.basisSet) {
+                        $scope.calculationTypes.push('Energy');
+                        if (!$scope.selectedCalculationType) {
+                            $scope.selectedCalculationType = 'Energy';
+                        }
+                        $scope.orbitals = {};
+                        $scope.orbitals.electronCount = $scope.cjson.basisSet.electronCount;
+                        $scope.orbitals.mos = [];
+                        for (let i = 0; i < $scope.orbitals.electronCount; ++i) {
+                            let text = '';
+                            if (i == $scope.orbitals.electronCount / 2) {
+                                text = ' (HOMO)';
+                            }
+                            else if (i == $scope.orbitals.electronCount / 2 + 1) {
+                                text = ' (LUMO)';
+                            }
+                            let moObj = { id: i, text: i + text };
+                            $scope.orbitals.mos.push(moObj);
+                        }
+                        $scope.orbitals.mo = $scope.orbitals.electronCount / 2;
+                    }
                 });
+            };
+
+            $scope.setCalculationType = function(calcType) {
+                $scope.viewer.removeAllShapes();
+                $scope.viewer.stopAnimate();
+                $scope.viewer.render();
             };
 
             $scope.setCalculation = function(id) {
@@ -217,7 +298,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             };
 
             $scope.hasSpectra = function() {
-                return $scope.vibrationalModes;
+                return $scope.vibrationalModes && $scope.selectedCalculationType == 'Vibrational';
             };
 
             $scope.animateMolecule = function() {

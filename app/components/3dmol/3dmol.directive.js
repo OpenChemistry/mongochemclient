@@ -119,8 +119,15 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 name: 'Simulated'
             }];
 
-            var fetchMolecule = function(inichikey) {
-                $scope.mol = Molecule.getByInchiKey({moleculeId: inichikey}, function(mol) {
+            var fetchMolecule = function(inchikey) {
+                if ($scope.loadedMoleculeKey) {
+                    if ($scope.loadedMoleculeKey == inchikey) {
+                        return;
+                    }
+                }
+                $scope.loadedMoleculeKey = inchikey;
+
+                $scope.mol = Molecule.getByInchiKey({moleculeId: inchikey}, function(mol) {
                     $scope.viewer.clear();
                     $scope.displayMolecule(mol, $scope.style);
 
@@ -223,9 +230,8 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                         return;
                     }
                 }
-                else {
-                    $scope.loadedCalculationId = $scope.selectedCalculation._id;
-                }
+                $scope.loadedCalculationId = $scope.selectedCalculation._id;
+
                 CJSON.get({
                     id: $scope.selectedCalculation._id
                 }, function(data) {

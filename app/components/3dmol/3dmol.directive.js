@@ -218,6 +218,14 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             }
 
             $scope.displayCalculation = function() {
+                if ($scope.loadedCalculationId) {
+                    if ($scope.loadedCalculationId == $scope.selectedCalculation._id) {
+                        return;
+                    }
+                }
+                else {
+                    $scope.loadedCalculationId = $scope.selectedCalculation._id;
+                }
                 CJSON.get({
                     id: $scope.selectedCalculation._id
                 }, function(data) {

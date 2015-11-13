@@ -238,9 +238,12 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                         }
                     }
                     if ($scope.cjson.basisSet) {
+                        var showAnOrbital = false;
                         $scope.calculationTypes.push('Energy');
                         if (!$scope.selectedCalculationType) {
                             $scope.selectedCalculationType = 'Energy';
+			    $scope.vibrationalModes = null;
+                            showAnOrbital = true;
                         }
                         $scope.orbitals = {};
                         $scope.orbitals.electronCount = $scope.cjson.basisSet.electronCount;
@@ -257,6 +260,9 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                             $scope.orbitals.mos.push(moObj);
                         }
                         $scope.orbitals.mo = $scope.orbitals.electronCount / 2;
+                        if (showAnOrbital) {
+                            $scope.displayMolecularOrbital($scope.orbitals.mo);
+                        }
                     }
                 });
             };
@@ -265,9 +271,11 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 $scope.viewer.removeAllShapes();
                 $scope.viewer.stopAnimate();
                 $scope.viewer.render();
+                console.log('calculation type changes to ' + calcType);
                 if (calcType == 'Energy') {
                     $scope.showFrequenciesHistogram = false;
                     $scope.vibrationalModes = null;
+                    $scope.displayMolecularOrbital($scope.orbitals.mo);
                 }
                 else {
                     $scope.showFrequenciesHistogram = true;

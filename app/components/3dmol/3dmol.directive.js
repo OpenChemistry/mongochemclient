@@ -134,7 +134,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     // Fetch the calculations associated with this molecule
                     $scope.calcs = Calculations.query({moleculeId: mol._id}, function(calcs) {
                         if (calcs.length > 0) {
-                            // Show the first vibrational modes for the first calculation
+                            // Build up a list of unique types, pick a default
                             $scope.setCalculation(calcs[0]._id);
                         }
                         else {
@@ -237,6 +237,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 }, function(data) {
                     $scope.viewer.removeAllModels();
                     $scope.cjson = data.cjson;
+                    $scope.vibrationalModes = $scope.cjson.vibrations;
                     $scope.viewer.addModel($scope.cjson, 'cjson');
                     $scope.viewer.setStyle({}, $scope.style);
                     $scope.viewer.zoomTo();
@@ -311,7 +312,6 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 for (let i = 0; i < $scope.calcs.length; ++i) {
                     if ($scope.calcs[i]._id == id) {
                         $scope.selectedCalculation = $scope.calcs[i];
-                        $scope.vibrationalModes = $scope.calcs[i].vibrationalModes;
                         // Update the geometry to use the calculation geometry
                         $scope.displayCalculation();
                         return;

@@ -65,7 +65,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                                        cjson.cube.spacing[1],
                                        cjson.cube.spacing[2]);
         this.data = new Float32Array(cjson.cube.scalars);
-    }
+    };
 
     angular.module('mongochemApp')
         .filter('mongochemUnderscores', function() {
@@ -174,10 +174,10 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                             $scope.selectedCalculationType = tmpSel;
                             fetchCalculations(mol._id,
                                               $scope.selectedCalculationType);
-                            console.log('Types found: ' + types)
+                            console.log('Types found: ' + types);
                         }
                         else {
-                            console.log('No calc types found...')
+                            console.log('No calc types found...');
                         }
                      });
                 });
@@ -279,7 +279,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
 
             $scope.moSelected = function() {
                 $scope.displayMolecularOrbital($scope.orbitals.mo);
-            }
+            };
 
             $scope.displayCalculation = function() {
                 if ($scope.loadedCalculationId) {

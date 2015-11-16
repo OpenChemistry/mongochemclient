@@ -59,8 +59,8 @@ require.ensure(['d3'], function(require) {
 
         this.render = function(data) {
 
-            // If we are not passed data then this if for resize so used
-            // cached data ...
+            // If we are not passed data then this is for resize so use
+            // cached data...
             if (!data) {
                 data = _data;
             }

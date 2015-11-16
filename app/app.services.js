@@ -19,12 +19,25 @@ mongochemServices.factory('mongochem.Calculations', ['$resource',
   function($resource){
     return $resource('api/v1/calculations/:id', {id: '@_id'}, {});
 }]);
+mongochemServices.factory('mongochem.CalculationTypes', ['$resource',
+  function($resource){
+    return $resource('api/v1/calculations/types/:id', {id: '@_id'}, {});
+}]);
 mongochemServices.factory('mongochem.VibrationalModes', ['$resource',
   function($resource){
     return $resource('api/v1/calculations/:id/vibrationalmodes/:mode', {}, {
        get: {
            method: 'GET',
            transformResponse: function (data) {return {frames: angular.fromJson(data)};},
+       }
+    });
+}]);
+mongochemServices.factory('mongochem.MolecularOrbitals', ['$resource',
+  function($resource){
+    return $resource('api/v1/calculations/:id/cube/:mo', {}, {
+       get: {
+           method: 'GET',
+           transformResponse: function (data) {return {cjson: JSON.parse(data)};},
        }
     });
 }]);

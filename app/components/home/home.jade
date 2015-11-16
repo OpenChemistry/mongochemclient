@@ -6,9 +6,12 @@ div(ng-controller="mongochemMolecules")
             div.md-title Molecule:
             md-select(id="mongochem-select-molecule", ng-model="selectedMolecule", ng-change="setInchiKey(selectedMolecule.inchikey)")
               md-option(ng-repeat="molecule in molecules", ng-value="molecule") {{ molecule.name | mongochemUnderscores }}
+            div.md-title Type:
+            md-select(id='mongochem-select-type', ng-model='selectedCalculationType', ng-change='setCalculationType(selectedCalculationType)')
+              md-option(ng-repeat='type in calculationTypes', ng-value='type') {{ type }}
             div.md-title Calculation:
             md-select(id='mongochem-select-calculation', ng-model='selectedCalculation', ng-change='setCalculation(selectedCalculation._id)')
-              md-option(ng-repeat='calculation in calcs', ng-value='calculation') {{ calculation.properties.theory }} ({{ calculation.properties.type }})
+              md-option(ng-repeat='calculation in calcs', ng-value='calculation') {{ calculation.properties.friendlyName }}
 
         md-input-container(id='mongochem-search', md-no-float, layout="row", layout-aligin="start center", ng-class="{'md-input-invalid': !search.valid}")
           md-button(aria-label="Help", class="md-icon-button", ng-click="showQueryHelpDialog($event)")
@@ -56,6 +59,15 @@ div(ng-controller="mongochemMolecules")
               tr
                 td InChI Key:
                 td {{ mol.inchikey }}
+              tr(ng-show='hasOrbitals()')
+                td Electron Count:
+                td {{ orbitals.electronCount }}
+              tr(ng-show='hasOrbitals()')
+                td Molecular Orbital:
+                td
+                  md-select(id='mongochem-select-mo', ng-model='orbitals.mo', ng-change='moSelected()', placeholder='Select molecular orbital')
+                    md-option(ng-repeat='mo in orbitals.mos', ng-value='{{mo.id}}')
+                      {{mo.text}}
               tr
                 td Current mode:
                 td(ng-if='hasSpectra()')

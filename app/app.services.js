@@ -19,6 +19,10 @@ mongochemServices.factory('mongochem.Calculations', ['$resource',
   function($resource){
     return $resource('api/v1/calculations/:id', {id: '@_id'}, {});
 }]);
+mongochemServices.factory('mongochem.CalculationTypes', ['$resource',
+  function($resource){
+    return $resource('api/v1/calculations/types/:id', {id: '@_id'}, {});
+}]);
 mongochemServices.factory('mongochem.VibrationalModes', ['$resource',
   function($resource){
     return $resource('api/v1/calculations/:id/vibrationalmodes/:mode', {}, {

@@ -104,13 +104,17 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 return output.join('');
             };
         })
-        .controller('mongochemMoleculeHome', ['mongochem.Molecule', 'mongochem.Calculations',
+        .controller('mongochemMoleculeHome', ['mongochem.Molecule',
+                                              'mongochem.Calculations',
+                                              'mongochem.CalculationTypes',
                                               'mongochem.VibrationalModes',
                                               'mongochem.MolecularOrbitals',
                                               'mongochem.Calculations.CJSON',
                                               '$scope', '$state', '$timeout', '$rootScope',
                                               function(Molecule, Calculations,
-                                                       VibrationalModes, MolecularOrbitals,
+                                                       CalculationTypes,
+                                                       VibrationalModes,
+                                                       MolecularOrbitals,
                                                        CJSON, $scope, $state, $timeout, $rootScope) {
 
             // Set the default style
@@ -118,6 +122,20 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             $scope.experiments = [{
                 name: 'Simulated'
             }];
+
+	    var fetchCalculations = function(moleculeId, calculationType) {
+                // Fetch the calculations associated with this molecule
+                $scope.calcs = Calculations.query({moleculeId: moleculeId, calculationType: calculationType.toLowerCase()}, function(calcs) {
+                    if (calcs.length > 0) {
+                        // Pick the first one and display it.
+                        $scope.setCalculation(calcs[0]._id);
+                    }
+                    else {
+                        $scope.vibrationalModes = null;
+                        $scope.basisSet = null;
+                    }
+                });
+            };
 
             var fetchMolecule = function(inchikey) {
                 if ($scope.loadedMoleculeKey) {
@@ -131,16 +149,36 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     $scope.viewer.clear();
                     $scope.displayMolecule(mol, $scope.style);
 
-                    // Fetch the calculations associated with this molecule
-                    $scope.calcs = Calculations.query({moleculeId: mol._id}, function(calcs) {
-                        if (calcs.length > 0) {
-                            // Build up a list of unique types, pick a default
-                            $scope.setCalculation(calcs[0]._id);
+                    // Fetch the calculation types
+                    $scope.calcTypes = CalculationTypes.query({moleculeId: mol._id}, function(types) {
+                        $scope.calculationTypes = [];
+                        let tmpSel = null;
+                        if (types.length > 0) {
+                            if (types.indexOf('energy') > -1) {
+                                $scope.calculationTypes.push('Energy');
+                                tmpSel = 'Energy';
+                            }
+                            if (types.indexOf('optimization') > -1) {
+                                $scope.calculationTypes.push('Optimization');
+                                if (!tmpSel) {
+                                    tmpSel = 'Optimization';
+                                }
+                            }
+                            if (types.indexOf('vibrational') > -1) {
+                                $scope.calculationTypes.push('Vibrational');
+                                if (!tmpSel) {
+                                    tmpSel = 'Vibrational';
+                                }
+                            }
+                            $scope.selectedCalculationType = tmpSel;
+                            fetchCalculations(mol._id,
+                                              $scope.selectedCalculationType);
+                            console.log('Types found: ' + types)
                         }
                         else {
-                            $scope.vibrationalModes = null;
+                            console.log('No calc types found...')
                         }
-                    });
+                     });
                 });
             };
 
@@ -217,7 +255,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             };
 
             $scope.hasOrbitals = function() {
-                return $scope.selectedCalculationType == 'Energy';
+                return $scope.selectedCalculationType == 'Energy' || $scope.selectedCalculationType == 'Optimization';
             };
 
             $scope.moSelected = function() {
@@ -237,29 +275,19 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 }, function(data) {
                     $scope.viewer.removeAllModels();
                     $scope.cjson = data.cjson;
-                    $scope.vibrationalModes = $scope.cjson.vibrations;
                     $scope.viewer.addModel($scope.cjson, 'cjson');
                     $scope.viewer.setStyle({}, $scope.style);
                     $scope.viewer.zoomTo();
                     $scope.viewer.render();
 		    // Figure out what types of data the molecule contains
-                    $scope.calculationTypes = [];
-                    $scope.selectedCalculationType = null;
                     $scope.orbitals = null;
-                    if ($scope.cjson.vibrations) {
-                        $scope.calculationTypes.push('Vibrational');
-                        if (!$scope.selectedCalculationType) {
-                            $scope.selectedCalculationType = 'Vibrational';
-                        }
+                    $scope.vibrationalModes = null;
+                    let selType = $scope.selectedCalculationType.toLowerCase();
+                    if (selType == 'vibrational') {
+                        $scope.vibrationalModes = $scope.cjson.vibrations;
                     }
-                    if ($scope.cjson.basisSet) {
-                        var showAnOrbital = false;
-                        $scope.calculationTypes.push('Energy');
-                        if (!$scope.selectedCalculationType) {
-                            $scope.selectedCalculationType = 'Energy';
-			    $scope.vibrationalModes = null;
-                            showAnOrbital = true;
-                        }
+                    if (selType == 'optimization' || selType == 'energy') {
+                        var showAnOrbital = true;
                         $scope.orbitals = {};
                         $scope.orbitals.electronCount = $scope.cjson.basisSet.electronCount;
                         $scope.orbitals.mos = [];
@@ -287,7 +315,8 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 $scope.viewer.stopAnimate();
                 $scope.viewer.render();
                 console.log('calculation type changes to ' + calcType);
-                if (calcType == 'Energy') {
+                fetchCalculations($scope.mol._id, calcType);
+                if (calcType == 'Energy' || calcType == 'Optimization') {
                     $scope.showFrequenciesHistogram = false;
                     $scope.vibrationalModes = null;
                     $scope.displayMolecularOrbital($scope.orbitals.mo);

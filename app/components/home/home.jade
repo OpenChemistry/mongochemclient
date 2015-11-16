@@ -11,7 +11,7 @@ div(ng-controller="mongochemMolecules")
               md-option(ng-repeat='type in calculationTypes', ng-value='type') {{ type }}
             div.md-title Calculation:
             md-select(id='mongochem-select-calculation', ng-model='selectedCalculation', ng-change='setCalculation(selectedCalculation._id)')
-              md-option(ng-repeat='calculation in calcs', ng-value='calculation') {{ calculation.properties.theory }} ({{ calculation.properties.type }})
+              md-option(ng-repeat='calculation in calcs', ng-value='calculation') {{ calculation.properties.friendlyName }}
 
         md-input-container(id='mongochem-search', md-no-float, layout="row", layout-aligin="start center", ng-class="{'md-input-invalid': !search.valid}")
           md-button(aria-label="Help", class="md-icon-button", ng-click="showQueryHelpDialog($event)")

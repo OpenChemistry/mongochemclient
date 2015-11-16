@@ -238,7 +238,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     id: $scope.selectedCalculation._id,
 		    mo: selectedMO
                 }, function(data) {
-                    $scope.cjson = data.cjson;
+                    $scope.cubeData = data.cjson;
                     $scope.viewer.removeAllShapes();
 		    $scope.volData = new $3Dmol.VolumeData(data.cjson, 'cjson');
                     $scope.viewer.addIsosurface($scope.volData, {isoval: 0.02,
@@ -291,7 +291,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                         $scope.orbitals = {};
                         $scope.orbitals.electronCount = $scope.cjson.basisSet.electronCount;
                         $scope.orbitals.mos = [];
-                        for (let i = 0; i < $scope.orbitals.electronCount; ++i) {
+                        for (let i = 1; i <= $scope.orbitals.electronCount; ++i) {
                             let text = '';
                             if (i == $scope.orbitals.electronCount / 2) {
                                 text = ' (HOMO)';

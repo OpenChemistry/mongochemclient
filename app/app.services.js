@@ -59,5 +59,15 @@ mongochemServices.factory('mongochem.Calculations.CJSON', ['$resource',
       }
   });
 }]);
+mongochemServices.factory('mongochem.Experiments', ['$resource',
+  function($resource){
+    return $resource('api/v1/experiments', {}, {
+        get: {
+            method: 'GET',
+            transformResponse: function (data) {return {experiments: JSON.parse(data)};},
+        }
+    });
+}]);
+
 
 

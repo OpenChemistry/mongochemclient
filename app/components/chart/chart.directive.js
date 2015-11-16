@@ -199,9 +199,22 @@ require.ensure(['d3'], function(require) {
                     .attr('class', 'line');
             }
 
-            if (data.simulateExperimental) {
-                // TODO This will be replaced with real data
-                let experimentalLineData = lineFreqData.slice();
+            if (data.experiment) {
+                let measuredSpectrum = data.experiment.measuredSpectrum;
+                let experimentalLineData = [];
+                let frequencies = measuredSpectrum.frequencies.values;
+                let intensities = measuredSpectrum.intensities.values;
+                let maxIntensityCalculated = intensityRange[1];
+                let maxIntensityExperiment = d3.max(intensities);
+                let scaleFactor = maxIntensityCalculated /  maxIntensityExperiment;
+
+                for (let i = 0; i < frequencies.length; ++i) {
+                    experimentalLineData.push({
+                        'x': frequencies[i],
+                        'y': intensities[i] * scaleFactor,
+                    });
+                }
+
                 let dragStart = null;
                 let experimentalScaleFactor = 1;
                 let experimentalLine = _svg.select('.experimental-line');

@@ -226,6 +226,19 @@ require.ensure(['d3'], function(require) {
                         .attr('class', 'experimental-line');
                 }
 
+                _x.domain(d3.extent(frequencies))
+                .range([0, _width]);
+                _svg.select('.x.axis')
+                .attr('transform', 'translate(0,' + _height + ')')
+                .transition().duration(200).ease('sin-in-out')
+                .call(_xAxis)
+                .selectAll('text')
+                .style('text-anchor', 'end')
+                .attr('dx', '-.8em')
+                .attr('dy', '-.55em')
+                .attr('transform', 'rotate(-90)' );
+
+
                 var expDrag = d3.behavior.drag().on('drag', function() {
                     var pixelDelta = d3.event.sourceEvent.pageY - dragStart,
                         pixelY = d3.event.y, pixelYStart = pixelY - pixelDelta,

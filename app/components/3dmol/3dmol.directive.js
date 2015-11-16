@@ -122,6 +122,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             $scope.experiments = [{
                 name: 'Simulated'
             }];
+            $scope.orbitalScale = 42;
 
 	    var fetchCalculations = function(moleculeId, calculationType) {
                 // Fetch the calculations associated with this molecule
@@ -233,6 +234,21 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 fetchMolecule(inchikey);
             };
 
+            $scope.updateIsovalue = function() {
+                $scope.viewer.removeAllShapes();
+                let iso = ($scope.orbitalScale + 1) / 2000.0;
+                console.log('Setting isovalue to ' + iso);
+                $scope.viewer.addIsosurface($scope.volData, {isoval: iso,
+                                                             color: 'blue',
+                                                             alpha: 0.9,
+                                                             smoothness: 10});
+                $scope.viewer.addIsosurface($scope.volData, {isoval: -iso,
+                                                             color: 'red',
+                                                             alpha: 0.9,
+                                                             smoothness: 10});
+                $scope.viewer.render();
+            };
+
 	    $scope.displayMolecularOrbital = function(selectedMO) {
                 MolecularOrbitals.get({
                     id: $scope.selectedCalculation._id,
@@ -240,12 +256,15 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 }, function(data) {
                     $scope.cubeData = data.cjson;
                     $scope.viewer.removeAllShapes();
+
+                    let iso = ($scope.orbitalScale + 1) / 2000.0;
+
 		    $scope.volData = new $3Dmol.VolumeData(data.cjson, 'cjson');
-                    $scope.viewer.addIsosurface($scope.volData, {isoval: 0.02,
+                    $scope.viewer.addIsosurface($scope.volData, {isoval: iso,
                                                                  color: 'blue',
                                                                  alpha: 0.9,
                                                                  smoothness: 10});
-                    $scope.viewer.addIsosurface($scope.volData, {isoval: -0.02,
+                    $scope.viewer.addIsosurface($scope.volData, {isoval: -iso,
                                                                  color: 'red',
                                                                  alpha: 0.9,
                                                                  smoothness: 10});
@@ -289,6 +308,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     if (selType == 'optimization' || selType == 'energy') {
                         var showAnOrbital = true;
                         $scope.orbitals = {};
+
                         $scope.orbitals.electronCount = $scope.cjson.basisSet.electronCount;
                         $scope.orbitals.mos = [];
                         for (let i = 1; i <= $scope.orbitals.electronCount; ++i) {

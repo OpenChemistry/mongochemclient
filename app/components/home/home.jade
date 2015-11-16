@@ -42,6 +42,10 @@ div(ng-controller="mongochemMolecules")
             div(flex='15', layout, layout-align='center center')
               span Scalar:
             md-slider(flex, min='0', max='100', ng-model='spectra.scale', class='md-primary', aria-label='scale', id='scale-slider', ng-mouseup="updateFrames()")
+          div(layout='row', ng-show='hasOrbitals()')
+            div(flex='15', layout, layout-align='center center')
+              span Isovalue:
+            md-slider(flex, min='0', max='100', ng-model='orbitalScale', class='md-primary', aria-label='scale', id='scale-slider', ng-mouseup="updateIsovalue()")
           table
             tbody
               tr

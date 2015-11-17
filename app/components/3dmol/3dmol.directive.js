@@ -65,7 +65,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                                        cjson.cube.spacing[1],
                                        cjson.cube.spacing[2]);
         this.data = new Float32Array(cjson.cube.scalars);
-    }
+    };
 
     angular.module('mongochemApp')
         .filter('mongochemUnderscores', function() {
@@ -110,12 +110,13 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                                               'mongochem.VibrationalModes',
                                               'mongochem.MolecularOrbitals',
                                               'mongochem.Calculations.CJSON',
+                                              'mongochem.Experiments',
                                               '$scope', '$state', '$timeout', '$rootScope',
                                               function(Molecule, Calculations,
                                                        CalculationTypes,
                                                        VibrationalModes,
                                                        MolecularOrbitals,
-                                                       CJSON, $scope, $state, $timeout, $rootScope) {
+                                                       CJSON, Experiments, $scope, $state, $timeout, $rootScope) {
 
             // Set the default style
             $scope.style = {stick: {radius: 0.14}, sphere: {scale: 0.3}};
@@ -124,7 +125,11 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             }];
             $scope.orbitalScale = 42;
 
-	    var fetchCalculations = function(moleculeId, calculationType) {
+            Experiments.get({}, function(data) {
+                $scope.experiments = data.experiments;
+            });
+
+      var fetchCalculations = function(moleculeId, calculationType) {
                 // Fetch the calculations associated with this molecule
                 $scope.calcs = Calculations.query({moleculeId: moleculeId, calculationType: calculationType.toLowerCase()}, function(calcs) {
                     if (calcs.length > 0) {
@@ -174,10 +179,10 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                             $scope.selectedCalculationType = tmpSel;
                             fetchCalculations(mol._id,
                                               $scope.selectedCalculationType);
-                            console.log('Types found: ' + types)
+                            console.log('Types found: ' + types);
                         }
                         else {
-                            console.log('No calc types found...')
+                            console.log('No calc types found...');
                         }
                      });
                 });
@@ -249,17 +254,17 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 $scope.viewer.render();
             };
 
-	    $scope.displayMolecularOrbital = function(selectedMO) {
+            $scope.displayMolecularOrbital = function(selectedMO) {
                 MolecularOrbitals.get({
                     id: $scope.selectedCalculation._id,
-		    mo: selectedMO
+                    mo: selectedMO
                 }, function(data) {
                     $scope.cubeData = data.cjson;
                     $scope.viewer.removeAllShapes();
 
                     let iso = ($scope.orbitalScale + 1) / 2000.0;
 
-		    $scope.volData = new $3Dmol.VolumeData(data.cjson, 'cjson');
+        $scope.volData = new $3Dmol.VolumeData(data.cjson, 'cjson');
                     $scope.viewer.addIsosurface($scope.volData, {isoval: iso,
                                                                  color: 'blue',
                                                                  alpha: 0.9,
@@ -279,7 +284,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
 
             $scope.moSelected = function() {
                 $scope.displayMolecularOrbital($scope.orbitals.mo);
-            }
+            };
 
             $scope.displayCalculation = function() {
                 if ($scope.loadedCalculationId) {
@@ -298,7 +303,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     $scope.viewer.setStyle({}, $scope.style);
                     $scope.viewer.zoomTo();
                     $scope.viewer.render();
-		    // Figure out what types of data the molecule contains
+        // Figure out what types of data the molecule contains
                     $scope.orbitals = null;
                     $scope.vibrationalModes = null;
                     let selType = $scope.selectedCalculationType.toLowerCase();
@@ -556,7 +561,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
             };
 
             $scope.experimentSelected = function() {
-                $scope.vibrationalModes.simulateExperimental = $scope.spectra.experiment === 'Simulated';
+                $scope.vibrationalModes.experiment = $scope.spectra.experiment;
             };
 
             $scope.openDownloadMenu = function($mdOpenMenu, ev) {

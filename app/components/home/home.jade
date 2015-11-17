@@ -83,8 +83,8 @@ div(ng-controller="mongochemMolecules")
                 td Experimental:
                 td
                   md-select(id="mongochem-select-experimental", ng-model="spectra.experiment", ng-change="experimentSelected()", placeholder="Select experiment")
-                    md-option(ng-repeat="experiment in experiments", ng-value="experiment.name")
-                      {{ experiment.name }}
+                    md-option(ng-repeat="experiment in experiments", ng-value="experiment")
+                      {{ experiment.molecularFormula }}
                     md-option(ng-value="None")
           md-content(layout='row', layout-align="end end")
             md-menu(md-offset="0 -5")

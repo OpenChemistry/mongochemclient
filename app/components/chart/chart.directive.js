@@ -57,6 +57,35 @@ require.ensure(['d3'], function(require) {
                 .text('Intensity');
         }
 
+        this._generateLine = function(data, frequencyRange, intensityRange, gamma) {
+            var freqRange = [ 0.0, 0.0 ];
+            var prefactor = gamma / 3.14;
+            var lineFreqData = [];
+            var numberOfPoints = 400;
+            let increment = (frequencyRange[1] - frequencyRange[0]) / (numberOfPoints - 1);
+            for (let i = 0; i < numberOfPoints; ++i) {
+                let freqIntensity = 0.0;
+                let currentFreq = frequencyRange[0] + i * increment;
+                for (let j = 0; j < data.intensities.length; ++j) {
+                    let xx0 = currentFreq - data.frequencies[j];
+                    freqIntensity += prefactor * data.intensities[j] / (xx0*xx0 + gamma*gamma);
+                }
+                if (freqIntensity > freqRange[1]) {
+                    freqRange[1] = freqIntensity;
+                }
+                lineFreqData.push({
+                    'x': currentFreq,
+                    'y': freqIntensity
+                });
+            }
+            let normalization = intensityRange[1] / freqRange[1];
+            for (let i = 0; i < numberOfPoints; ++i) {
+                lineFreqData[i].y = lineFreqData[i].y * normalization;
+            }
+
+            return lineFreqData;
+        };
+
         this.render = function(data) {
 
             // If we are not passed data then this is for resize so use
@@ -153,33 +182,7 @@ require.ensure(['d3'], function(require) {
 
             bars.exit().transition().style({opacity: 0}).remove();
 
-            var gamma = 40;
-            var freqRange = [];
-            freqRange[0] = 0.0;
-            freqRange[1] = 0.0;
-            var prefactor = gamma / 3.14;
-            var lineFreqData = [];
-            var numberOfPoints = 400;
-            let increment = (frequencyRange[1] - frequencyRange[0]) / (numberOfPoints - 1);
-            for (let i = 0; i < numberOfPoints; ++i) {
-                let freqIntensity = 0.0;
-                let currentFreq = frequencyRange[0] + i * increment;
-                for (let j = 0; j < data.intensities.length; ++j) {
-                    let xx0 = currentFreq - data.frequencies[j];
-                    freqIntensity += prefactor * data.intensities[j] / (xx0*xx0 + gamma*gamma);
-                }
-                if (freqIntensity > freqRange[1]) {
-                    freqRange[1] = freqIntensity;
-                }
-                lineFreqData.push({
-                    'x': currentFreq,
-                    'y': freqIntensity
-                });
-            }
-            let normalization = intensityRange[1] / freqRange[1];
-            for (let i = 0; i < numberOfPoints; ++i) {
-                lineFreqData[i].y = lineFreqData[i].y * normalization;
-            }
+            let lineFreqData = this._generateLine(data, frequencyRange, intensityRange, 40);
 
             var lineFunc = d3.svg.line()
                 .x(function (d) {
@@ -199,9 +202,22 @@ require.ensure(['d3'], function(require) {
                     .attr('class', 'line');
             }
 
-            if (data.simulateExperimental) {
-                // TODO This will be replaced with real data
-                let experimentalLineData = lineFreqData.slice();
+            if (data.experiment) {
+                let measuredSpectrum = data.experiment.measuredSpectrum;
+                let experimentalLineData = [];
+                let frequencies = measuredSpectrum.frequencies.values;
+                let intensities = measuredSpectrum.intensities.values;
+                let maxIntensityCalculated = intensityRange[1];
+                let maxIntensityExperiment = d3.max(intensities);
+                let scaleFactor = maxIntensityCalculated /  maxIntensityExperiment;
+
+                for (let i = 0; i < frequencies.length; ++i) {
+                    experimentalLineData.push({
+                        'x': frequencies[i],
+                        'y': intensities[i] * scaleFactor,
+                    });
+                }
+
                 let dragStart = null;
                 let experimentalScaleFactor = 1;
                 let experimentalLine = _svg.select('.experimental-line');
@@ -213,6 +229,31 @@ require.ensure(['d3'], function(require) {
                         .attr('class', 'experimental-line');
                 }
 
+                var expFreqRange = [d3.min(frequencies) * 0.95,
+                                    d3.max(frequencies) * 1.05];
+                _x.domain(expFreqRange)
+                    .range([0, _width]);
+                _svg.select('.x.axis')
+                    .attr('transform', 'translate(0,' + _height + ')')
+                    .transition().duration(200).ease('sin-in-out')
+                    .call(_xAxis)
+                    .selectAll('text')
+                    .style('text-anchor', 'end')
+                    .attr('dx', '-.8em')
+                    .attr('dy', '-.55em')
+                    .attr('transform', 'rotate(-90)' );
+                bars.transition()
+                    .duration(1000)
+                    .ease('cubic-in-out')
+                    .attr('transform', function(d) {
+                        return 'translate(' + (_x(d.frequency) - barWidth/2) + ',' + _y(d.intensity) + ')'; })
+                    .select('rect')
+                    .attr('width', barWidth)
+                    .attr('height', function(d) { return _height - _y(d.intensity); });
+
+                lineFreqData = this._generateLine(data, expFreqRange, intensityRange, 5);
+
+                var numberOfPoints = 400;
                 var expDrag = d3.behavior.drag().on('drag', function() {
                     var pixelDelta = d3.event.sourceEvent.pageY - dragStart,
                         pixelY = d3.event.y, pixelYStart = pixelY - pixelDelta,

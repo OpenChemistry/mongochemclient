@@ -129,7 +129,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                 $scope.experiments = data.experiments;
             });
 
-      var fetchCalculations = function(moleculeId, calculationType) {
+            var fetchCalculations = function(moleculeId, calculationType) {
                 // Fetch the calculations associated with this molecule
                 $scope.calcs = Calculations.query({moleculeId: moleculeId, calculationType: calculationType.toLowerCase()}, function(calcs) {
                     if (calcs.length > 0) {
@@ -159,6 +159,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     $scope.calcTypes = CalculationTypes.query({moleculeId: mol._id}, function(types) {
                         $scope.calculationTypes = [];
                         let tmpSel = null;
+			let prevSel = $scope.selectedCalculationType;
                         if (types.length > 0) {
                             if (types.indexOf('energy') > -1) {
                                 $scope.calculationTypes.push('Energy');
@@ -176,7 +177,10 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                                     tmpSel = 'Vibrational';
                                 }
                             }
-                            $scope.selectedCalculationType = tmpSel;
+                            if ($scope.calculationTypes.indexOf(prevSel) < 0) {
+                                console.log('changing to ' + tmpSel);
+                                $scope.selectedCalculationType = tmpSel;
+                            }
                             fetchCalculations(mol._id,
                                               $scope.selectedCalculationType);
                             console.log('Types found: ' + types);
@@ -264,7 +268,7 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
 
                     let iso = ($scope.orbitalScale + 1) / 2000.0;
 
-        $scope.volData = new $3Dmol.VolumeData(data.cjson, 'cjson');
+                    $scope.volData = new $3Dmol.VolumeData(data.cjson, 'cjson');
                     $scope.viewer.addIsosurface($scope.volData, {isoval: iso,
                                                                  color: 'blue',
                                                                  alpha: 0.9,
@@ -303,34 +307,36 @@ require.ensure(['script!3Dmol/build/3Dmol.js'], function(require) {
                     $scope.viewer.setStyle({}, $scope.style);
                     $scope.viewer.zoomTo();
                     $scope.viewer.render();
-        // Figure out what types of data the molecule contains
+                    // Figure out what types of data the molecule contains
                     $scope.orbitals = null;
                     $scope.vibrationalModes = null;
                     let selType = $scope.selectedCalculationType.toLowerCase();
                     if (selType == 'vibrational') {
                         $scope.vibrationalModes = $scope.cjson.vibrations;
                     }
+                    var showAnOrbital = false;
                     if (selType == 'optimization' || selType == 'energy') {
-                        var showAnOrbital = true;
-                        $scope.orbitals = {};
+                        showAnOrbital = true;
+                    }
 
-                        $scope.orbitals.electronCount = $scope.cjson.basisSet.electronCount;
-                        $scope.orbitals.mos = [];
-                        for (let i = 1; i <= $scope.orbitals.electronCount; ++i) {
-                            let text = '';
-                            if (i == $scope.orbitals.electronCount / 2) {
-                                text = ' (HOMO)';
-                            }
-                            else if (i == $scope.orbitals.electronCount / 2 + 1) {
-                                text = ' (LUMO)';
-                            }
-                            let moObj = { id: i, text: i + text };
-                            $scope.orbitals.mos.push(moObj);
+                    $scope.orbitals = {};
+
+                    $scope.orbitals.electronCount = $scope.cjson.basisSet.electronCount;
+                    $scope.orbitals.mos = [];
+                    for (let i = 1; i <= $scope.orbitals.electronCount; ++i) {
+                        let text = '';
+                        if (i == $scope.orbitals.electronCount / 2) {
+                            text = ' (HOMO)';
                         }
-                        $scope.orbitals.mo = $scope.orbitals.electronCount / 2;
-                        if (showAnOrbital) {
-                            $scope.displayMolecularOrbital($scope.orbitals.mo);
+                        else if (i == $scope.orbitals.electronCount / 2 + 1) {
+                            text = ' (LUMO)';
                         }
+                        let moObj = { id: i, text: i + text };
+                        $scope.orbitals.mos.push(moObj);
+                    }
+                    $scope.orbitals.mo = $scope.orbitals.electronCount / 2;
+                    if (showAnOrbital) {
+                        $scope.displayMolecularOrbital($scope.orbitals.mo);
                     }
                 });
             };

@@ -58,9 +58,7 @@ require.ensure(['d3'], function(require) {
         }
 
         this._generateLine = function(data, frequencyRange, intensityRange, gamma) {
-            var freqRange = [];
-            freqRange[0] = 0.0;
-            freqRange[1] = 0.0;
+            var freqRange = [ 0.0, 0.0 ];
             var prefactor = gamma / 3.14;
             var lineFreqData = [];
             var numberOfPoints = 400;
@@ -231,20 +229,31 @@ require.ensure(['d3'], function(require) {
                         .attr('class', 'experimental-line');
                 }
 
-                _x.domain(d3.extent(frequencies))
-                .range([0, _width]);
+                var expFreqRange = [d3.min(frequencies) * 0.95,
+                                    d3.max(frequencies) * 1.05];
+                _x.domain(expFreqRange)
+                    .range([0, _width]);
                 _svg.select('.x.axis')
-                .attr('transform', 'translate(0,' + _height + ')')
-                .transition().duration(200).ease('sin-in-out')
-                .call(_xAxis)
-                .selectAll('text')
-                .style('text-anchor', 'end')
-                .attr('dx', '-.8em')
-                .attr('dy', '-.55em')
-                .attr('transform', 'rotate(-90)' );
+                    .attr('transform', 'translate(0,' + _height + ')')
+                    .transition().duration(200).ease('sin-in-out')
+                    .call(_xAxis)
+                    .selectAll('text')
+                    .style('text-anchor', 'end')
+                    .attr('dx', '-.8em')
+                    .attr('dy', '-.55em')
+                    .attr('transform', 'rotate(-90)' );
+                bars.transition()
+                    .duration(1000)
+                    .ease('cubic-in-out')
+                    .attr('transform', function(d) {
+                        return 'translate(' + (_x(d.frequency) - barWidth/2) + ',' + _y(d.intensity) + ')'; })
+                    .select('rect')
+                    .attr('width', barWidth)
+                    .attr('height', function(d) { return _height - _y(d.intensity); });
 
-                lineFreqData = this._generateLine(data, d3.extent(frequencies), intensityRange, 10);
+                lineFreqData = this._generateLine(data, expFreqRange, intensityRange, 5);
 
+                var numberOfPoints = 400;
                 var expDrag = d3.behavior.drag().on('drag', function() {
                     var pixelDelta = d3.event.sourceEvent.pageY - dragStart,
                         pixelY = d3.event.y, pixelYStart = pixelY - pixelDelta,

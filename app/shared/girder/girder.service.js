@@ -46,7 +46,8 @@ angular.module('mongochem.services')
                        '&name=', opt.name || file.name,
                        '&size=', file.size,
                        '&mimeType=', file.type].join(''))
-                .success(function (upload) {
+                .then(function (upload) {
+                    upload = upload.data;
                     let chunkSize = 16*1024*1024,
                         uploadNextChunk,
                         i = 0,
@@ -66,18 +67,17 @@ angular.module('mongochem.services')
                         if (offset + chunkSize >= file.size) {
                             blob = file.slice(offset);
                             that.uploadChunk(upload._id, offset, blob)
-                                .success(function (data) {
-                                    $rootScope.$broadcast('file-uploaded', parentId, data);
+                                .then(function (data) {
+                                    $rootScope.$broadcast('file-uploaded', parentId, data.data);
                                     $rootScope.$broadcast('notification-message', null);
-                                    deferred.resolve(data._id);
-                                })
-                                .error(function (data) {
+                                    deferred.resolve(data.data._id);
+                                }, function (data) {
                                     deferred.reject(data);
                                 });
                         } else {
                             blob = file.slice(offset, offset + chunkSize);
                             that.uploadChunk(upload._id, offset , blob)
-                                .success(function () {
+                                .then(function () {
                                     let msg;
 
                                     i += 1;
@@ -91,16 +91,14 @@ angular.module('mongochem.services')
                                     });
 
                                     uploadNextChunk(offset + chunkSize);
-                                })
-                                .error(function (data) {
+                                }, function (data) {
                                     deferred.reject(data);
                                 });
                         }
                     };
 
                     uploadNextChunk(0);
-                })
-                .error(function (data) {
+                }, function (data) {
                     deferred.reject(data);
                 });
 

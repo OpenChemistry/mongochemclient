@@ -39,12 +39,9 @@ Now run the build:
     cd <repo directory>
     npm start
 
-Point your browser to http://localhost:8000
+Point your browser to http://localhost:3000
 
 The dev server will watch resources and rebuild as necessary.
-#### Setting dev server port
-
-    npm config set mongochemclient:dev_server:port <port>
 
 Contributing
 ------------

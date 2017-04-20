@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
-import logo from './mongochem.svg';
+import logo from '../mongochem.svg';
 import './app.css';
-import { loadMolecule } from './redux/ducks/molecules'
-import { selectMolecule } from './redux/ducks/app'
-import selectors from './redux/selectors';
+import { loadMolecule } from '../redux/ducks/molecules'
+import { selectMolecule } from '../redux/ducks/app'
+import selectors from '../redux/selectors';
 import Molecule3d from 'molecule-3d-for-react'
 
 

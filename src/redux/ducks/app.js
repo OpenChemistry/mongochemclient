@@ -11,7 +11,7 @@ export const initialState = {
 const reducer = handleAction(SELECT_MOLECULE, {
   next: (state, action) => {
     const selectedMoleculeId = action.payload.id;
-    return Object.assign({}, state, { selectedMoleculeId });
+    return {...state, selectedMoleculeId };
   },
   throw: (state, action) => state
 }, initialState);

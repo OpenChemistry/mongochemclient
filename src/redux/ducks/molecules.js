@@ -16,17 +16,16 @@ export const initialState = {
     byId: {},
   };
 
-
 // Reducer
 const reducer = handleActions({
   RECEIVE_MOLECULES: (state, action) => {
     const molecules = action.payload.molecules;
-    return Object.assign({}, state, { molecules });
+    return {...state,  molecules };
   },
   RECEIVE_MOLECULE: (state, action) => {
     const molecule = action.payload.molecule;
-    const byId = Object.assign({}, state.byId, { [molecule._id]: molecule })
-    return Object.assign({}, state, { byId });
+    const byId = {...state.byId, [molecule._id]: molecule };
+    return {...state, byId};
   }
 }, initialState);
 

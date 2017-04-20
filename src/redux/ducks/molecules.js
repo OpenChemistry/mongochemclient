@@ -1,3 +1,5 @@
+import { createAction, handleActions } from 'redux-actions';
+
 // Actions
 export const LOAD_MOLECULES   = 'LOAD_MOLECULES';
 export const REQUEST_MOLECULES   = 'REQUEST_MOLECULES';
@@ -16,77 +18,34 @@ export const initialState = {
 
 
 // Reducer
-export default function reducer(state = initialState, action = {}) {
-  switch (action.type) {
-    case RECEIVE_MOLECULES: {
-      const molecules = action.payload.molecules;
-      return Object.assign({}, state, { molecules });
-    }
-    case RECEIVE_MOLECULE: {
-      const molecule = action.payload.molecule;
-      const byId = Object.assign({}, state.byId, { [molecule._id]: molecule })
-      return Object.assign({}, state, { byId });
-    }
-    default: return state;
+const reducer = handleActions({
+  RECEIVE_MOLECULES: (state, action) => {
+    const molecules = action.payload.molecules;
+    return Object.assign({}, state, { molecules });
+  },
+  RECEIVE_MOLECULE: (state, action) => {
+    const molecule = action.payload.molecule;
+    const byId = Object.assign({}, state.byId, { [molecule._id]: molecule })
+    return Object.assign({}, state, { byId });
   }
-}
+}, initialState);
 
 // Action Creators
 
 // Fetch molecules
-export function loadMolecules() {
-  return { type: LOAD_MOLECULES, };
-}
+export const loadMolecules = createAction(LOAD_MOLECULES);
 
-export function requestMolecules() {
-  return { type: REQUEST_MOLECULES };
-}
+export const requestMolecules = createAction(REQUEST_MOLECULES);
 
-export function receiveMolecules(molecules) {
-  return {
-      type: RECEIVE_MOLECULES,
-      payload: {
-          molecules
-      }
-  };
-}
+export const receiveMolecules = createAction(RECEIVE_MOLECULES, (molecules) => ({ molecules }));
+
 
 // Fetch molecule
-export function loadMolecule(inchikey) {
-  return {
-    type: LOAD_MOLECULE,
-    payload: {
-      inchikey
-    }
-  };
-}
+export const loadMolecule = createAction(LOAD_MOLECULE, (inchikey) => ({ inchikey }));
 
-export function requestMolecule(inchikey) {
-  return {
-    type: REQUEST_MOLECULE,
-    payload: {
-      inchikey
-    }
-  }
-}
+export const requestMolecule = createAction(REQUEST_MOLECULE, (inchikey) => ({ inchikey }));
 
-export function receiveMolecule(molecule) {
-  return {
-    type: RECEIVE_MOLECULE,
-    payload: {
-      molecule
-    }
-  };
-}
+export const receiveMolecule = createAction(RECEIVE_MOLECULE, (molecule) => ({ molecule }));
 
-// Select molecule
-export function selectMolecule(_id) {
-  return {
-    type: SELECT_MOLECULE,
-    payload: {
-      _id
-    }
-  };
-}
-
+export default reducer;
 

@@ -2,14 +2,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 
-import { loadMoleculeById } from '../redux/ducks/molecules'
+import { loadMolecule, loadMoleculeById } from '../redux/ducks/molecules'
 import Molecule from '../components/molecule'
 import selectors from '../redux/selectors'
 
 class MoleculeContainer extends Component {
 
   componentDidMount() {
-    this.props.dispatch(loadMoleculeById(this.props.id));
+    if (this.props.id != null) {
+      this.props.dispatch(loadMoleculeById(this.props.id));
+    }
+    else if (this.props.inchikey != null) {
+      this.props.dispatch(loadMolecule(this.props.inchikey ));
+    }
   }
 
   render() {
@@ -18,22 +23,33 @@ class MoleculeContainer extends Component {
 }
 
 MoleculeContainer.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
+  inchikey: PropTypes.string
 }
 
 MoleculeContainer.defaultProps = {
-  id: null
+  id: null,
+  inchikey: null
 }
 
 function mapStateToProps(state, ownProps) {
-  let id = ownProps.match.params.id;
+  let id = ownProps.match.params.id || null;
+  let inchikey = ownProps.match.params.inchikey || null;
   let props = {
-    id
+    id,
+    inchikey
   }
 
   let molecules = selectors.molecules.getMoleculesById(state);
-  if (id in molecules) {
+  if (id != null && id in molecules) {
     props.cjson = molecules[id].cjson;
+  }
+  else if (inchikey != null) {
+    let byInchiKey = selectors.molecules.byInchiKey(state);
+    if (inchikey in byInchiKey) {
+      // TODO change we hide this in a selector with a parameter?
+      props.cjson = molecules[byInchiKey[inchikey]].cjson;
+    }
   }
 
   return props;

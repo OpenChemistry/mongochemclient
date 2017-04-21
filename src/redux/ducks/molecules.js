@@ -16,6 +16,7 @@ export const SELECT_MOLECULE = 'SELECT_MOLECULE';
 export const initialState = {
     molecules: [],
     byId: {},
+    byInchiKey: {},
   };
 
 // Reducer
@@ -27,7 +28,8 @@ const reducer = handleActions({
   RECEIVE_MOLECULE: (state, action) => {
     const molecule = action.payload.molecule;
     const byId = {...state.byId, [molecule._id]: molecule };
-    return {...state, byId};
+    const byInchiKey = {...state.byInchiKey, [molecule.inchikey]: molecule._id }
+    return {...state, byId, byInchiKey};
   }
 }, initialState);
 

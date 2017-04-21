@@ -18,6 +18,7 @@ ReactDOM.render(
       <div>
         <Route exact path='/' component={App}/>
         <Route exact path='/molecules/:id' component={MoleculeContainer}/>
+        <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
       </div>
     </ConnectedRouter>
   </Provider>,

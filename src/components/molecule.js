@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux'
-import selectors from '../redux/selectors';
 import Molecule3d from 'molecule-3d-for-react'
 
 

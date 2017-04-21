@@ -6,6 +6,8 @@ export const REQUEST_MOLECULES   = 'REQUEST_MOLECULES';
 export const RECEIVE_MOLECULES   = 'RECEIVE_MOLECULES';
 
 export const LOAD_MOLECULE   = 'LOAD_MOLECULE';
+export const LOAD_MOLECULE_BY_ID   = 'LOAD_MOLECULE_BY_ID';
+export const REQUEST_MOLECULE_BY_ID = 'REQUEST_MOLECULE_BY_ID';
 export const REQUEST_MOLECULE   = 'REQUEST_MOLECULE';
 export const RECEIVE_MOLECULE   = 'RECEIVE_MOLECULE';
 
@@ -38,9 +40,12 @@ export const requestMolecules = createAction(REQUEST_MOLECULES);
 
 export const receiveMolecules = createAction(RECEIVE_MOLECULES, (molecules) => ({ molecules }));
 
-
 // Fetch molecule
 export const loadMolecule = createAction(LOAD_MOLECULE, (inchikey) => ({ inchikey }));
+
+export const loadMoleculeById = createAction(LOAD_MOLECULE_BY_ID, (id) => ({ id }));
+
+export const requestMoleculeById = createAction(REQUEST_MOLECULE_BY_ID, (id) => ({ id }));
 
 export const requestMolecule = createAction(REQUEST_MOLECULE, (inchikey) => ({ inchikey }));
 

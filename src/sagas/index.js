@@ -9,40 +9,51 @@ export function fetchMoleculesFromGirder() {
   let origin = window.location.origin;
   return axios.get(`${origin}/api/v1/molecules`)
           .then(response => response.data )
-          .catch( error => console.error(error) )
 }
 
 export function fetchMoleculeFromGirder(inchikey) {
   let origin = window.location.origin;
   return axios.get(`${origin}/api/v1/molecules/inchikey/${inchikey}`)
           .then(response => response.data )
-          .catch( error => console.error(error) )
 }
 
 export function fetchMoleculeByIdFromGirder(id) {
   let origin = window.location.origin;
   return axios.get(`${origin}/api/v1/molecules/${id}`)
           .then(response => response.data )
-          .catch( error => console.error(error) )
 }
 
-
 export function* fetchMolecules() {
-  yield put( requestMolecules() )
-  const molecules = yield call(fetchMoleculesFromGirder)
-  yield put( receiveMolecules(molecules) )
+  try {
+    yield put( requestMolecules() )
+    const molecules = yield call(fetchMoleculesFromGirder)
+    yield put( receiveMolecules(molecules) )
+  }
+  catch(error) {
+    yield put( requestMolecules(error) )
+  }
 }
 
 export function* fetchMolecule(action) {
-  yield put( requestMolecule(action.payload.inchikey) )
-  const molecule = yield call(fetchMoleculeFromGirder, action.payload.inchikey)
-  yield put( receiveMolecule(molecule) )
+  try {
+    yield put( requestMolecule(action.payload.inchikey) )
+    const molecule = yield call(fetchMoleculeFromGirder, action.payload.inchikey)
+    yield put( receiveMolecule(molecule) )
+  }
+  catch(error) {
+    yield put( requestMolecule(error) )
+  }
 }
 
 export function* fetchMoleculeById(action) {
-  yield put( requestMoleculeById(action.payload.id) )
-  const molecule = yield call(fetchMoleculeByIdFromGirder, action.payload.id)
-  yield put( receiveMolecule(molecule) )
+  try {
+    yield put( requestMoleculeById(action.payload.id) )
+    const molecule = yield call(fetchMoleculeByIdFromGirder, action.payload.id)
+    yield put( receiveMolecule(molecule) )
+  }
+  catch(error) {
+    yield put( requestMoleculeById(error) )
+  }
 }
 
 export function* watchFetchMolecules() {

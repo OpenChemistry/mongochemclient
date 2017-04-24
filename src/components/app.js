@@ -62,6 +62,11 @@ function mapStateToProps(state) {
     props.selectedMolecule = selectedMolecule;
   }
 
+  let error = selectors.molecules.error(state);
+  if (error != null) {
+    console.error(error);
+  }
+
   return props;
 }
 

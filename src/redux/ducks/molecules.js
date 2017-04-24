@@ -17,10 +17,35 @@ export const initialState = {
     molecules: [],
     byId: {},
     byInchiKey: {},
+    error: null,
   };
 
 // Reducer
 const reducer = handleActions({
+  REQUEST_MOLECULES: (state, action) => {
+    if (action.error) {
+      return {...state, error: action.payload.error};
+    }
+    else {
+      return {...state,  error:null };
+    }
+  },
+  REQUEST_MOLECULE: (state, action) => {
+    if (action.error) {
+      return {...state, error: action.payload.error};
+    }
+    else {
+      return {...state,  error:null };
+    }
+  },
+  REQUEST_MOLECULE_BY_ID: (state, action) => {
+    if (action.error) {
+      return {...state, error: action.payload.error};
+    }
+    else {
+      return {...state,  error:null };
+    }
+  },
   RECEIVE_MOLECULES: (state, action) => {
     const molecules = action.payload.molecules;
     return {...state,  molecules };

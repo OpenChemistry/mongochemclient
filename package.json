@@ -24,7 +24,7 @@
     "normalizr": "^3.2.2",
     "axios": "^0.16.1",
     "redux-saga": "^0.14.6",
-    "molecule-3d-for-react": "^0.4.2"
+    "molecule-3d-for-react": "git+https://github.com/cjh1/molecule-3d-for-react.git"
   },
   "devDependencies": {
     "react-scripts": "0.9.5",

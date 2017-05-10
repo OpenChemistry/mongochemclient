@@ -23,7 +23,8 @@
     "normalizr": "^3.2.2",
     "axios": "^0.16.1",
     "redux-saga": "^0.14.6",
-    "molecule-3d-for-react": "git+https://github.com/cjh1/molecule-3d-for-react.git"
+    "molecule-3d-for-react": "git+https://github.com/cjh1/molecule-3d-for-react.git",
+    "postinstall-build": "^3.0.1"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
@@ -70,7 +71,8 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "build:components": "webpack --config config/webpack-components.config.js",
-    "test": "node scripts/test.js --env=jsdom"
+    "test": "node scripts/test.js --env=jsdom",
+    "postinstall": "postinstall-build build --script build:components"
   },
   "jest": {
     "collectCoverageFrom": [

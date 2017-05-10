@@ -2,6 +2,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Molecule3d from 'molecule-3d-for-react'
 
+const elementSymbols = [
+  "Xx", "H", "He", "Li", "Be", "B", "C", "N", "O", "F",
+  "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K",
+  "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu",
+  "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y",
+  "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In",
+  "Sn", "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr",
+  "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm",
+  "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au",
+  "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac",
+  "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es",
+  "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt",
+  "Ds", "Rg", "Cn", "Uut", "Uuq", "Uup", "Uuh", "Uus", "Uuo" ];
 
 class Molecule extends Component {
 
@@ -33,13 +46,13 @@ function moleculeToModelData(cjson) {
   }
 
   const atoms = cjson.atoms;
-  for (let [i, element] of atoms.elements.symbol.entries()) {
+  for (let [i, element] of atoms.elements.number.entries()) {
     const coords = atoms.coords['3d'];
     const coordsIndex = i * 3;
     let positions = [coords[coordsIndex], coords[coordsIndex+1], coords[coordsIndex+2]];
 
     let atom = {
-        elem: element,
+        elem: elementSymbols[element],
         serial: i,
         positions,
     }

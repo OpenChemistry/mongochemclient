@@ -16,12 +16,16 @@ const elementSymbols = [
   "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt",
   "Ds", "Rg", "Cn", "Uut", "Uuq", "Uup", "Uuh", "Uus", "Uuo" ];
 
+const orbitalScale = 42
+
 class Molecule extends Component {
 
   render() {
     return (
       <div>
-        <Molecule3d modelData={ moleculeToModelData(this.props.cjson) } />
+        <Molecule3d modelData={ moleculeToModelData(this.props.cjson) }
+                    volume={ this.props.cjson && this.props.cjson.cube ? this.props.cjson.cube : null }
+                    isoSurfaces={ this.props.cjson ? isoSurfaces(this.props.cjson) : []}/>
       </div>
     );
   }
@@ -75,5 +79,26 @@ function moleculeToModelData(cjson) {
 
   return modelData;
 }
+
+function isoSurfaces(cjson) {
+
+  if (!'cube' in cjson) {
+    return [];
+  }
+
+  const iso = (orbitalScale + 1) / 2000.0;
+
+  return [{
+    value: iso,
+    color: 'blue',
+    opacity: 0.9,
+  }, {
+    value: -iso,
+    color: 'red',
+    opacity: 0.9
+  }
+  ];
+}
+
 
 export default Molecule

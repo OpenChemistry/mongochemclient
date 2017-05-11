@@ -22,7 +22,10 @@ module.exports = {
   module: {
     loaders: [{
         test: /\.js$/,
-        exclude: /node_modules/,
+        exclude: function(modulePath) {
+          return /node_modules/.test(modulePath) &&
+                 !/node_modules\/mongochemclient/.test(modulePath);
+        },
         loader: `babel-loader?presets[]=es2015,presets[]=react`,
     }]
   },

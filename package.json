@@ -70,7 +70,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "build:components": "webpack --config config/webpack-components.config.js",
+    "build:components": "webpack -p --config config/webpack-components.config.js",
     "test": "node scripts/test.js --env=jsdom",
     "postinstall": "postinstall-build build --script build:components"
   },

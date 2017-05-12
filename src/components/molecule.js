@@ -25,7 +25,8 @@ class Molecule extends Component {
       <div>
         <Molecule3d modelData={ moleculeToModelData(this.props.cjson) }
                     volume={ this.props.cjson && this.props.cjson.cube ? this.props.cjson.cube : null }
-                    isoSurfaces={ this.props.cjson ? isoSurfaces(this.props.cjson) : []}/>
+                    isoSurfaces={ this.props.cjson ? isoSurfaces(this.props.cjson) : []}
+                    backgroundColor='#ffffff'/>
       </div>
     );
   }

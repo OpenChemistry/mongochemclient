@@ -5,6 +5,7 @@ import { ConnectedRouter } from 'react-router-redux'
 import { Route } from 'react-router'
 import App from './components/app';
 import MoleculeContainer from './containers/molecule';
+import VibrationalModesChartContainer from './containers/charts';
 import './index.css';
 import configureStore from './store/configureStore'
 import rootSaga from './sagas'

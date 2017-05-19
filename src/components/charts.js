@@ -1,10 +1,15 @@
-import d3Wrap from 'react-d3-wrap'
+import React, { Component } from 'react';
+import { findDOMNode } from 'react-dom'
 import d3 from 'd3'
 import './charts.css'
 
-const VibrationalModesChart = d3Wrap({
-  initialize (svg, data, options) {
-    console.log('init')
+export default class VibrationalModesChart extends Component {
+
+  render () {
+    return <svg width='100%' height='100%' />
+  }
+
+  componentDidMount () {
     this.x = d3.scale.linear();
     this.y = d3.scale.linear();
 
@@ -18,7 +23,8 @@ const VibrationalModesChart = d3Wrap({
       .orient('left')
       .tickFormat(d3.format('.2f'));
 
-    this.svg = d3.select(svg)
+
+    this.svg = d3.select(findDOMNode(this))
     this.svg = this.svg.append('g');
 
     this.svg.append('g')
@@ -35,103 +41,177 @@ const VibrationalModesChart = d3Wrap({
     this.yLabel = this.svg.append('text')
       .attr('text-anchor', 'middle')
       .text('Intensity');
-  },
 
-  update (svg, data, options) {
-    // setup container, root svg element passed in along with data and options
-    //const chart = d3.select(svg)
-    //  .append('g')
-    //  .attr('transform', `translate(${options.margin.left}, ${options.margin.top})`)
+    window.addEventListener("resize", this.renderChart.bind(this));
 
-      // If we are not passed data then this is for resize so use
-      // cached data...
-      if (!data) {
-          data = this.data;
-      }
-      // Save the data for resize events
-      this.data = data;
+    this.renderChart();
 
-      if (!data) {
-          return;
-      }
+  }
 
-      var frequencyRange = [0, d3.max(data.frequencies) * 1.1],
-          intensityRange = [0, d3.max(data.intensities)],
-          that = this, width = d3.select(svg).node().offsetWidth,
-          height = d3.select(svg).node().offsetHeight;
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.renderChart.bind(this));
+  }
 
-      width = this.props.width;
-      height = this.props.height;
+  componentDidUpdate () {
+    this.renderChart();
+  }
 
-      if (width === 0 || height === 0) {
-          return;
-      }
+  renderChart () {
+    // If we are not passed data then this is for resize so use
+    // cached data...
+    let data = this.props.data;
 
-      this.margin = {top: 30, right: 30, bottom: 70, left: 80};
+    if (!data) {
+      data = this.data;
+    }
 
-      this.width = width - this.margin.left - this.margin.right;
-      this.height = height - this.margin.top - this.margin.bottom;
+    // Save the data for resize events
+    this.data = this.props.data;
 
-      this.svg.attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+    if (!this.props.data) {
+      return;
+    }
 
-      this.x.domain(frequencyRange)
-          .range([0, this.width]);
-      this.y.domain(intensityRange)
-          .range([this.height, 0]);
+    var element = findDOMNode(this), frequencyRange = [0, d3.max(data.frequencies) * 1.1],
+      intensityRange = [0, d3.max(data.intensities)],
+      that = this, width = element.clientWidth,
+      height = element.clientHeight;
 
-      console.log(frequencyRange)
-      console.log(intensityRange)
+    //width = this.props.width;
+    //height = this.props.height;
 
-      this.svg.select('.x.axis')
-          .attr('transform', 'translate(0,' + this.height + ')')
-          .transition().duration(200).ease('sin-in-out')
-          .call(this.xAxis)
-          .selectAll('text')
-          .style('text-anchor', 'end')
-          .attr('dx', '-.8em')
-          .attr('dy', '-.55em')
-          .attr('transform', 'rotate(-90)' );
+    if (width === 0 || height === 0) {
+      return;
+    }
 
-      this.svg.select('.y.axis')
-          .transition().duration(200).ease('sin-in-out')
-          .call(this.yAxis)
-          .selectAll('text')
-          .style('text-anchor', 'end')
-          .attr('dy', '.5em');
+    this.margin = {top: 30, right: 30, bottom: 70, left: 80};
 
-      let chartData = [];
+    this.width = width - this.margin.left - this.margin.right;
+    this.height = height - this.margin.top - this.margin.bottom;
 
-      for(let i = 0; i < data.intensities.length; i++) {
-          chartData.push({
-              'index': i,
-              'frequency': data.frequencies[i],
-              'intensity': data.intensities[i],
-              'mode': data.modes[i]
-          });
-      }
+    this.svg.attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
 
-      var bars = this.svg.selectAll('.bar')
-          .data(chartData);
+    this.x.domain(frequencyRange)
+      .range([0, this.width]);
+    this.y.domain(intensityRange)
+      .range([this.height, 0]);
 
-      var g = bars.enter()
-          .append('g')
-          .attr('class', 'bar');
+    this.svg.select('.x.axis')
+      .attr('transform', 'translate(0,' + this.height + ')')
+      .transition().duration(200).ease('sin-in-out')
+      .call(this.xAxis)
+      .selectAll('text')
+      .style('text-anchor', 'end')
+      .attr('dx', '-.8em')
+      .attr('dy', '-.55em')
+      .attr('transform', 'rotate(-90)' );
 
-      g.append('rect')
+    this.svg.select('.y.axis')
+      .transition().duration(200).ease('sin-in-out')
+      .call(this.yAxis)
+      .selectAll('text')
+      .style('text-anchor', 'end')
+      .attr('dy', '.5em');
+
+    let chartData = [];
+
+    for(let i = 0; i < data.intensities.length; i++) {
+      chartData.push({
+        'index': i,
+        'frequency': data.frequencies[i],
+        'intensity': data.intensities[i],
+        'mode': data.modes[i]
+      });
+    }
+
+    var bars = this.svg.selectAll('.bar')
+      .data(chartData);
+
+    var g = bars.enter()
+      .append('g')
+      .attr('class', 'bar');
+
+    g.append('rect')
       .on('mouseover', (data) => {
-          if (options.mouseoverbar) {
-              options.mouseoverbar(data);
-          }
+        if (this.props.mouseoverbar) {
+          this.props.mouseoverbar(data);
+        }
       })
       .on('click', (data) => {
-          if(options.clickbar) {
-              options.clickbar(data);
-              that.selectedBar(data.index);
-          }
+        if(this.props.clickbar) {
+          this.props.clickbar(data);
+          that.selectedBar(data.index);
+        }
       });
 
-      const barWidth = 4;
+    const barWidth = 4;
 
+    bars.transition()
+      .duration(1000)
+      .ease('cubic-in-out')
+      .attr('transform', (d) => 'translate(' + (this.x(d.frequency) - barWidth/2) + ',' + this.y(d.intensity) + ')')
+      .select('rect')
+      .attr('width', barWidth)
+      .attr('height', (d) => this.height - this.y(d.intensity));
+
+    bars.exit().transition().style({opacity: 0}).remove();
+
+    let lineFreqData = this.generateLine(data, frequencyRange, intensityRange, 40);
+
+    const lineFunc = d3.svg.line()
+      .x((d) => this.x(d.x))
+      .y((d) => this.y(d.y))
+      .interpolate('linear');
+
+    let line = this.svg.select('.line');
+    if (line.empty()) {
+      line = this.svg.append('svg:path');
+      line.attr('stroke', 'black')
+        .attr('stroke-width', 2)
+        .attr('fill', 'none')
+        .attr('class', 'line');
+    }
+
+    if (data.experiment) {
+      let measuredSpectrum = data.experiment.measuredSpectrum;
+      let experimentalLineData = [];
+      let frequencies = measuredSpectrum.frequencies.values;
+      let intensities = measuredSpectrum.intensities.values;
+      let maxIntensityCalculated = intensityRange[1];
+      let maxIntensityExperiment = d3.max(intensities);
+      let scaleFactor = maxIntensityCalculated /  maxIntensityExperiment;
+
+      for (let i = 0; i < frequencies.length; ++i) {
+        experimentalLineData.push({
+          'x': frequencies[i],
+          'y': intensities[i] * scaleFactor,
+        });
+      }
+
+      let dragStart = null;
+      let experimentalScaleFactor = 1;
+      let experimentalLine = this.svg.select('.experimental-line');
+      if (experimentalLine.empty()) {
+        experimentalLine = this.svg.append('svg:path');
+        experimentalLine.attr('stroke', '#74C365')
+          .attr('stroke-width', 4)
+          .attr('fill', 'none')
+          .attr('class', 'experimental-line');
+      }
+
+      const expFreqRange = [d3.min(frequencies) * 0.95,
+                              d3.max(frequencies) * 1.05];
+      this.x.domain(expFreqRange)
+        .range([0, this.width]);
+      this.svg.select('.x.axis')
+        .attr('transform', 'translate(0,' + this.height + ')')
+        .transition().duration(200).ease('sin-in-out')
+        .call(this.xAxis)
+        .selectAll('text')
+        .style('text-anchor', 'end')
+        .attr('dx', '-.8em')
+        .attr('dy', '-.55em')
+        .attr('transform', 'rotate(-90)' );
       bars.transition()
         .duration(1000)
         .ease('cubic-in-out')
@@ -140,116 +220,49 @@ const VibrationalModesChart = d3Wrap({
         .attr('width', barWidth)
         .attr('height', (d) => this.height - this.y(d.intensity));
 
-      bars.exit().transition().style({opacity: 0}).remove();
+      lineFreqData = this.generateLine(data, expFreqRange, intensityRange, 5);
 
-      let lineFreqData = this.generateLine(data, frequencyRange, intensityRange, 40);
+      const numberOfPoints = 400;
+      var expDrag = d3.behavior.drag().on('drag', () => {
+        var pixelDelta = d3.event.sourceEvent.pageY - dragStart,
+        pixelY = d3.event.y, pixelYStart = pixelY - pixelDelta,
+        intensityStart = this.y.invert(pixelYStart),
+        intensity = this.y.invert(pixelY);
 
-      const lineFunc = d3.svg.line()
+        // Calculate scale factor
+        if (intensityStart > 0) {
+          experimentalScaleFactor = intensity / intensityStart;
+        }
+
+        experimentalScaleFactor = Math.max(0.01, experimentalScaleFactor);
+
+        experimentalLine.attr('d', experimentalLineFunc(experimentalLineData));
+      }).on('dragstart', () => {
+        dragStart = d3.event.sourceEvent.pageY;
+      }).on('dragend', () => {
+        for (let i = 0; i < numberOfPoints; ++i) {
+          experimentalLineData[i].y = experimentalLineData[i].y * experimentalScaleFactor;
+        }
+      });
+
+      experimentalLine.call(expDrag);
+
+      var experimentalLineFunc = d3.svg.line()
         .x((d) => this.x(d.x))
         .y((d) => this.y(d.y))
         .interpolate('linear');
 
-      let line = this.svg.select('.line');
-      if (line.empty()) {
-          line = this.svg.append('svg:path');
-          line.attr('stroke', 'black')
-              .attr('stroke-width', 2)
-              .attr('fill', 'none')
-              .attr('class', 'line');
-      }
+      experimentalLine.attr('d', experimentalLineFunc(experimentalLineData));
+    }
+    else {
+      this.svg.select('.experimental-line').remove();
+    }
 
-      if (data.experiment) {
-          let measuredSpectrum = data.experiment.measuredSpectrum;
-          let experimentalLineData = [];
-          let frequencies = measuredSpectrum.frequencies.values;
-          let intensities = measuredSpectrum.intensities.values;
-          let maxIntensityCalculated = intensityRange[1];
-          let maxIntensityExperiment = d3.max(intensities);
-          let scaleFactor = maxIntensityCalculated /  maxIntensityExperiment;
+    line.attr('d', lineFunc(lineFreqData));
 
-          for (let i = 0; i < frequencies.length; ++i) {
-              experimentalLineData.push({
-                  'x': frequencies[i],
-                  'y': intensities[i] * scaleFactor,
-              });
-          }
-
-          let dragStart = null;
-          let experimentalScaleFactor = 1;
-          let experimentalLine = this.svg.select('.experimental-line');
-          if (experimentalLine.empty()) {
-              experimentalLine = this.svg.append('svg:path');
-              experimentalLine.attr('stroke', '#74C365')
-                  .attr('stroke-width', 4)
-                  .attr('fill', 'none')
-                  .attr('class', 'experimental-line');
-          }
-
-          const expFreqRange = [d3.min(frequencies) * 0.95,
-                              d3.max(frequencies) * 1.05];
-          this.x.domain(expFreqRange)
-              .range([0, this.width]);
-          this.svg.select('.x.axis')
-              .attr('transform', 'translate(0,' + this.height + ')')
-              .transition().duration(200).ease('sin-in-out')
-              .call(this.xAxis)
-              .selectAll('text')
-              .style('text-anchor', 'end')
-              .attr('dx', '-.8em')
-              .attr('dy', '-.55em')
-              .attr('transform', 'rotate(-90)' );
-          bars.transition()
-              .duration(1000)
-              .ease('cubic-in-out')
-              .attr('transform', (d) => 'translate(' + (this.x(d.frequency) - barWidth/2) + ',' + this.y(d.intensity) + ')')
-              .select('rect')
-              .attr('width', barWidth)
-              .attr('height', (d) => this.height - this.y(d.intensity));
-
-          lineFreqData = this.generateLine(data, expFreqRange, intensityRange, 5);
-
-          const numberOfPoints = 400;
-          var expDrag = d3.behavior.drag().on('drag', () => {
-              var pixelDelta = d3.event.sourceEvent.pageY - dragStart,
-                  pixelY = d3.event.y, pixelYStart = pixelY - pixelDelta,
-                  intensityStart = this.y.invert(pixelYStart),
-                  intensity = this.y.invert(pixelY);
-
-              // Calculate scale factor
-              if (intensityStart > 0) {
-                  experimentalScaleFactor = intensity / intensityStart;
-              }
-
-              experimentalScaleFactor = Math.max(0.01, experimentalScaleFactor);
-
-              experimentalLine.attr('d', experimentalLineFunc(experimentalLineData));
-          }).on('dragstart', () => {
-              dragStart = d3.event.sourceEvent.pageY;
-          }).on('dragend', () => {
-              for (let i = 0; i < numberOfPoints; ++i) {
-                  experimentalLineData[i].y = experimentalLineData[i].y * experimentalScaleFactor;
-              }
-          });
-
-          experimentalLine.call(expDrag);
-
-          var experimentalLineFunc = d3.svg.line()
-          .x((d) => this.x(d.x))
-          .y((d) => this.y(d.y))
-          .interpolate('linear');
-
-          experimentalLine.attr('d', experimentalLineFunc(experimentalLineData));
-      }
-      else {
-          this.svg.select('.experimental-line').remove();
-      }
-
-      line.attr('d', lineFunc(lineFreqData));
-
-      this.xLabel.attr('transform', 'translate('+ (this.width/2) +','+(this.height + 65)+')');
-      this.yLabel.attr('transform', 'translate(-60,'+(this.height/2)+')rotate(-90)');
-
-  },
+    this.xLabel.attr('transform', 'translate('+ (this.width/2) +','+(this.height + 65)+')');
+    this.yLabel.attr('transform', 'translate(-60,'+(this.height/2)+')rotate(-90)');
+  }
 
   generateLine (data, frequencyRange, intensityRange, gamma) {
     var freqRange = [ 0.0, 0.0 ];
@@ -278,14 +291,8 @@ const VibrationalModesChart = d3Wrap({
     }
 
     return lineFreqData;
-  },
-
-  destroy () {
-    // Optional clean up when a component is being unmounted...
-  },
-});
-
-export default VibrationalModesChart
+  }
+}
 
 //var VibrationalModesChart = function(element, options) {
 //

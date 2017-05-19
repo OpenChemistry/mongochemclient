@@ -15,7 +15,7 @@ export default class VibrationalModesChartContainer extends Component {
   render() {
 
     console.log('render')
-    return <VibrationalModesChart data={this.props.data} width={800} height={600} />;
+    return <VibrationalModesChart data={this.props.data}/>;
   }
 }
 

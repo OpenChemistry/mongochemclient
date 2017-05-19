@@ -1,0 +1,14 @@
+.bar rect {
+  fill: #7986CB;
+  shape-rendering: crispEdges;
+}
+
+.bar.selected rect {
+  fill: #3F51B5;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}

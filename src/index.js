@@ -20,6 +20,7 @@ ReactDOM.render(
         <Route exact path='/' component={App}/>
         <Route exact path='/molecules/:id' component={MoleculeContainer}/>
         <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
+        <Route exact path='/chart' component={VibrationalModesChartContainer}/>
       </div>
     </ConnectedRouter>
   </Provider>,

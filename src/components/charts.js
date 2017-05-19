@@ -140,8 +140,8 @@ export default class VibrationalModesChart extends Component {
       .on('click', (data) => {
         if(this.props.clickbar) {
           this.props.clickbar(data);
-          that.selectedBar(data.index);
         }
+        that.selectedBar(data.index);
       });
 
     const barWidth = 4;
@@ -292,19 +292,29 @@ export default class VibrationalModesChart extends Component {
 
     return lineFreqData;
   }
+
+  selectedBar(index) {
+    // TODO The must be a better way todo this selec
+    const bars = this.svg.selectAll('.bar');
+    bars.classed('selected', false);
+
+    if (index > 0) {
+      d3.select(bars[0][index]).classed('selected', true);
+    }
+  }
 }
+
+VibrationalModesChart.propTypes = {
+  data: PropTypes.object,
+}
+
+VibrationalModesChart.defaultProps = {
+  data: null
+}
+
 
 //var VibrationalModesChart = function(element, options) {
 //
-//  this.selectedBar = function(index) {
-//      // TODO The must be a better way todo this selec
-//      var bars = _svg.selectAll('.bar');
-//      bars.classed('selected', false);
-//
-//      if (index > 0) {
-//          d3.select(bars[0][index]).classed('selected', true);
-//      }
-//  };
 //
 //  this.hide = function(hide) {
 //      if (hide) {

@@ -1,5 +1,7 @@
-import Molecule from './molecule'
-import { VibrationalModesChart } from './chart'
+import Molecule from './molecule';
+import VibrationalModesChart from './charts';
 
-export Molecule;
-export VibrationalModesChart
+export  {
+  Molecule,
+  VibrationalModesChart
+}

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom'
+import PropTypes from 'prop-types';
 import d3 from 'd3'
 import './charts.css'
 

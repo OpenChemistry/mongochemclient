@@ -1,3 +1,5 @@
 import Molecule from './molecule'
+import { VibrationalModesChart } from './chart'
 
-export default Molecule;
+export Molecule;
+export VibrationalModesChart

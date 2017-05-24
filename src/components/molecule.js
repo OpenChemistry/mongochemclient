@@ -25,19 +25,46 @@ class Molecule extends Component {
       <div>
         <Molecule3d modelData={ moleculeToModelData(this.props.cjson) }
                     volume={ this.props.cjson && this.props.cjson.cube ? this.props.cjson.cube : null }
-                    isoSurfaces={ this.props.cjson ? isoSurfaces(this.props.cjson) : []}
+                    isoSurfaces={ this.isoSurfaces() }
                     backgroundColor='#ffffff'/>
       </div>
     );
   }
+
+  isoSurfaces() {
+
+    if (this.props.isoSurfaces) {
+      return this.props.isoSurfaces;
+    }
+
+    if (!'cube' in cjson) {
+      return [];
+    }
+
+    const iso = (orbitalScale + 1) / 2000.0;
+
+    return [{
+      value: iso,
+      color: 'blue',
+      opacity: 0.9,
+    }, {
+      value: -iso,
+      color: 'red',
+      opacity: 0.9
+    }
+    ];
+  }
+
 }
 
 Molecule.propTypes = {
   cjson: PropTypes.object,
+  isoSurfaces: PropTypes.array
 }
 
 Molecule.defaultProps = {
-  cjson: null
+  cjson: null,
+  isoSurfaces: []
 }
 
 function moleculeToModelData(cjson) {
@@ -80,26 +107,5 @@ function moleculeToModelData(cjson) {
 
   return modelData;
 }
-
-function isoSurfaces(cjson) {
-
-  if (!'cube' in cjson) {
-    return [];
-  }
-
-  const iso = (orbitalScale + 1) / 2000.0;
-
-  return [{
-    value: iso,
-    color: 'blue',
-    opacity: 0.9,
-  }, {
-    value: -iso,
-    color: 'red',
-    opacity: 0.9
-  }
-  ];
-}
-
 
 export default Molecule

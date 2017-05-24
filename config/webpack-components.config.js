@@ -40,6 +40,10 @@ module.exports = {
     },
     {
         test: /\.css$/,
+        exclude: function(modulePath) {
+          return /node_modules/.test(modulePath) &&
+                 !/node_modules\/mongochemclient/.test(modulePath);
+        },
         loaders: [ 'style-loader', 'css-loader' ]
     }]
   },

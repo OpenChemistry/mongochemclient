@@ -43,14 +43,14 @@ export default class VibrationalModesChart extends Component {
       .attr('text-anchor', 'middle')
       .text('Intensity');
 
-    window.addEventListener("resize", this.renderChart.bind(this));
+    window.addEventListener('resize', this.renderChart.bind(this));
 
     this.renderChart();
 
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.renderChart.bind(this));
+    window.removeEventListener('resize', this.renderChart.bind(this));
   }
 
   componentDidUpdate () {
@@ -393,3 +393,166 @@ VibrationalModesChart.defaultProps = {
 //      };
 //  }]);
 //});
+
+
+export class FreeEnergyChart extends Component {
+
+  render () {
+    return <svg width='100%' height='100%' />
+  }
+
+  componentDidMount () {
+    this.x = d3.scale.ordinal();
+    this.y = d3.scale.linear();
+
+    this.xAxis = d3.svg.axis()
+      .scale(this.x)
+      .orient('bottom')
+
+    this.yAxis = d3.svg.axis()
+      .scale(this.y)
+      .orient('left')
+      .tickFormat(d3.format('.2f'));
+
+
+    this.svg = d3.select(findDOMNode(this))
+    this.svg = this.svg.append('g');
+
+    this.svg.append('g')
+      .attr('class', 'x axis');
+
+    this.svg.append('g')
+      .attr('class', 'y axis')
+      .call(this.yAxis);
+
+    this.xLabel = this.svg.append('text')
+      .attr('text-anchor', 'middle')
+      .html('Element');
+
+    this.yLabel = this.svg.append('text')
+      .attr('text-anchor', 'middle')
+      .text('Free Energy (kJ/Mol)');
+
+    window.addEventListener('resize', this.renderChart.bind(this));
+
+    this.renderChart();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.renderChart.bind(this));
+  }
+
+  componentDidUpdate () {
+    this.renderChart();
+  }
+
+  renderChart () {
+    // If we are not passed data then this is for resize so use
+    // cached data...
+    let data = this.props.data;
+
+    if (!data) {
+      data = this.data;
+    }
+
+    // Save the data for resize events
+    this.data = this.props.data;
+
+    if (!this.props.data) {
+      return;
+    }
+
+    var element = findDOMNode(this), freeEnergyRange = d3.extent(data.freeEnergies),
+      that = this, width = element.clientWidth,
+      height = element.clientHeight;
+
+    if (width === 0 || height === 0) {
+      return;
+    }
+
+    this.margin = {top: 30, right: 30, bottom: 70, left: 90};
+
+    this.width = width - this.margin.left - this.margin.right;
+    this.height = height - this.margin.top - this.margin.bottom;
+
+    this.svg.attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+
+    this.x.domain(data.elements).rangePoints([0, this.width]);
+    this.y.domain(freeEnergyRange)
+      .range([this.height, 0]);
+
+    this.svg.select('.x.axis')
+      .attr('transform', 'translate(0,' + this.height + ')')
+      .transition().duration(200).ease('sin-in-out')
+      .call(this.xAxis)
+      .selectAll('text')
+      .style('text-anchor', 'end')
+      .attr('dx', '.5em')
+      .attr('dy', '1em');
+
+    this.svg.select('.y.axis')
+      .transition().duration(200).ease('sin-in-out')
+      .call(this.yAxis)
+      .selectAll('text')
+      .style('text-anchor', 'end')
+      .attr('dy', '.5em');
+
+    let chartData = [];
+
+    for(let i = 0; i < data.freeEnergies.length; i++) {
+      chartData.push({
+        'index': i,
+        'freeEnergy': data.freeEnergies[i],
+        'element': data.elements[i]
+      });
+    }
+
+    const path = d3.svg.line()
+      .x((d) => this.x(d.element))
+      .y((d) => this.y(d.freeEnergy));
+
+    let line = this.svg.select('.line');
+    if (line.empty()) {
+      line = this.svg.append('path')
+        .attr('class', 'line')
+    }
+
+    line.transition()
+      .duration(500)
+      .ease('cubic-in-out')
+      .attr('d', path(chartData));
+
+    const dotRadius = 5;
+
+    var dots = this.svg.selectAll('.dot')
+      .data(chartData);
+
+    var g = dots.enter()
+      .append('g')
+      .attr('class', 'dot');
+
+    g.append('circle')
+      .attr('r', dotRadius)
+      .attr('cx', (d) => { console.log(this.x(d.element)); return this.x(d.element); } )
+      .attr('cy', (d) => this.y(d.freeEnergy))
+
+    dots.transition()
+      .duration(500)
+      .ease('cubic-in-out')
+      .select('circle')
+      .attr('r', dotRadius)
+      .attr('cx', (d) => { console.log(this.x(d.element)); return this.x(d.element); } )
+      .attr('cy', (d) => this.y(d.freeEnergy))
+
+    this.xLabel.attr('transform', 'translate('+ (this.width/2) +','+(this.height + 50)+')');
+    this.yLabel.attr('transform', 'translate(-70,'+(this.height/2)+')rotate(-90)');
+  }
+}
+
+FreeEnergyChart.propTypes = {
+  data: PropTypes.object,
+}
+
+FreeEnergyChart.defaultProps = {
+  data: null
+}

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 
-import VibrationalModesChart from '../components/charts'
+import {VibrationalModesChart, FreeEnergyChart} from '../components/charts'
 import selectors from '../redux/selectors'
 
-export default class VibrationalModesChartContainer extends Component {
+export class VibrationalModesChartContainer extends Component {
 
   render() {
     return <VibrationalModesChart data={this.props.data}/>;
@@ -17,5 +17,20 @@ VibrationalModesChartContainer.propTypes = {
 }
 
 VibrationalModesChartContainer.defaultProps = {
+  data: null
+}
+
+export class FreeEnergyChartContainer extends Component {
+
+  render() {
+    return <FreeEnergyChart data={this.props.data}/>;
+  }
+}
+
+FreeEnergyChartContainer.propTypes = {
+  data: PropTypes.object,
+}
+
+FreeEnergyChartContainer.defaultProps = {
   data: null
 }

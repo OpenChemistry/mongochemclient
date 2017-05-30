@@ -5,7 +5,7 @@ import { ConnectedRouter } from 'react-router-redux'
 import { Route } from 'react-router'
 import App from './components/app';
 import MoleculeContainer from './containers/molecule';
-import VibrationalModesChartContainer from './containers/charts';
+import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './containers/charts';
 import './index.css';
 import configureStore from './store/configureStore'
 import rootSaga from './sagas'
@@ -21,6 +21,7 @@ ReactDOM.render(
         <Route exact path='/molecules/:id' component={MoleculeContainer}/>
         <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
         <Route exact path='/chart' component={VibrationalModesChartContainer}/>
+        <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
       </div>
     </ConnectedRouter>
   </Provider>,

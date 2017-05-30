@@ -12,3 +12,14 @@
   stroke: #000;
   shape-rendering: crispEdges;
 }
+
+.dot circle  {
+  fill: #2b8cbe;
+}
+
+.line {
+    fill: none;
+    stroke: #a6bddb;
+    stroke-width: 3;
+    shape-rendering: crispEdges;
+}

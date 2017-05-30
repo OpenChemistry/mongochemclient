@@ -37,7 +37,7 @@ class Molecule extends Component {
       return this.props.isoSurfaces;
     }
 
-    if (!'cube' in cjson) {
+    if (this.props.cjson === null || !'cube' in this.props.cjson) {
       return [];
     }
 
@@ -64,7 +64,7 @@ Molecule.propTypes = {
 
 Molecule.defaultProps = {
   cjson: null,
-  isoSurfaces: []
+  isoSurfaces: null
 }
 
 function moleculeToModelData(cjson) {

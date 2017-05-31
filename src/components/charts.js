@@ -398,7 +398,7 @@ VibrationalModesChart.defaultProps = {
 export class FreeEnergyChart extends Component {
 
   render () {
-    return <div><svg width='100%' height='100%' /></div>
+    return <div className='oc-free-energy'><svg width='100%' height='100%' /></div>
   }
 
   componentDidMount () {
@@ -545,8 +545,8 @@ export class FreeEnergyChart extends Component {
            .style("opacity", .9);
 
          this.tooltip.html(d.reaction)
-           .style("left", (d3.event.pageX) + "px")
-           .style("top", (d3.event.pageY - 28) + "px");
+           .style("left", this.x(d.index) + 'px')
+           .style("top", this.y(d.freeEnergy) + 'px');
        })
        .on("mouseout", (d) => {
          this.tooltip.transition()

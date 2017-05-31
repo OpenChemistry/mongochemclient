@@ -18,8 +18,19 @@
 }
 
 .line {
-    fill: none;
-    stroke: #a6bddb;
-    stroke-width: 3;
-    shape-rendering: crispEdges;
+  fill: none;
+  stroke: #a6bddb;
+  stroke-width: 3;
+  shape-rendering: crispEdges;
+}
+
+.tooltip {
+  position: absolute;
+  text-align: center;
+  padding: 5px;
+  font: 12px sans-serif;
+  background: #2b8cbe;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
 }

@@ -1,7 +1,8 @@
 import Molecule from './molecule';
-import VibrationalModesChart from './charts';
+import {VibrationalModesChart, FreeEnergyChart} from './charts';
 
 export  {
   Molecule,
-  VibrationalModesChart
+  VibrationalModesChart,
+  FreeEnergyChart
 }

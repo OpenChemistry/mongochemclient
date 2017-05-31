@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import d3 from 'd3'
 import './charts.css'
 
-export default class VibrationalModesChart extends Component {
+export class VibrationalModesChart extends Component {
 
   render () {
     return <svg width='100%' height='100%' />
@@ -398,7 +398,7 @@ VibrationalModesChart.defaultProps = {
 export class FreeEnergyChart extends Component {
 
   render () {
-    return <svg width='100%' height='100%' />
+    return <div><svg width='100%' height='100%' /></div>
   }
 
   componentDidMount () {
@@ -414,8 +414,12 @@ export class FreeEnergyChart extends Component {
       .orient('left')
       .tickFormat(d3.format('.2f'));
 
+    this.domNode = findDOMNode(this);
+    this.tooltip = d3.select(this.domNode).append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
 
-    this.svg = d3.select(findDOMNode(this))
+    this.svg = d3.select(findDOMNode(this)).select('svg')
     this.svg = this.svg.append('g');
 
     this.svg.append('g')
@@ -427,7 +431,7 @@ export class FreeEnergyChart extends Component {
 
     this.xLabel = this.svg.append('text')
       .attr('text-anchor', 'middle')
-      .html('Element');
+      .html('Reaction');
 
     this.yLabel = this.svg.append('text')
       .attr('text-anchor', 'middle')
@@ -462,7 +466,7 @@ export class FreeEnergyChart extends Component {
       return;
     }
 
-    var element = findDOMNode(this), freeEnergyRange = d3.extent(data.freeEnergies),
+    var element = findDOMNode(this), freeEnergyRange = d3.extent(data.freeEnergy),
       that = this, width = element.clientWidth,
       height = element.clientHeight;
 
@@ -470,14 +474,14 @@ export class FreeEnergyChart extends Component {
       return;
     }
 
-    this.margin = {top: 30, right: 30, bottom: 70, left: 90};
+    this.margin = {top: 30, right: 120, bottom: 70, left: 90};
 
     this.width = width - this.margin.left - this.margin.right;
     this.height = height - this.margin.top - this.margin.bottom;
 
     this.svg.attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
 
-    this.x.domain(data.elements).rangePoints([0, this.width]);
+    this.x.domain([...Array(data.reaction.length).keys()]).rangePoints([0, this.width]);
     this.y.domain(freeEnergyRange)
       .range([this.height, 0]);
 
@@ -488,7 +492,7 @@ export class FreeEnergyChart extends Component {
       .selectAll('text')
       .style('text-anchor', 'end')
       .attr('dx', '.5em')
-      .attr('dy', '1em');
+      .attr('dy', '1em')
 
     this.svg.select('.y.axis')
       .transition().duration(200).ease('sin-in-out')
@@ -499,16 +503,16 @@ export class FreeEnergyChart extends Component {
 
     let chartData = [];
 
-    for(let i = 0; i < data.freeEnergies.length; i++) {
+    for(let i = 0; i < data.freeEnergy.length; i++) {
       chartData.push({
         'index': i,
-        'freeEnergy': data.freeEnergies[i],
-        'element': data.elements[i]
+        'freeEnergy': data.freeEnergy[i],
+        'reaction': data.reaction[i]
       });
     }
 
     const path = d3.svg.line()
-      .x((d) => this.x(d.element))
+      .x((d) => this.x(d.index))
       .y((d) => this.y(d.freeEnergy));
 
     let line = this.svg.select('.line');
@@ -533,15 +537,29 @@ export class FreeEnergyChart extends Component {
 
     g.append('circle')
       .attr('r', dotRadius)
-      .attr('cx', (d) => { console.log(this.x(d.element)); return this.x(d.element); } )
+      .attr('cx', (d) => { return this.x(d.index); } )
       .attr('cy', (d) => this.y(d.freeEnergy))
+      .on("mouseover", (d) => {
+         this.tooltip.transition()
+           .duration(200)
+           .style("opacity", .9);
+
+         this.tooltip.html(d.reaction)
+           .style("left", (d3.event.pageX) + "px")
+           .style("top", (d3.event.pageY - 28) + "px");
+       })
+       .on("mouseout", (d) => {
+         this.tooltip.transition()
+           .duration(500)
+           .style("opacity", 0);
+       });
 
     dots.transition()
       .duration(500)
       .ease('cubic-in-out')
       .select('circle')
       .attr('r', dotRadius)
-      .attr('cx', (d) => { console.log(this.x(d.element)); return this.x(d.element); } )
+      .attr('cx', (d) => { return this.x(d.index); } )
       .attr('cy', (d) => this.y(d.freeEnergy))
 
     this.xLabel.attr('transform', 'translate('+ (this.width/2) +','+(this.height + 50)+')');

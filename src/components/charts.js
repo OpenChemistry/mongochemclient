@@ -47,6 +47,9 @@ export class VibrationalModesChart extends Component {
 
     this.renderChart();
 
+    if (this.props.selectedMode) {
+      this.selectedBar(this.props.selectedMode);
+    }
   }
 
   componentWillUnmount() {
@@ -307,10 +310,12 @@ export class VibrationalModesChart extends Component {
 
 VibrationalModesChart.propTypes = {
   data: PropTypes.object,
+  selectedMode: PropTypes.number,
 }
 
 VibrationalModesChart.defaultProps = {
-  data: null
+  data: null,
+  selectedMode: null,
 }
 
 

@@ -23,10 +23,10 @@ class Molecule extends Component {
   render() {
     return (
       <div>
-        <Molecule3d modelData={ moleculeToModelData(this.props.cjson) }
+        <Molecule3d modelData={ moleculeToModelData(this.props.cjson, this.props.animateMode) }
                     volume={ this.props.cjson && this.props.cjson.cube ? this.props.cjson.cube : null }
                     isoSurfaces={ this.isoSurfaces() }
-                    backgroundColor='#ffffff'/>
+                    backgroundColor='#ffffff' animation={this.props.animation}/>
       </div>
     );
   }
@@ -59,22 +59,29 @@ class Molecule extends Component {
 
 Molecule.propTypes = {
   cjson: PropTypes.object,
-  isoSurfaces: PropTypes.array
+  isoSurfaces: PropTypes.array,
+  animateMode: PropTypes.number
 }
 
 Molecule.defaultProps = {
   cjson: null,
-  isoSurfaces: null
+  isoSurfaces: null,
+  animateMode: null
 }
 
-function moleculeToModelData(cjson) {
+function moleculeToModelData(cjson, mode) {
   let modelData = {
       atoms: [],
       bonds: []
   }
+  let eigenVectors = null;
 
   if (cjson == null) {
     return modelData
+  }
+
+  if (mode != null) {
+    eigenVectors = cjson.vibrations.eigenVectors[mode-1];
   }
 
   const atoms = cjson.atoms;
@@ -87,6 +94,12 @@ function moleculeToModelData(cjson) {
         elem: elementSymbols[element],
         serial: i,
         positions,
+    }
+
+    if (eigenVectors != null) {
+      atom.dx = eigenVectors[coordsIndex];
+      atom.dy = eigenVectors[coordsIndex+1];
+      atom.dz = eigenVectors[coordsIndex+2];
     }
 
     modelData.atoms.push(atom);

@@ -4,7 +4,7 @@
 }
 
 .bar.selected rect {
-  fill: #3F51B5;
+  fill: #FF3300;
 }
 
 .axis path, .axis line {

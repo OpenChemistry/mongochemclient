@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Molecule3d from 'molecule-3d-for-react'
+import MoleculeMenu from './menu.js'
 
 const elementSymbols = [
   "Xx", "H", "He", "Li", "Be", "B", "C", "N", "O", "F",
@@ -20,13 +21,36 @@ const orbitalScale = 42
 
 class Molecule extends Component {
 
+  constructor(props) {
+    super(props)
+
+    if (this.props.animation) {
+      this.state = {
+          animation: [...this.props.animation]
+      }
+    }
+    else {
+      this.state = {}
+    }
+  }
+
+  onAmplitude = (value) => {
+    this.setState({
+      animation: {
+        amplitude: value
+      }
+    })
+  }
+
   render() {
+    const animation = this.state.animation;
     return (
       <div>
+        <MoleculeMenu onAmplitude={this.onAmplitude}/>
         <Molecule3d modelData={ moleculeToModelData(this.props.cjson, this.props.animateMode) }
                     volume={ this.props.cjson && this.props.cjson.cube ? this.props.cjson.cube : null }
                     isoSurfaces={ this.isoSurfaces() }
-                    backgroundColor='#ffffff' animation={this.props.animation}/>
+                    backgroundColor='#ffffff' animation={{...animation}}/>
       </div>
     );
   }

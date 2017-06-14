@@ -113,7 +113,10 @@ module.exports = {
           /\.(js|jsx)(\?.*)?$/,
           /\.css$/,
           /\.json$/,
-          /\.svg$/
+          /\.svg$/,
+          /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+          /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+          /\.mcss$/
         ],
         loader: 'url',
         query: {
@@ -127,7 +130,7 @@ module.exports = {
         include: paths.appSrc,
         loader: 'babel',
         query: {
-          
+
           // This is a feature of `babel-loader` for webpack (not Babel itself).
           // It enables caching results in ./node_modules/.cache/babel-loader/
           // directory for faster rebuilds.
@@ -156,12 +159,24 @@ module.exports = {
         query: {
           name: 'static/media/[name].[hash:8].[ext]'
         }
+      },
+      {
+       test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+       loader: 'url-loader?limit=60000&mimetype=application/font-woff',
+     }, {
+       test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      loader: 'url-loader?limit=60000',
+      include: /fonts/,
+     },
+      {
+        test: /\.mcss$/,
+        loader: 'style!css?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]!postcss',
       }
       // ** STOP ** Are you adding a new loader?
       // Remember to add the new extension(s) to the "url" loader exclusion list.
     ]
   },
-  
+
   // We use PostCSS for autoprefixing only.
   postcss: function() {
     return [

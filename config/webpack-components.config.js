@@ -48,9 +48,23 @@ module.exports = {
         test: /\.css$/,
         exclude: function(modulePath) {
           return /node_modules/.test(modulePath) &&
-                 !/node_modules\/mongochemclient/.test(modulePath);
+                 !/node_modules\/mongochemclient/.test(modulePath) &&
+                 !/node_modules\/font-awesome/.test(modulePath);
         },
         loaders: [ 'style-loader', 'css-loader' ]
+    },
+    {
+      test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      loader: 'url-loader?limit=60000&mimetype=application/font-woff',
+    }, {
+      test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+     loader: 'url-loader?limit=60000',
+     include: /fonts/,
+    },
+
+   {
+      test: /\.mcss$/,
+      loader: 'style!css?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]!postcss',
     }]
   },
   postcss: [

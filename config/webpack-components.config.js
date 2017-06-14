@@ -16,7 +16,13 @@ if (process.env.NODE_ENV === 'production') {
 
 module.exports = {
   plugins: pluginList,
-  entry: './src/components/',
+  externals: {
+    // Use external version of React
+    "react": "react",
+    'react-dom': 'react-dom',
+    'react-router': 'react-router'
+  },
+  entry: ['./src/components/'],
   output: {
     libraryTarget: 'umd',
     path: './build',

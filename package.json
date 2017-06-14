@@ -25,7 +25,10 @@
     "redux-saga": "^0.14.6",
     "molecule-3d-for-react": "git+https://github.com/cjh1/molecule-3d-for-react.git",
     "postinstall-build": "^3.0.1",
-    "d3": "^3.5.6"
+    "d3": "^3.5.6",
+    "material-ui": "^0.18.3",
+    "react-tap-event-plugin": "^2.0.1",
+    "font-awesome": "^4.7.0"
   },
   "devDependencies": {
     "babel-preset-es2016": "^6.3.13",

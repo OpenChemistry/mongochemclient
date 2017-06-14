@@ -39,7 +39,7 @@ module.exports = {
         query: {
           env: {
             production: {
-              presets: ["es2015", "react"]
+              presets: ["es2016", "react"]
             }
           }
         }

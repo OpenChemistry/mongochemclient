@@ -17,8 +17,6 @@ const elementSymbols = [
   "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt",
   "Ds", "Rg", "Cn", "Uut", "Uuq", "Uup", "Uuh", "Uus", "Uuo" ];
 
-const orbitalScale = 42
-
 class Molecule extends Component {
 
   constructor(props) {
@@ -26,11 +24,18 @@ class Molecule extends Component {
 
     if (this.props.animation) {
       this.state = {
-          animation: [...this.props.animation]
+          animation: {...this.props.animation}
       }
     }
     else {
       this.state = {}
+    }
+
+    if (this.props.isoSurfaces) {
+      this.state.isoSurfaces = this.props.isoSurfaces;
+    }
+    else {
+      this.state.isoSurfaces = this.isoSurfaces();
     }
   }
 
@@ -42,30 +47,41 @@ class Molecule extends Component {
     })
   }
 
+  onIsoScale = (value) => {
+    const isoSurfaces = this.isoSurfaces(value);
+    this.setState({
+      isoSurfaces: isoSurfaces
+    })
+  }
+
   render() {
     const animation = this.state.animation;
+    const hasVolume = !!this.props.cjson && !!this.props.cjson.cube;
+    const isoSurfaces = !!this.isoSurfaces();
+    const hasOrbitals = !!isoSurfaces && hasVolume;
+    const hasAnimation = !!animation && !!this.props.animateMode;
+
     return (
       <div>
-        <MoleculeMenu onAmplitude={this.onAmplitude}/>
+        { (hasAnimation || hasOrbitals) && <MoleculeMenu onAmplitude={this.onAmplitude}
+                                                         onIsoScale={this.onIsoScale}
+                                                         animationControls={hasAnimation}
+                                                         orbitalControls={hasOrbitals}
+                                                                            /> }
         <Molecule3d modelData={ moleculeToModelData(this.props.cjson, this.props.animateMode) }
                     volume={ this.props.cjson && this.props.cjson.cube ? this.props.cjson.cube : null }
-                    isoSurfaces={ this.isoSurfaces() }
+                    isoSurfaces={ this.state.isoSurfaces }
                     backgroundColor='#ffffff' animation={{...animation}}/>
       </div>
     );
   }
 
-  isoSurfaces() {
-
-    if (this.props.isoSurfaces) {
-      return this.props.isoSurfaces;
-    }
-
+  isoSurfaces(scale = 42) {
     if (this.props.cjson === null || !'cube' in this.props.cjson) {
       return [];
     }
 
-    const iso = (orbitalScale + 1) / 2000.0;
+    const iso = (scale + 1) / 2000.0;
 
     return [{
       value: iso,

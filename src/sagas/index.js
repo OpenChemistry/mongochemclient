@@ -5,6 +5,10 @@ import { requestMolecules, receiveMolecules,
          LOAD_MOLECULES, LOAD_MOLECULE,
          LOAD_MOLECULE_BY_ID} from '../redux/ducks/molecules.js'
 
+import { requestCalculationById, receiveCalculation, LOAD_CALCULATION_BY_ID,
+         requestOrbital, receiveOrbital, LOAD_ORBITAL} from '../redux/ducks/calculations.js'
+
+
 export function fetchMoleculesFromGirder() {
   let origin = window.location.origin;
   return axios.get(`${origin}/api/v1/molecules`)
@@ -68,10 +72,53 @@ export function* watchFetchMoleculeById() {
   yield takeEvery(LOAD_MOLECULE_BY_ID, fetchMoleculeById)
 }
 
+export function fetchCalculationByIdFromGirder(id) {
+  let origin = window.location.origin;
+  return axios.get(`${origin}/api/v1/calculations/${id}`)
+          .then(response => response.data )
+}
+export function* fetchCalculationById(action) {
+  try {
+    yield put( requestCalculationById(action.payload.id) )
+    const calculation = yield call(fetchCalculationByIdFromGirder, action.payload.id)
+    yield put( receiveCalculation(calculation) )
+  }
+  catch(error) {
+    yield put( requestCalculationById(error) )
+  }
+}
+
+export function* watchFetchCalculationById() {
+  yield takeEvery(LOAD_CALCULATION_BY_ID, fetchCalculationById)
+}
+
+// mo
+export function fetchOrbitalFromGirder(id, mo) {
+  let origin = window.location.origin;
+  return axios.get(`${origin}/api/v1/calculations/${id}/cube/${mo}`)
+          .then(response => response.data )
+}
+export function* fetchOrbital(action) {
+  try {
+    yield put( requestOrbital(action.payload.id, action.payload.mo) )
+    const orbital = yield call(fetchOrbitalFromGirder, action.payload.id, action.payload.mo)
+    yield put( receiveOrbital(action.payload.id, action.payload.mo, orbital) )
+  }
+  catch(error) {
+    yield put(  requestOrbital(error) )
+  }
+}
+
+export function* watchFetchOrbital() {
+  yield takeEvery(LOAD_ORBITAL, fetchOrbital)
+}
+
 export default function* root() {
   yield fork(fetchMolecules)
   yield fork(watchFetchMolecules)
   yield fork(watchFetchMolecule)
   yield fork(watchFetchMoleculeById)
+  yield fork(watchFetchCalculationById)
+  yield fork(watchFetchOrbital)
 }
 

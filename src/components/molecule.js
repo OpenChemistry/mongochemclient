@@ -19,6 +19,28 @@ const elementSymbols = [
 
 class Molecule extends Component {
 
+  static generateOrbitals(cjson) {
+    if (!cjson) {
+      return []
+    }
+
+    const electronCount = cjson.basisSet.electronCount;
+    const orbitals = [];
+    for (let i = 1; i <= electronCount; i += 1) {
+        let text = '';
+        if (i == electronCount / 2) {
+            text = ' (HOMO)';
+        }
+        else if (i == electronCount / 2 + 1) {
+            text = ' (LUMO)';
+        }
+        let oObj = { id: i, label: i + text };
+        orbitals.push(oObj);
+    }
+
+    return orbitals;
+  }
+
   constructor(props) {
     super(props)
 
@@ -57,16 +79,18 @@ class Molecule extends Component {
   render() {
     const animation = this.state.animation;
     const hasVolume = !!this.props.cjson && !!this.props.cjson.cube;
-    const isoSurfaces = !!this.isoSurfaces();
-    const hasOrbitals = !!isoSurfaces && hasVolume;
     const hasAnimation = !!animation && !!this.props.animateMode;
 
     return (
       <div>
-        { (hasAnimation || hasOrbitals) && <MoleculeMenu onAmplitude={this.onAmplitude}
-                                                         onIsoScale={this.onIsoScale}
-                                                         animationControls={hasAnimation}
-                                                         orbitalControls={hasOrbitals}
+        { (hasAnimation || hasVolume || this.props.orbitalControls) && <MoleculeMenu onAmplitude={this.onAmplitude}
+                                                       onIsoScale={this.onIsoScale}
+                                                       animationControls={hasAnimation}
+                                                       orbitalControls={hasVolume || this.props.orbitalControls}
+                                                       isoValue={this.state.isoSurfaces[0].value}
+                                                       orbitals={Molecule.generateOrbitals(this.props.cjson)}
+                                                       onOrbital={this.props.onOrbital}
+                                                       orbital={this.props.orbital}
                                                                             /> }
         <Molecule3d modelData={ moleculeToModelData(this.props.cjson, this.props.animateMode) }
                     volume={ this.props.cjson && this.props.cjson.cube ? this.props.cjson.cube : null }
@@ -77,10 +101,6 @@ class Molecule extends Component {
   }
 
   isoSurfaces(scale = 42) {
-    if (this.props.cjson === null || !'cube' in this.props.cjson) {
-      return [];
-    }
-
     const iso = (scale + 1) / 2000.0;
 
     return [{

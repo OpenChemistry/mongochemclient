@@ -47,7 +47,7 @@ export default class MoleculeMenu extends React.Component {
   render() {
     return (
       <div>
-       <IconButton iconClassName="fa-bars"  onTouchTap={this.handleTouchTap} />
+       <IconButton iconClassName="fa fa-bars"  onTouchTap={this.handleTouchTap} />
         <Popover
           open={this.state.open}
           anchorEl={this.state.anchorEl}

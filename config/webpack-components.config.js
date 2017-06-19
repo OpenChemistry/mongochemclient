@@ -22,7 +22,7 @@ module.exports = {
     'react-dom': 'react-dom',
     'react-router': 'react-router'
   },
-  entry: ['./src/components/'],
+  entry: ['./src/lib.js'],
   output: {
     libraryTarget: 'umd',
     path: './build',

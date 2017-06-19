@@ -102,8 +102,8 @@ export default class MoleculeMenu extends React.Component {
           <List>
             {this.props.animationControls && <ListItem>
               <p>
-                <span>{'Animation Amplitude: '}</span>
-                <span>{this.state.amplitude}</span>
+                <label className='oc-menu-label'>{'Animation Amplitude'}</label>
+                <div>{this.state.amplitude}</div>
               </p>
               <Slider
                 min={1}

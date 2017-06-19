@@ -13,6 +13,8 @@ class Calculation extends Component {
                      isoSurfaces={this.props.isoSurfaces}
                      onOrbital={this.props.onOrbital}
                      orbitalControls={true}
+                     animation={this.props.animation}
+                     animateMode={this.props.animateMode}
                      orbital={this.props.orbital}/>;
   }
 }
@@ -126,7 +128,9 @@ class CalculationContainer extends Component {
       id={this.state.id}
       orbital={this.state.orbital}
       isoSurfaces={this.state.isoSurfaces}
-      onOrbital={this.onOrbital}/>;
+      onOrbital={this.onOrbital}
+      animation={this.props.animation}
+      animateMode={this.props.animateMode}/>;
   }
 
   onOrbital(orbital) {

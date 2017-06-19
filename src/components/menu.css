@@ -1,0 +1,7 @@
+
+.oc-menu-label {
+  position: absolute;
+  color: rgba(0, 0, 0, 0.3);
+  transform: scale(0.75) translate(0px, -28px);
+  transform-origin: left top 0px;
+}

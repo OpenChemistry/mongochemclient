@@ -7,6 +7,8 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 require('font-awesome/css/font-awesome.css');
 import PropTypes from 'prop-types';
+import './menu.css'
+
 
 export default class MoleculeMenu extends React.Component {
 
@@ -112,10 +114,10 @@ export default class MoleculeMenu extends React.Component {
                 onDragStop={this.handleAmplitudeSliderOnDragStop}
               />
             </ListItem>}
-            {this.props.orbitalControls && <ListItem>
+            {this.props.orbitalControls && <ListItem >
               <p>
-                <span>{'Isovalue: '}</span>
-                <span>{this.state.isoValue.toFixed(4)}</span>
+                <label className='oc-menu-label'>{'Isovalue'}</label>
+                <div>{this.state.isoValue.toFixed(4)}</div>
               </p>
               <Slider
                 min={0}

@@ -140,7 +140,7 @@ export default class MoleculeMenu extends React.Component {
                 onDragStop={this.handleIsoScaleSliderOnDragStop}
               />
           </ListItem>}
-          {this.props.orbitals && <ListItem>
+          {this.props.orbitalControls && <ListItem>
               <SelectField
                 floatingLabelText="Molecular orbital"
                 value={this.state.orbital}

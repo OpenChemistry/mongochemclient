@@ -12,7 +12,7 @@ class Calculation extends Component {
     return <Molecule cjson={this.props.cjson}
                      isoSurfaces={this.props.isoSurfaces}
                      onOrbital={this.props.onOrbital}
-                     orbitalControls={true}
+                     orbitalControls={!!this.props.orbital}
                      animation={this.props.animation}
                      animateMode={this.props.animateMode}
                      orbital={this.props.orbital}/>;

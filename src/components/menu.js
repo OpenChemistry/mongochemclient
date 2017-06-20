@@ -93,10 +93,15 @@ export default class MoleculeMenu extends React.Component {
       marginBottom: 3,
     }
 
+    const popOverStyle = {
+      'min-width': '200px',
+    }
+
     return (
       <div>
        <IconButton iconClassName="fa fa-bars"  onTouchTap={this.handleTouchTap} />
         <Popover
+          style={popOverStyle}
           open={this.state.open}
           anchorEl={this.state.anchorEl}
           anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
@@ -108,9 +113,10 @@ export default class MoleculeMenu extends React.Component {
             {this.props.animationControls && <ListItem>
               <p>
                 <label className='oc-menu-label'>{'Animation Amplitude'}</label>
-                <div>{this.state.amplitude}</div>
+                <label>{this.state.amplitude}</label>
               </p>
               <Slider
+                style={sliderStyle}
                 min={1}
                 max={5}
                 step={1}
@@ -122,7 +128,7 @@ export default class MoleculeMenu extends React.Component {
             {this.props.orbitalControls && <ListItem >
               <p>
                 <label className='oc-menu-label'>{'Isovalue'}</label>
-                <div>{this.state.isoValue.toFixed(4)}</div>
+                <label>{this.state.isoValue.toFixed(4)}</label>
               </p>
               <Slider
                 sliderStyle={sliderStyle}

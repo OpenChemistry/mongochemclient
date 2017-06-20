@@ -114,7 +114,6 @@ export function* watchFetchOrbital() {
 }
 
 export default function* root() {
-  yield fork(fetchMolecules)
   yield fork(watchFetchMolecules)
   yield fork(watchFetchMolecule)
   yield fork(watchFetchMoleculeById)

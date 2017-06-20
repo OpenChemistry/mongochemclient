@@ -88,6 +88,11 @@ export default class MoleculeMenu extends React.Component {
       }
     }
 
+    const sliderStyle = {
+      marginTop: 3,
+      marginBottom: 3,
+    }
+
     return (
       <div>
        <IconButton iconClassName="fa fa-bars"  onTouchTap={this.handleTouchTap} />
@@ -120,6 +125,7 @@ export default class MoleculeMenu extends React.Component {
                 <div>{this.state.isoValue.toFixed(4)}</div>
               </p>
               <Slider
+                sliderStyle={sliderStyle}
                 min={0}
                 max={100}
                 step={1}

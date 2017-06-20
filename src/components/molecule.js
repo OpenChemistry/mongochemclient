@@ -24,21 +24,28 @@ class Molecule extends Component {
       return [];
     }
 
-    if (!cjson.basisSet) {
+    if (!cjson.basisSet || !cjson.molecularOrbitals) {
       return [];
     }
 
+    const numbers = cjson.molecularOrbitals.numbers;
     const electronCount = cjson.basisSet.electronCount;
+    const energies = cjson.molecularOrbitals.energies
+
     const orbitals = [];
-    for (let i = 1; i <= electronCount; i += 1) {
+    for (let i = 0; i < numbers.length; i += 1) {
+        const mode = numbers[i];
+        const energy = energies[i].toFixed(4);
+
         let text = '';
-        if (i == electronCount / 2) {
+        if (mode == electronCount / 2) {
             text = ' (HOMO)';
         }
-        else if (i == electronCount / 2 + 1) {
+        else if (mode == electronCount / 2 + 1) {
             text = ' (LUMO)';
         }
-        let oObj = { id: i, label: i + text };
+        //
+        let oObj = { id: mode, label: `${mode}, ${energy}` + text };
         orbitals.push(oObj);
     }
 

@@ -21,7 +21,11 @@ class Molecule extends Component {
 
   static generateOrbitals(cjson) {
     if (!cjson) {
-      return []
+      return [];
+    }
+
+    if (!cjson.basisSet) {
+      return [];
     }
 
     const electronCount = cjson.basisSet.electronCount;

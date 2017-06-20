@@ -83,8 +83,30 @@ export default class MoleculeMenu extends React.Component {
     const orbitalMenuItems = [];
 
     if (this.props.orbitals) {
+      let homo = null, lumo = null;
       for (let orbital of this.props.orbitals) {
         orbitalMenuItems.push(<MenuItem value={orbital.id} primaryText={orbital.label} />);
+        if (orbital.label.indexOf('HOMO') !== -1) {
+          homo = orbital.id;
+        }
+        if (orbital.label.indexOf('LUMO') !== -1) {
+          lumo = orbital.id;
+        }
+      }
+      if (homo &&
+          lumo &&
+          this.state.orbital &&
+          !Number.isInteger(this.state.orbital)) {
+        if (this.state.orbital.toLowerCase() === 'homo') {
+          this.setState({
+            orbital: homo
+          });
+        }
+        else if (this.state.orbital.toLowerCase() === 'lumo') {
+          this.setState({
+            orbital: lumo
+          });
+        }
       }
     }
 

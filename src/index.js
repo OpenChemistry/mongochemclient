@@ -25,12 +25,16 @@ store.runSaga(rootSaga)
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
 
+const style = {
+  backgroundColor: '#FAFAFA',
+}
+
 ReactDOM.render(
   <MuiThemeProvider >
     <Provider store={store}>
       <ConnectedRouter history={store.history}>
         <div>
-         <AppBar iconElementLeft={<img className='oc-logo' src={logo} alt="logo" />} />
+         <AppBar style={style} iconElementLeft={<img className='oc-logo' src={logo} alt="logo" />} />
           <div>
             <Route exact path='/' component={App}/>
             <Route exact path='/molecules/:id' component={MoleculeContainer}/>

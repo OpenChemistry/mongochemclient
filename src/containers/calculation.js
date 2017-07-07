@@ -80,7 +80,11 @@ class CalculationContainer extends Component {
       }
 
       let orbital = params.get('mo')
-      orbital = orbital.toLowerCase();
+
+      if (orbital) {
+        orbital = orbital.toLowerCase();
+      }
+
       if ( orbital !== 'lumo' && orbital !== 'homo') {
         orbital = parseInt(orbital);
       }

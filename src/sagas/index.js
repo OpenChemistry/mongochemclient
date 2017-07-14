@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { put, call, fork, takeEvery } from 'redux-saga/effects'
+import { put, call, fork, takeEvery, select } from 'redux-saga/effects'
 import Cookies from 'universal-cookie';
 import { requestMolecules, receiveMolecules,
          requestMolecule, requestMoleculeById, receiveMolecule,
@@ -14,7 +14,11 @@ import { requestUserMe, receiveUserMe, LOAD_USER_ME} from '../redux/ducks/users.
 import { setAuthenticating, requestOauthProviders, requestTokenInvalidation,
          receiveOauthProviders, loadOauthProviders, newToken, setMe, requestMe,
          receiveMe, LOAD_OAUTH_PROVIDERS,
-         INVALIDATE_TOKEN, NEW_TOKEN, AUTHENTICATE, LOAD_ME}  from '../redux/ducks/girder.js'
+         INVALIDATE_TOKEN, NEW_TOKEN, AUTHENTICATE, LOAD_ME,
+         RECEIVE_NOTIFICATION}  from '../redux/ducks/girder.js'
+
+import { requestTaskFlowStatus, receiveTaskFlowStatus,
+         LOAD_TASKFLOW_STATUS}  from '../redux/ducks/cumulus.js'
 
 import selectors from '../redux/selectors';
 
@@ -264,6 +268,45 @@ export function* watchFetchMe() {
   yield takeEvery(LOAD_ME, fetchMe)
 }
 
+export function* receiveNotification(action) {
+  const data = action.payload.data;
+  const type = action.payload.type;
+  if (type == 'taskflow.status') {
+    const _id = data._id;
+    const currentStatus = yield select(selectors.cumulus.getTaskFlowStatus, _id)
+
+    // If we have a status then we are keep track of this taskflow
+    yield put (receiveTaskFlowStatus(data))
+  }
+}
+
+export function* watchNotification() {
+  yield takeEvery(RECEIVE_NOTIFICATION, receiveNotification)
+}
+
+export function fetchTaskFlowStatusFromGirder(id) {
+  let origin = window.location.origin;
+  return girderClient.get(`${origin}/api/v1/taskflows/${id}/status`)
+          .then(response => response.data )
+}
+
+export function* fetchTaskFlowStatus(action) {
+  try {
+    const _id = action.payload.id;
+    yield put( requestTaskFlowStatus(_id) );
+    let status = yield call(fetchTaskFlowStatusFromGirder, _id);
+    status = status.status;
+    yield put( receiveTaskFlowStatus({_id, status,}));
+  }
+  catch(error) {
+    yield put( requestTaskFlowStatus(error) )
+  }
+}
+
+export function* watchFetchTaskFlowStatus() {
+  yield takeEvery(LOAD_TASKFLOW_STATUS, fetchTaskFlowStatus)
+}
+
 export default function* root() {
   yield fork(watchFetchMolecules)
   yield fork(watchFetchMolecule)
@@ -275,6 +318,7 @@ export default function* root() {
   yield fork(watchNewToken)
   yield fork(watchAuthenticate)
   yield fork(watchFetchMe)
-
+  yield fork(watchNotification)
+  yield fork(watchFetchTaskFlowStatus)
 }
 

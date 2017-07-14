@@ -15,6 +15,7 @@ export const LOAD_OAUTH_PROVIDERS = 'LOAD_OAUTH_PROVIDERS';
 export const REQUEST_OAUTH_PROVIDERS = 'REQUEST_OAUTH_PROVIDERS';
 export const RECEIVE_OAUTH_PROVIDERS = 'RECEIVE_OAUTH_PROVIDERS';
 
+export const RECEIVE_NOTIFICATION = 'RECEIVE_NOTIFICATION'
 
 export const initialState = {
     token: null,
@@ -95,6 +96,9 @@ export const invalidateToken = createAction(INVALIDATE_TOKEN);
 export const loadOauthProviders = createAction(LOAD_OAUTH_PROVIDERS);
 export const requestOauthProviders = createAction(REQUEST_OAUTH_PROVIDERS);
 export const receiveOauthProviders = createAction(RECEIVE_OAUTH_PROVIDERS, (providers) => ({providers}));
+
+
+export const receiveNotification = createAction(RECEIVE_NOTIFICATION);
 
 export default reducer;
 

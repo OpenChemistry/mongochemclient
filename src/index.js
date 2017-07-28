@@ -9,13 +9,13 @@ import App from './components/app';
 import MoleculeContainer from './containers/molecule';
 import CalculationContainer from './containers/calculation';
 import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './containers/charts';
-import TaskFlowMonitorContainer from './containers/taskflow';
+import CalculationMonitorContainer from './containers/calculationmonitor';
 import './index.css';
 import logo from './OpenChemistry_Logo.svg';
 import selectors from './redux/selectors';
-import {authenticate, newToken, invalidateToken, loadMe,
-        receiveNotification} from './redux/ducks/girder'
+import {authenticate, newToken, invalidateToken, loadMe} from './redux/ducks/girder'
 import {selectAuthProvider} from './redux/ducks/app'
+import { connectToNotificationStream } from './notifications'
 
 import configureStore from './store/configureStore'
 import rootSaga from './sagas'
@@ -292,30 +292,7 @@ function selectLoginProviderMapStateToProps(state, ownProps) {
 
 SelectLoginProvider = connect(selectLoginProviderMapStateToProps)(SelectLoginProvider)
 
-function connectToNotificationStream() {
-  if (EventSource) {
-    const origin = window.location.origin;
-    let eventSource = new EventSource(`${origin}/api/v1/notification/stream`);
-    eventSource.onmessage = (e) => {
-      const msg = JSON.parse(e.data);
-      store.dispatch(receiveNotification(msg));
-    };
-
-    eventSource.onerror = (e) => {
-      // Wait 2 seconds if the browser hasn't reconnected then reinitialize.
-      setTimeout(() => {
-        if (eventSource && eventSource.readyState === EventSource.CLOSED) {
-          connectToNotificationStream();
-        } else {
-          eventSource.close();
-          eventSource = null;
-          connectToNotificationStream();
-        }
-      }, 2000);
-    };
-  }
-}
-connectToNotificationStream()
+connectToNotificationStream(store)
 
 // Check to see if we have a cookie
 const cookies = new Cookies();
@@ -335,7 +312,6 @@ ReactDOM.render(
             <Route exact path='/chart' component={VibrationalModesChartContainer}/>
             <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
             <Route path='/calculations/:id' component={CalculationContainer}/>
-            <Route path='/taskflow' component={TaskFlowMonitorContainer}/>
           </div>
          <OauthRedirect/>
          <SelectLoginProvider/>

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { put, call, fork, takeEvery, select } from 'redux-saga/effects'
 import Cookies from 'universal-cookie';
+var jp = require('jsonpath')
 import { requestMolecules, receiveMolecules,
          requestMolecule, requestMoleculeById, receiveMolecule,
          LOAD_MOLECULES, LOAD_MOLECULE,
@@ -13,12 +14,14 @@ import { requestUserMe, receiveUserMe, LOAD_USER_ME} from '../redux/ducks/users.
 
 import { setAuthenticating, requestOauthProviders, requestTokenInvalidation,
          receiveOauthProviders, loadOauthProviders, newToken, setMe, requestMe,
-         receiveMe, LOAD_OAUTH_PROVIDERS,
+         receiveMe, requestTokenForApiKey, LOAD_OAUTH_PROVIDERS,
          INVALIDATE_TOKEN, NEW_TOKEN, AUTHENTICATE, LOAD_ME,
-         RECEIVE_NOTIFICATION}  from '../redux/ducks/girder.js'
+         RECEIVE_NOTIFICATION,  FETCH_TOKEN_FOR_API_KEY}  from '../redux/ducks/girder.js'
 
-import { requestTaskFlowStatus, receiveTaskFlowStatus,
-         LOAD_TASKFLOW_STATUS}  from '../redux/ducks/cumulus.js'
+import { requestTaskFlow, receiveTaskFlow, receiveTaskFlowStatus,
+         LOAD_TASKFLOW,
+         loadJob, requestJob, receiveJob, receiveJobStatus,
+         LOAD_JOB }  from '../redux/ducks/cumulus.js'
 
 import selectors from '../redux/selectors';
 
@@ -273,10 +276,25 @@ export function* receiveNotification(action) {
   const type = action.payload.type;
   if (type == 'taskflow.status') {
     const _id = data._id;
-    const currentStatus = yield select(selectors.cumulus.getTaskFlowStatus, _id)
+    const taskflow = yield select(selectors.cumulus.getTaskFlow, _id)
 
-    // If we have a status then we are keep track of this taskflow
-    yield put (receiveTaskFlowStatus(data))
+    if (taskflow) {
+      // If we have a status then we are keep track of this taskflow
+      yield put (receiveTaskFlowStatus(data))
+    }
+  }
+  else if (type == 'job.status') {
+    const id = data._id;
+    const job = yield select(selectors.cumulus.getJob, id)
+
+    if (job) {
+      // If we have a status then we are keep track of this taskflow
+      yield put(receiveJobStatus(data))
+    }
+    // This is a new job
+    else if (data.status = 'created') {
+      yield put(loadJob({id}));
+    }
   }
 }
 
@@ -284,28 +302,101 @@ export function* watchNotification() {
   yield takeEvery(RECEIVE_NOTIFICATION, receiveNotification)
 }
 
-export function fetchTaskFlowStatusFromGirder(id) {
+// TaskFlow
+
+export function fetchTaskFlowFromGirder(id) {
   let origin = window.location.origin;
-  return girderClient.get(`${origin}/api/v1/taskflows/${id}/status`)
+  return girderClient.get(`${origin}/api/v1/taskflows/${id}`)
           .then(response => response.data )
 }
 
-export function* fetchTaskFlowStatus(action) {
+export function* fetchTaskFlow(action) {
   try {
     const _id = action.payload.id;
-    yield put( requestTaskFlowStatus(_id) );
-    let status = yield call(fetchTaskFlowStatusFromGirder, _id);
-    status = status.status;
-    yield put( receiveTaskFlowStatus({_id, status,}));
+    yield put( requestTaskFlow(_id) );
+    let taskflow = yield call(fetchTaskFlowFromGirder, _id);
+    // See if we have any jobs associated with the taskflow and if so load
+    // them.
+    let jobs = jp.query(taskflow, '$.meta.jobs');
+    console.log(jobs);
+    if (jobs.length === 1) {
+      jobs = jobs[0];
+
+      for( let job of jobs) {
+        const id = job._id;
+        console.log(id);
+        yield put( loadJob({id}));
+      }
+    }
+
+    yield put( receiveTaskFlow({taskflow}));
   }
   catch(error) {
-    yield put( requestTaskFlowStatus(error) )
+    console.log(error);
+    yield put( requestTaskFlow(error) )
   }
 }
 
-export function* watchFetchTaskFlowStatus() {
-  yield takeEvery(LOAD_TASKFLOW_STATUS, fetchTaskFlowStatus)
+export function* watchFetchTaskFlow() {
+  yield takeEvery(LOAD_TASKFLOW, fetchTaskFlow)
 }
+
+// Job
+
+export function fetchJobFromGirder(id) {
+  let origin = window.location.origin;
+  return girderClient.get(`${origin}/api/v1/jobs/${id}`)
+          .then(response => response.data )
+}
+
+export function* fetchJob(action) {
+  try {
+    const _id = action.payload.id;
+    yield put( requestJob(_id) );
+    let job = yield call(fetchJobFromGirder, _id);
+    yield put( receiveJob({job}));
+  }
+  catch(error) {
+    yield put( requestJob(error) )
+  }
+}
+
+export function* watchFetchJob() {
+  yield takeEvery(LOAD_JOB, fetchJob)
+}
+
+// api key
+
+export function tokenForApiKey(apiKey) {
+  let origin = window.location.origin;
+  params = {
+      key: apiKey,
+  }
+  return girderClient.post(`${origin}/api_key/token`)
+          .then(response => response.data )
+}
+
+export function* authenticateUsingApiKey(action) {
+  try {
+    const key = action.payload.key;
+    yield put( requestApiTokenForApiKey(key) );
+    let tokenResponse = yield call(tokenForApiKey, key);
+
+    yield put( newToken(tokenResponse.token) );
+  }
+  catch(error) {
+    yield put( requestApiTokenForApiKey(error) )
+  }
+}
+
+export function* watchFetchTokenForApiKey() {
+  yield takeEvery( FETCH_TOKEN_FOR_API_KEY, authenticateUsingApiKey)
+}
+
+
+
+
+
 
 export default function* root() {
   yield fork(watchFetchMolecules)
@@ -319,6 +410,8 @@ export default function* root() {
   yield fork(watchAuthenticate)
   yield fork(watchFetchMe)
   yield fork(watchNotification)
-  yield fork(watchFetchTaskFlowStatus)
+  yield fork(watchFetchTaskFlow)
+  yield fork(watchFetchJob)
+  yield fork(watchFetchTokenForApiKey)
 }
 

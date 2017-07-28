@@ -20,7 +20,8 @@ module.exports = {
     // Use external version of React
     "react": "react",
     'react-dom': 'react-dom',
-    'react-router': 'react-router'
+    'react-router': 'react-router',
+    'jsonpath': true,
   },
   entry: ['./src/lib.js'],
   output: {
@@ -39,7 +40,8 @@ module.exports = {
         query: {
           env: {
             production: {
-              presets: ["es2016", "react"]
+              presets: ["es2016", "react"],
+              plugins: ["lodash"]
             }
           }
         }

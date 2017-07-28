@@ -17,6 +17,9 @@ export const RECEIVE_OAUTH_PROVIDERS = 'RECEIVE_OAUTH_PROVIDERS';
 
 export const RECEIVE_NOTIFICATION = 'RECEIVE_NOTIFICATION'
 
+export const FETCH_TOKEN_FOR_API_KEY = "FETCH_TOKEN_FOR_API_KEY"
+export const REQUEST_TOKEN_FOR_API_KEY = "REQUEST_TOKEN_FOR_API_KEY"
+
 export const initialState = {
     token: null,
     authenticating: false,
@@ -91,6 +94,9 @@ export const loadMe = createAction(LOAD_ME);
 export const authenticate = createAction(AUTHENTICATE, (token) => ({ token }));
 export const setAuthenticating = createAction(SET_AUTHENTICATING);
 export const invalidateToken = createAction(INVALIDATE_TOKEN);
+export const fetchTokenForApiKey = createAction(FETCH_TOKEN_FOR_API_KEY, (key) => ({ key }));
+export const requestTokenForApiKey = createAction(REQUEST_TOKEN_FOR_API_KEY, (key) => ({ key }));
+
 
 // OAuth
 export const loadOauthProviders = createAction(LOAD_OAUTH_PROVIDERS);

@@ -13,9 +13,12 @@
   "dependencies": {
     "axios": "^0.16.1",
     "d3": "^3.5.6",
+    "enumify": "^1.0.4",
     "font-awesome": "^4.7.0",
+    "jsonpath": "^0.2.12",
+    "lodash": "^4.17.4",
     "material-ui": "^0.18.3",
-    "molecule-3d-for-react": "file:/home/cjh/work/source/molecule-3d-for-react",
+    "molecule-3d-for-react": "git+https://github.com/cjh1/molecule-3d-for-react.git",
     "normalizr": "^3.2.2",
     "postinstall-build": "^3.0.1",
     "react": "^15.5.4",
@@ -33,12 +36,13 @@
     "universal-cookie": "^2.0.8"
   },
   "devDependencies": {
-    "babel-preset-es2016": "^6.3.13",
     "autoprefixer": "6.7.2",
     "babel-core": "6.22.1",
     "babel-eslint": "7.1.1",
     "babel-jest": "18.0.0",
     "babel-loader": "6.2.10",
+    "babel-plugin-lodash": "^3.2.11",
+    "babel-preset-es2016": "^6.3.13",
     "babel-preset-react-app": "^2.2.0",
     "babel-runtime": "^6.20.0",
     "case-sensitive-paths-webpack-plugin": "1.1.4",

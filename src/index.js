@@ -9,11 +9,13 @@ import App from './components/app';
 import MoleculeContainer from './containers/molecule';
 import CalculationContainer from './containers/calculation';
 import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './containers/charts';
+import CalculationMonitorContainer from './containers/calculationmonitor';
 import './index.css';
 import logo from './OpenChemistry_Logo.svg';
 import selectors from './redux/selectors';
 import {authenticate, newToken, invalidateToken, loadMe} from './redux/ducks/girder'
 import {selectAuthProvider} from './redux/ducks/app'
+import { connectToNotificationStream } from './notifications'
 
 import configureStore from './store/configureStore'
 import rootSaga from './sagas'
@@ -289,6 +291,8 @@ function selectLoginProviderMapStateToProps(state, ownProps) {
 }
 
 SelectLoginProvider = connect(selectLoginProviderMapStateToProps)(SelectLoginProvider)
+
+connectToNotificationStream(store)
 
 // Check to see if we have a cookie
 const cookies = new Cookies();

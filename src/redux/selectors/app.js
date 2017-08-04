@@ -17,3 +17,4 @@ export const getSelectedMolecule = createSelector(
     }
   )
 
+export const selectAuthProvider = (state) => state.app.selectAuthProvider;

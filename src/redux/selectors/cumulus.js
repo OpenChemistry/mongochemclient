@@ -2,6 +2,7 @@ import { createSelector } from 'reselect'
 var jp = require('jsonpath')
 import { Enum } from 'enumify';
 import { CalculationState } from '../../utils/constants'
+import _ from 'lodash'
 
 export const getTaskFlow = (state, _id) => _id in state.cumulus.taskflows.byId ?  state.cumulus.taskflows.byId[_id] : null;
 
@@ -58,4 +59,32 @@ export const getCalculationStatus = (state, taskFlowId) => {
   else {
     return taskFlow.status;
   }
+}
+
+export const getCalculationCode = (state, taskFlowId) => {
+
+  const taskFlow = getTaskFlow(state, taskFlowId);
+  if (!taskFlow) {
+    return null;
+  }
+
+  if (_.hasIn(taskFlow, 'meta.code')) {
+    return taskFlow['meta']['code']
+  }
+
+  return null;
+}
+
+export const getCalculationType = (state, taskFlowId) => {
+
+  const taskFlow = getTaskFlow(state, taskFlowId);
+  if (!taskFlow) {
+    return null;
+  }
+
+  if (_.hasIn(taskFlow, 'meta.type')) {
+    return taskFlow['meta']['type']
+  }
+
+  return null;
 }

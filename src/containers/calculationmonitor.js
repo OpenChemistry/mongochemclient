@@ -55,6 +55,8 @@ function mapStateToProps(state, ownProps) {
   for (const taskFlowId of ownProps.taskFlowIds) {
     const calculation = {
         name: taskFlowId,
+        code: selectors.cumulus.getCalculationCode(state, taskFlowId),
+        type: selectors.cumulus.getCalculationType(state, taskFlowId),
         status: selectors.cumulus.getCalculationStatus(state, taskFlowId)
     }
     calculations.push(calculation);

@@ -83,12 +83,14 @@ class CalculationMonitorTable extends Component {
           adjustForCheckbox={false}
         >
           <TableRow>
-            <TableHeaderColumn colSpan="2" tooltip={this.props.title} style={{textAlign: 'center'}}>
+            <TableHeaderColumn colSpan="4" tooltip={this.props.title} style={{textAlign: 'center'}}>
               {this.props.title}
             </TableHeaderColumn>
           </TableRow>
           <TableRow>
             <TableHeaderColumn tooltip="ID">ID</TableHeaderColumn>
+            <TableHeaderColumn tooltip="Code">Code</TableHeaderColumn>
+            <TableHeaderColumn tooltip="Type">Type</TableHeaderColumn>
             <TableHeaderColumn tooltip="The Status">Status</TableHeaderColumn>
           </TableRow>
         </TableHeader>
@@ -99,6 +101,8 @@ class CalculationMonitorTable extends Component {
           {this.props.calculations.map( (calculation, index) => (
             <TableRow key={index}>
               <TableRowColumn>{calculation.name}</TableRowColumn>
+              <TableRowColumn>{calculation.code}</TableRowColumn>
+              <TableRowColumn>{calculation.type}</TableRowColumn>
               <TableRowColumn>
                 <Chip
                   backgroundColor={'#ffffff'}

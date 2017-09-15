@@ -6,6 +6,7 @@ export const INVALIDATE_TOKEN = 'INVALIDATE_TOKEN';
 export const REQUEST_TOKEN_INVALIDATION = 'REQUEST_TOKEN_INVALIDATION';
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const SET_AUTHENTICATING = 'SET_AUTHENTICATING';
+export const AUTHENTICATED = 'AUTHENTICATED';
 export const SET_ME = 'SET_ME';
 export const REQUEST_ME = 'REQUEST_ME'
 export const RECEIVE_ME = 'RECEIVE_ME'
@@ -16,6 +17,8 @@ export const REQUEST_OAUTH_PROVIDERS = 'REQUEST_OAUTH_PROVIDERS';
 export const RECEIVE_OAUTH_PROVIDERS = 'RECEIVE_OAUTH_PROVIDERS';
 
 export const RECEIVE_NOTIFICATION = 'RECEIVE_NOTIFICATION'
+export const EVENT_SOURCE_ERROR = 'EVENT_SOURCE_ERROR'
+export const CONNECT_TO_NOTIFICATIONS = 'CONNECT_TO_NOTIFICATIONS'
 
 export const FETCH_TOKEN_FOR_API_KEY = "FETCH_TOKEN_FOR_API_KEY"
 export const REQUEST_TOKEN_FOR_API_KEY = "REQUEST_TOKEN_FOR_API_KEY"
@@ -91,12 +94,12 @@ export const receiveMe = createAction(RECEIVE_ME);
 export const loadMe = createAction(LOAD_ME);
 
 // Auth
-export const authenticate = createAction(AUTHENTICATE, (token) => ({ token }));
+export const authenticate = createAction(AUTHENTICATE, (token, redirect = true) => ({ token, redirect }));
 export const setAuthenticating = createAction(SET_AUTHENTICATING);
 export const invalidateToken = createAction(INVALIDATE_TOKEN);
 export const fetchTokenForApiKey = createAction(FETCH_TOKEN_FOR_API_KEY, (key) => ({ key }));
 export const requestTokenForApiKey = createAction(REQUEST_TOKEN_FOR_API_KEY, (key) => ({ key }));
-
+export const authenticated = createAction(AUTHENTICATED);
 
 // OAuth
 export const loadOauthProviders = createAction(LOAD_OAUTH_PROVIDERS);
@@ -105,6 +108,8 @@ export const receiveOauthProviders = createAction(RECEIVE_OAUTH_PROVIDERS, (prov
 
 
 export const receiveNotification = createAction(RECEIVE_NOTIFICATION);
+export const eventSourceError = createAction(EVENT_SOURCE_ERROR);
+export const connectToNotifications = createAction(CONNECT_TO_NOTIFICATIONS);
 
 export default reducer;
 

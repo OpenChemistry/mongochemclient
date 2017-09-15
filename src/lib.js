@@ -2,8 +2,8 @@ import {VibrationalModesChart, FreeEnergyChart} from './components'
 import {CalculationMonitorTableContainer, CalculationContainer}  from './containers'
 import rootSaga from './sagas'
 import configureStore from './store/configureStore'
-import { newToken } from './redux/ducks/girder'
-import { connectToNotificationStream } from './notifications'
+import { authenticate } from './redux/ducks/girder'
+
 
 export  {
   CalculationContainer,
@@ -12,6 +12,5 @@ export  {
   FreeEnergyChart,
   rootSaga,
   configureStore,
-  newToken,
-  connectToNotificationStream,
+  authenticate,
 }

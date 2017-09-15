@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { put, call, fork, takeEvery, select } from 'redux-saga/effects'
+import { put, call, fork, takeEvery, take, select } from 'redux-saga/effects'
 import Cookies from 'universal-cookie';
 var jp = require('jsonpath')
+import _ from 'lodash'
 import { requestMolecules, receiveMolecules,
          requestMolecule, requestMoleculeById, receiveMolecule,
          LOAD_MOLECULES, LOAD_MOLECULE,
@@ -14,9 +15,10 @@ import { requestUserMe, receiveUserMe, LOAD_USER_ME} from '../redux/ducks/users.
 
 import { setAuthenticating, requestOauthProviders, requestTokenInvalidation,
          receiveOauthProviders, loadOauthProviders, newToken, setMe, requestMe,
-         receiveMe, requestTokenForApiKey, LOAD_OAUTH_PROVIDERS,
-         INVALIDATE_TOKEN, NEW_TOKEN, AUTHENTICATE, LOAD_ME,
-         RECEIVE_NOTIFICATION,  FETCH_TOKEN_FOR_API_KEY}  from '../redux/ducks/girder.js'
+         receiveMe, requestTokenForApiKey, connectToNotifications,
+         authenticated, LOAD_OAUTH_PROVIDERS, INVALIDATE_TOKEN, NEW_TOKEN,
+         AUTHENTICATE, LOAD_ME, RECEIVE_NOTIFICATION,  FETCH_TOKEN_FOR_API_KEY,
+         AUTHENTICATED}  from '../redux/ducks/girder.js'
 
 import { requestTaskFlow, receiveTaskFlow, receiveTaskFlowStatus,
          LOAD_TASKFLOW,
@@ -25,25 +27,27 @@ import { requestTaskFlow, receiveTaskFlow, receiveTaskFlowStatus,
 
 import selectors from '../redux/selectors';
 
+import { watchNotifications } from './notifications'
+
 
 var girderClient = axios.create({
   baseURL: window.location.origin,
 });
 
 export function fetchMoleculesFromGirder() {
-  let origin = window.location.origin;
+  const origin = window.location.origin;
   return girderClient.get(`${origin}/api/v1/molecules`)
           .then(response => response.data )
 }
 
 export function fetchMoleculeFromGirder(inchikey) {
-  let origin = window.location.origin;
+  const origin = window.location.origin;
   return girderClient.get(`${origin}/api/v1/molecules/inchikey/${inchikey}`)
           .then(response => response.data )
 }
 
 export function fetchMoleculeByIdFromGirder(id) {
-  let origin = window.location.origin;
+  const origin = window.location.origin;
   return girderClient.get(`${origin}/api/v1/molecules/${id}`)
           .then(response => response.data )
 }
@@ -51,7 +55,7 @@ export function fetchMoleculeByIdFromGirder(id) {
 // Users
 
 export function fetchUserMeFromGirder() {
-  let origin = window.location.origin;
+  const origin = window.location.origin;
   return girderClient.get(`${origin}/api/v1/user/me`)
           .then(response => response.data )
 }
@@ -69,6 +73,17 @@ export function* fetchUserMe(action) {
 
 export function* watchFetchUserMe() {
   yield takeEvery(LOAD_USER_ME, fetchUserMe)
+}
+
+
+export function isValidToken(token) {
+  const headers = {
+      'Girder-Token': token
+  }
+  const origin = window.location.origin;
+
+  return axios.get(`${origin}/api/v1/user/me`, {headers})
+    .then(response => response.data != null )
 }
 
 // Molecules
@@ -188,46 +203,59 @@ export function* watchFetchOauthProviders() {
   yield takeEvery(LOAD_OAUTH_PROVIDERS, fetchOauthProviders)
 }
 
-export function updateGirderAxiosClient(action) {
+export function* updateToken(action) {
   const headers = {}
-
+  const girderToken = action.payload.token;
   if (action.payload.token !== null) {
-    headers['Girder-Token'] = action.payload.token;
+    headers['Girder-Token'] = girderToken;
   }
 
   girderClient = axios.create({
     headers,
   });
+
+  const cookies = new Cookies();
+  cookies.set('girderToken', girderToken);
+
+  // Reconnect to the event stream using the new token
+  yield put(connectToNotifications());
 }
 
 export function* watchNewToken() {
-  yield takeEvery(NEW_TOKEN, updateGirderAxiosClient)
+  yield takeEvery(NEW_TOKEN, updateToken)
 }
 
-export function* authenticate(payload) {
+export function* authenticate(action) {
+  const payload = action.payload;
   const token = payload.token;
-  var auth = false;
+  const redirect = payload.redirect;
+  let auth = false;
   yield put(setAuthenticating(true));
 
-  // Check to see if we have a cookie
-  const cookies = new Cookies();
-  const cookieToken = cookies.get('girderToken');
+  if (!_.isNil(token)) {
 
-  if (cookieToken != null && cookieToken !== token) {
-    yield put(newToken(cookieToken));
+    let valid = yield call(isValidToken, token);
+    console.log('valid: '+  valid);
+    if (valid) {
+      yield put(newToken(token));
+      auth = true
+      yield put(setAuthenticating(false))
+    }
   }
 
-  const me = yield call(fetchUserMeFromGirder)
-  if (me !== null) {
-    auth = true;
-    yield put(setAuthenticating(false))
+  if (auth) {
+    const me = yield call(fetchUserMeFromGirder)
     yield put(setMe(me))
-    console.log(me);
+    yield put(authenticated())
   }
-
-  if (!auth) {
-    const redirect = window.location.href;
-    yield put(loadOauthProviders(redirect));
+  else {
+    if (redirect) {
+      const redirect = window.location.href;
+      yield put(loadOauthProviders(redirect));
+    }
+    else {
+      yield put(setAuthenticating(false));
+    }
   }
 }
 
@@ -312,6 +340,13 @@ export function fetchTaskFlowFromGirder(id) {
 
 export function* fetchTaskFlow(action) {
   try {
+    const authenticating = yield select(selectors.girder.isAuthenticating);
+
+    // If we are authenticating then wait ...
+    if (authenticating) {
+      yield take(AUTHENTICATED);
+    }
+
     const _id = action.payload.id;
     yield put( requestTaskFlow(_id) );
     let taskflow = yield call(fetchTaskFlowFromGirder, _id);
@@ -368,8 +403,8 @@ export function* watchFetchJob() {
 // api key
 
 export function tokenForApiKey(apiKey) {
-  let origin = window.location.origin;
-  params = {
+  const origin = window.location.origin;
+  const params = {
       key: apiKey,
   }
   return girderClient.post(`${origin}/api_key/token`)
@@ -393,11 +428,6 @@ export function* watchFetchTokenForApiKey() {
   yield takeEvery( FETCH_TOKEN_FOR_API_KEY, authenticateUsingApiKey)
 }
 
-
-
-
-
-
 export default function* root() {
   yield fork(watchFetchMolecules)
   yield fork(watchFetchMolecule)
@@ -413,5 +443,6 @@ export default function* root() {
   yield fork(watchFetchTaskFlow)
   yield fork(watchFetchJob)
   yield fork(watchFetchTokenForApiKey)
+  yield fork(watchNotifications)
 }
 

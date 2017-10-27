@@ -5,6 +5,7 @@ export const NEW_TOKEN   = 'NEW_TOKEN';
 export const INVALIDATE_TOKEN = 'INVALIDATE_TOKEN';
 export const REQUEST_TOKEN_INVALIDATION = 'REQUEST_TOKEN_INVALIDATION';
 export const AUTHENTICATE = 'AUTHENTICATE';
+export const AUTHENTICATE_NERSC = 'AUTHENTICATE_NERSC';
 export const SET_AUTHENTICATING = 'SET_AUTHENTICATING';
 export const AUTHENTICATED = 'AUTHENTICATED';
 export const SET_ME = 'SET_ME';
@@ -95,6 +96,7 @@ export const loadMe = createAction(LOAD_ME);
 
 // Auth
 export const authenticate = createAction(AUTHENTICATE, (token, redirect = true) => ({ token, redirect }));
+export const authenticateNersc = createAction(AUTHENTICATE_NERSC);
 export const setAuthenticating = createAction(SET_AUTHENTICATING);
 export const invalidateToken = createAction(INVALIDATE_TOKEN);
 export const fetchTokenForApiKey = createAction(FETCH_TOKEN_FOR_API_KEY, (key) => ({ key }));

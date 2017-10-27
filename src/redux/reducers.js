@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux'
+import { reducer as formReducer } from 'redux-form'
 import molecules  from './ducks/molecules';
 import calculations  from './ducks/calculations';
 import users  from './ducks/users';
@@ -16,4 +17,5 @@ export default combineReducers({
   app,
   cumulus,
   router: routerReducer,
+  form: formReducer
 });

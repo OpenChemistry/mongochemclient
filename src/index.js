@@ -13,7 +13,7 @@ import './index.css';
 import logo from './OpenChemistry_Logo.svg';
 import selectors from './redux/selectors';
 import {authenticate, invalidateToken, loadMe} from './redux/ducks/girder'
-import {selectAuthProvider} from './redux/ducks/app'
+import {selectAuthProvider, showNerscLogin} from './redux/ducks/app'
 
 import configureStore from './store/configureStore'
 import rootSaga from './sagas'
@@ -30,6 +30,8 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import ReactRedirect from 'react-redirect'
 require('font-awesome/css/font-awesome.css');
 import google from './google.svg'
+import nersc from './nerscnim.png'
+import NerscLogin from './components/nersc'
 
 const store = configureStore()
 store.runSaga(rootSaga)
@@ -251,6 +253,12 @@ class SelectLoginProvider extends Component {
     this.props.dispatch(authenticate(this.props.token))
   }
 
+  handleNersc = () => {
+    this.props.dispatch(selectAuthProvider(false));
+    this.props.dispatch(showNerscLogin(true));
+  }
+
+
   render = () => {
 
   const actions = [
@@ -272,6 +280,10 @@ class SelectLoginProvider extends Component {
         onTouchTap={this.handleGoogle}
         label='Sign in with Google'
         labelPosition='after' />
+      <FlatButton style={{'margin-left': '30px'}} icon={<img className='oc-nersc' src={nersc} alt="nim" />}
+        onTouchTap={this.handleNersc}
+        label='Sign in with NIM'
+          labelPosition='after' />
       </Dialog>
     );
 
@@ -310,6 +322,7 @@ ReactDOM.render(
           </div>
          <OauthRedirect/>
          <SelectLoginProvider/>
+         <NerscLogin/>
         </div>
       </ConnectedRouter>
     </Provider>

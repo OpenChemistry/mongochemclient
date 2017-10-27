@@ -86,7 +86,7 @@ class CalculationContainer extends Component {
       }
 
       if ( orbital !== 'lumo' && orbital !== 'homo') {
-        orbital = parseInt(orbital);
+        orbital = parseInt(orbital, 10);
       }
       if (orbital) {
         this.setState({

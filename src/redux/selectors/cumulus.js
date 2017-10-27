@@ -1,5 +1,3 @@
-import { createSelector } from 'reselect'
-var jp = require('jsonpath')
 import { Enum } from 'enumify';
 import { CalculationState } from '../../utils/constants'
 import _ from 'lodash'

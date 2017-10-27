@@ -226,6 +226,11 @@ export class VibrationalModesChart extends Component {
 
       lineFreqData = this.generateLine(data, expFreqRange, intensityRange, 5);
 
+      var experimentalLineFunc = d3.svg.line()
+      .x((d) => this.x(d.x))
+      .y((d) => this.y(d.y))
+      .interpolate('linear');
+
       const numberOfPoints = 400;
       var expDrag = d3.behavior.drag().on('drag', () => {
         var pixelDelta = d3.event.sourceEvent.pageY - dragStart,
@@ -245,16 +250,11 @@ export class VibrationalModesChart extends Component {
         dragStart = d3.event.sourceEvent.pageY;
       }).on('dragend', () => {
         for (let i = 0; i < numberOfPoints; ++i) {
-          experimentalLineData[i].y = experimentalLineData[i].y * experimentalScaleFactor;
+          experimentalLineData[i].y *= experimentalScaleFactor;
         }
       });
 
       experimentalLine.call(expDrag);
-
-      var experimentalLineFunc = d3.svg.line()
-        .x((d) => this.x(d.x))
-        .y((d) => this.y(d.y))
-        .interpolate('linear');
 
       experimentalLine.attr('d', experimentalLineFunc(experimentalLineData));
     }
@@ -291,7 +291,7 @@ export class VibrationalModesChart extends Component {
     }
     let normalization = intensityRange[1] / freqRange[1];
     for (let i = 0; i < numberOfPoints; ++i) {
-      lineFreqData[i].y = lineFreqData[i].y * normalization;
+      lineFreqData[i].y *= normalization;
     }
 
     return lineFreqData;
@@ -472,8 +472,7 @@ export class FreeEnergyChart extends Component {
     }
 
     var element = findDOMNode(this), freeEnergyRange = d3.extent(data.freeEnergy),
-      that = this, width = element.clientWidth,
-      height = element.clientHeight;
+      width = element.clientWidth, height = element.clientHeight;
 
     if (width === 0 || height === 0) {
       return;

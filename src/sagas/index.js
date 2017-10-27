@@ -302,7 +302,7 @@ export function* watchFetchMe() {
 export function* receiveNotification(action) {
   const data = action.payload.data;
   const type = action.payload.type;
-  if (type == 'taskflow.status') {
+  if (type === 'taskflow.status') {
     const _id = data._id;
     const taskflow = yield select(selectors.cumulus.getTaskFlow, _id)
 
@@ -311,7 +311,7 @@ export function* receiveNotification(action) {
       yield put (receiveTaskFlowStatus(data))
     }
   }
-  else if (type == 'job.status') {
+  else if (type === 'job.status') {
     const id = data._id;
     const job = yield select(selectors.cumulus.getJob, id)
 
@@ -320,7 +320,7 @@ export function* receiveNotification(action) {
       yield put(receiveJobStatus(data))
     }
     // This is a new job
-    else if (data.status = 'created') {
+    else if (data.status === 'created') {
       yield put(loadJob({id}));
     }
   }
@@ -408,19 +408,19 @@ export function tokenForApiKey(apiKey) {
       key: apiKey,
   }
   return girderClient.post(`${origin}/api_key/token`)
-          .then(response => response.data )
+          .then(response => response.data, {params})
 }
 
 export function* authenticateUsingApiKey(action) {
   try {
     const key = action.payload.key;
-    yield put( requestApiTokenForApiKey(key) );
+    yield put( requestTokenForApiKey(key) );
     let tokenResponse = yield call(tokenForApiKey, key);
 
     yield put( newToken(tokenResponse.token) );
   }
   catch(error) {
-    yield put( requestApiTokenForApiKey(error) )
+    yield put( requestTokenForApiKey(error) )
   }
 }
 

@@ -38,10 +38,10 @@ class Molecule extends Component {
         const energy = energies[i].toFixed(4);
 
         let text = '';
-        if (mode == electronCount / 2) {
+        if (mode === electronCount / 2) {
             text = ' (HOMO)';
         }
-        else if (mode == electronCount / 2 + 1) {
+        else if (mode === electronCount / 2 + 1) {
             text = ' (LUMO)';
         }
         //
@@ -65,10 +65,14 @@ class Molecule extends Component {
     }
 
     if (this.props.isoSurfaces) {
-      this.state.isoSurfaces = this.props.isoSurfaces;
+      this.setState({
+        isoSurfaces: this.props.isoSurfaces
+      });
     }
     else {
-      this.state.isoSurfaces = this.isoSurfaces();
+      this.setState({
+        isoSurfaces: this.isoSurfaces()
+      });
     }
   }
 

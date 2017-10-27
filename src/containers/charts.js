@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux'
 
 import {VibrationalModesChart, FreeEnergyChart} from '../components/charts'
-import selectors from '../redux/selectors'
 
 export class VibrationalModesChartContainer extends Component {
 

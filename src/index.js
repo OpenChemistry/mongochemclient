@@ -3,29 +3,26 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux'
-import { Route, Redirect } from 'react-router'
+import { Route } from 'react-router'
 import Cookies from 'universal-cookie';
 import App from './components/app';
 import MoleculeContainer from './containers/molecule';
 import CalculationContainer from './containers/calculation';
 import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './containers/charts';
-import CalculationMonitorContainer from './containers/calculationmonitor';
 import './index.css';
 import logo from './OpenChemistry_Logo.svg';
 import selectors from './redux/selectors';
-import {authenticate, newToken, invalidateToken, loadMe} from './redux/ducks/girder'
+import {authenticate, invalidateToken, loadMe} from './redux/ducks/girder'
 import {selectAuthProvider} from './redux/ducks/app'
 
 import configureStore from './store/configureStore'
 import rootSaga from './sagas'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
-import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Dialog from 'material-ui/Dialog';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
 import ActionInput from 'material-ui/svg-icons/action/input';
 import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
@@ -90,19 +87,19 @@ PrivateRoute.defaultProps = {
   providers: null
 }
 
-function mapStateToProps(state, ownProps) {
-  const token = selectors.girder.getToken(state);
-  const isAuthenticating = selectors.girder.isAuthenticating(state);
-  const isAuthenticated = selectors.girder.isAuthenticated(state);
-  const providers = selectors.girder.getOauthProviders(state);
-
-  return {
-    token,
-    isAuthenticating,
-    isAuthenticated,
-    providers,
-  }
-}
+//function mapStateToProps(state, ownProps) {
+//  const token = selectors.girder.getToken(state);
+//  const isAuthenticating = selectors.girder.isAuthenticating(state);
+//  const isAuthenticated = selectors.girder.isAuthenticated(state);
+//  const providers = selectors.girder.getOauthProviders(state);
+//
+//  return {
+//    token,
+//    isAuthenticating,
+//    isAuthenticated,
+//    providers,
+//  }
+//}
 
 //PrivateRoute = connect(mapStateToProps)(PrivateRoute)
 
@@ -136,7 +133,7 @@ Login = connect(loginMapStateToProps)(Login)
 
 class LoginMenu extends Component {
   render = () => {
-    const {me, ...rest} = this.props;
+    const {me} = this.props;
 
     return (
         <IconMenu
@@ -234,7 +231,7 @@ class SelectLoginProvider extends Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    const {open, ...rest} = nextProps;
+    const {open} = nextProps;
     this.setState({
       open
     });

@@ -5,6 +5,8 @@ import { Provider, connect } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux'
 import { Route } from 'react-router'
 import Cookies from 'universal-cookie';
+import _ from 'lodash'
+
 import App from './components/app';
 import MoleculeContainer from './containers/molecule';
 import CalculationContainer from './containers/calculation';
@@ -12,7 +14,7 @@ import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './contai
 import './index.css';
 import logo from './OpenChemistry_Logo.svg';
 import selectors from './redux/selectors';
-import {authenticate, invalidateToken, loadMe} from './redux/ducks/girder'
+import {authenticate, invalidateToken} from './redux/ducks/girder'
 import {selectAuthProvider, showNerscLogin} from './redux/ducks/app'
 
 import configureStore from './store/configureStore'
@@ -32,6 +34,7 @@ require('font-awesome/css/font-awesome.css');
 import google from './google.svg'
 import nersc from './nerscnim.png'
 import NerscLogin from './components/nersc'
+import LoginMenu from './components/loginmenu'
 
 const store = configureStore()
 store.runSaga(rootSaga)
@@ -132,46 +135,6 @@ function loginMapStateToProps(state, ownProps) {
 }
 
 Login = connect(loginMapStateToProps)(Login)
-
-class LoginMenu extends Component {
-  render = () => {
-    const {me} = this.props;
-
-    return (
-        <IconMenu
-          iconButtonElement={
-            <FlatButton
-             label={me ? me.login : '' }
-             labelPosition='before'
-             icon={<NavigationArrowDropDown />} />
-          }
-          targetOrigin={{horizontal: 'right', vertical: 'top'}}
-          anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-        >
-          <MenuItem primaryText='Sign out' leftIcon={<ActionExitToApp/>}
-                    onTouchTap={this.handleTouchTap}  />
-      </IconMenu>
-    );
-  }
-
-  handleTouchTap = (event) => {
-    // This prevents ghost click.
-    event.preventDefault();
-
-    this.props.dispatch(invalidateToken())
-  };
-}
-
-function loginMenuMapStateToProps(state, ownProps) {
-  const me = selectors.girder.getMe(state);
-
-  return {
-    me,
-  }
-}
-
-
-LoginMenu = connect(loginMenuMapStateToProps)(LoginMenu)
 
 class Header extends Component {
   render = () => {
@@ -303,9 +266,10 @@ SelectLoginProvider = connect(selectLoginProviderMapStateToProps)(SelectLoginPro
 // Check to see if we have a cookie
 const cookies = new Cookies();
 const cookieToken = cookies.get('girderToken');
-store.dispatch(authenticate(cookieToken));
-// Not sure we need this
-store.dispatch(loadMe());
+if (!_.isNil(cookieToken)) {
+  store.dispatch(authenticate(cookieToken));
+}
+
 ReactDOM.render(
   <MuiThemeProvider >
     <Provider store={store}>

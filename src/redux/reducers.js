@@ -7,7 +7,7 @@ import users  from './ducks/users';
 import girder  from './ducks/girder';
 import app  from './ducks/app';
 import cumulus  from './ducks/cumulus';
-
+import nersc  from './ducks/nersc';
 
 export default combineReducers({
   molecules,
@@ -16,6 +16,7 @@ export default combineReducers({
   girder,
   app,
   cumulus,
+  nersc,
   router: routerReducer,
   form: formReducer
 });

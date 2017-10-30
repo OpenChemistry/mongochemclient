@@ -30,10 +30,12 @@
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.6.0",
     "redux-actions": "^2.0.2",
+    "redux-form": "^7.1.2",
+    "redux-form-material-ui": "^4.3.0",
     "redux-logger": "^3.0.1",
     "redux-saga": "^0.14.6",
     "reselect": "^3.0.0",
-    "universal-cookie": "^2.0.8"
+    "universal-cookie": "^2.1.0"
   },
   "devDependencies": {
     "autoprefixer": "6.7.2",

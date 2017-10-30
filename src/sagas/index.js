@@ -14,7 +14,7 @@ import { requestCalculationById, receiveCalculation, LOAD_CALCULATION_BY_ID,
 import { requestUserMe, receiveUserMe, LOAD_USER_ME} from '../redux/ducks/users.js'
 
 import { setAuthenticating, requestOauthProviders, requestTokenInvalidation,
-         receiveOauthProviders, loadOauthProviders, newToken, setMe, requestMe,
+         receiveOauthProviders, loadOauthProviders, setMe, requestMe, newToken,
          receiveMe, requestTokenForApiKey, connectToNotifications,
          authenticated, LOAD_OAUTH_PROVIDERS, INVALIDATE_TOKEN, NEW_TOKEN,
          AUTHENTICATE, LOAD_ME, RECEIVE_NOTIFICATION,  FETCH_TOKEN_FOR_API_KEY,
@@ -28,6 +28,9 @@ import { requestTaskFlow, receiveTaskFlow, receiveTaskFlowStatus,
 import selectors from '../redux/selectors';
 
 import { watchNotifications } from './notifications'
+import { watchAuthenticateNersc } from './nersc'
+import { user, token } from '../rest/girder'
+import * as rest from '../rest'
 
 
 var girderClient = axios.create({
@@ -204,18 +207,15 @@ export function* watchFetchOauthProviders() {
 }
 
 export function* updateToken(action) {
-  const headers = {}
   const girderToken = action.payload.token;
-  if (action.payload.token !== null) {
-    headers['Girder-Token'] = girderToken;
+  if (girderToken !== null) {
+    rest.updateToken(girderToken)
   }
 
-  girderClient = axios.create({
-    headers,
-  });
-
   const cookies = new Cookies();
-  cookies.set('girderToken', girderToken);
+  cookies.set('girderToken', girderToken, {
+    path: '/'
+  });
 
   // Reconnect to the event stream using the new token
   yield put(connectToNotifications());
@@ -230,25 +230,22 @@ export function* authenticate(action) {
   const token = payload.token;
   const redirect = payload.redirect;
   let auth = false;
+  let me = null;
   yield put(setAuthenticating(true));
 
   if (!_.isNil(token)) {
 
-    let valid = yield call(isValidToken, token);
-    console.log('valid: '+  valid);
-    if (valid) {
+    me = yield call(user.fetchMe, token);
+    if (me != null) {
       yield put(newToken(token));
-      auth = true
+      yield put(setMe(me))
       yield put(setAuthenticating(false))
+      yield put(authenticated())
+      auth = true
     }
   }
 
-  if (auth) {
-    const me = yield call(fetchUserMeFromGirder)
-    yield put(setMe(me))
-    yield put(authenticated())
-  }
-  else {
+  if (!auth) {
     if (redirect) {
       const redirect = window.location.href;
       yield put(loadOauthProviders(redirect));
@@ -263,17 +260,12 @@ export function* watchAuthenticate() {
   yield takeEvery(AUTHENTICATE, authenticate)
 }
 
-export function invalidateGirderToken() {
-  let origin = window.location.origin;
-  return girderClient.delete(`${origin}/api/v1/token/session`)
-          .then(response => response.data )
-}
-
 export function* invalidateToken(action) {
   try {
     yield put( requestTokenInvalidation() )
-    yield call(invalidateGirderToken)
+    yield call(token.invalidate)
     yield put( newToken(null) )
+    yield put( setMe(null) )
   }
   catch(error) {
     yield put( requestTokenInvalidation(error) )
@@ -444,5 +436,6 @@ export default function* root() {
   yield fork(watchFetchJob)
   yield fork(watchFetchTokenForApiKey)
   yield fork(watchNotifications)
+  yield fork(watchAuthenticateNersc)
 }
 

@@ -18,3 +18,4 @@ export const getSelectedMolecule = createSelector(
   )
 
 export const selectAuthProvider = (state) => state.app.selectAuthProvider;
+export const showNerscLogin = state => state.app.nersc.login.show;

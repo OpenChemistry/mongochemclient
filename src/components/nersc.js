@@ -3,13 +3,16 @@ import { connect } from 'react-redux'
 import {
   TextField
 } from 'redux-form-material-ui'
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm, SubmissionError } from 'redux-form'
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import Clear from 'material-ui/svg-icons/content/clear';
 import Input from 'material-ui/svg-icons/action/input';
 import { showNerscLogin } from '../redux/ducks/app';
+import { authenticateNersc } from '../redux/ducks/nersc';
 import selectors from '../redux/selectors';
+import _ from 'lodash'
+import { red500 } from 'material-ui/styles/colors'
 
 const style = {
     content: {
@@ -19,9 +22,39 @@ const style = {
       'margin-left': '10px',
     },
     actionsContainer: {
-      'padding-right': '20px',
-      'padding-bottom': '20px'
+      float: 'right',
+      'padding-top': '20px'
+    },
+    error: {
+      fontSize: 12,
+      lineHeight: '12px',
+      color: red500
     }
+}
+
+const login = (values, dispatch) => {
+
+  const {
+    username,
+    password} = values;
+
+  return new Promise((resolve, reject) => {
+    dispatch(authenticateNersc(username, password, reject, resolve));
+  }).catch(_error => {
+    throw new SubmissionError({ _error });
+  });
+}
+
+const validate = values => {
+  const errors = {}
+  const requiredFields = [ 'username', 'password']
+  requiredFields.forEach(field => {
+    if (!values[ field ]) {
+      errors[ field ] = 'Required'
+    }
+  })
+
+  return errors
 }
 
 
@@ -51,35 +84,17 @@ class NerscLogin extends Component {
   };
 
   render = () => {
-    const actions = [
-      <RaisedButton
-        style={style.button}
-        label="Login"
-        labelPosition="after"
-        primary={true}
-        icon={<Input />}
-      />,
-      <RaisedButton
-        style={style.button}
-        label="Cancel"
-        labelPosition="after"
-        primary={true}
-        icon={<Clear />}
-        onClick={() => this.handleClose()}
-      />
-    ];
+    const {error, handleSubmit, pristine, submitting, invalid} = this.props;
 
     return (
       <Dialog
         contentStyle={style.content}
-        actionsContainerStyle={style.actionsContainer}
         title="Sign in using NERSC NIM credentials"
-        actions={actions}
         modal={false}
         open={this.state.open}
         onRequestClose={this.handleClose}
       >
-        <form onKeyDown={this.onKeyDown}>
+        <form onSubmit={handleSubmit(login)} >
           <Field
             name="username"
             component={TextField}
@@ -93,6 +108,27 @@ class NerscLogin extends Component {
             floatingLabelText="NIM Password"
             type="password"
           />
+          {error && <div style={style.error}>{_.has(error, 'message') ? error.message : error}</div>}
+          <div style={style.actionsContainer}>
+            <RaisedButton
+              disabled={pristine || submitting || invalid}
+              style={style.button}
+              label="Login"
+              labelPosition="after"
+              primary={true}
+              type='submit'
+              icon={<Input />}
+            />
+            <RaisedButton
+              disabled={pristine || submitting}
+              style={style.button}
+              label="Cancel"
+              labelPosition="after"
+              primary={true}
+              icon={<Clear />}
+              onClick={() => this.handleClose()}
+            />
+          </div>
         </form>
       </Dialog>
     );
@@ -111,5 +147,6 @@ NerscLogin = connect(mapStateToProps)(NerscLogin)
 
 
 export default reduxForm({
-  form: 'login'
+  form: 'login',
+  validate
 })(NerscLogin)

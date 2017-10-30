@@ -14,7 +14,7 @@ import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './contai
 import './index.css';
 import logo from './OpenChemistry_Logo.svg';
 import selectors from './redux/selectors';
-import {authenticate, invalidateToken} from './redux/ducks/girder'
+import {authenticate} from './redux/ducks/girder'
 import {selectAuthProvider, showNerscLogin} from './redux/ducks/app'
 
 import configureStore from './store/configureStore'
@@ -22,12 +22,8 @@ import rootSaga from './sagas'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
 import Dialog from 'material-ui/Dialog';
-import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
 import ActionInput from 'material-ui/svg-icons/action/input';
-import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import ReactRedirect from 'react-redirect'
 require('font-awesome/css/font-awesome.css');

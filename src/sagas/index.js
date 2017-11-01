@@ -29,6 +29,8 @@ import selectors from '../redux/selectors';
 
 import { watchNotifications } from './notifications'
 import { watchAuthenticateNersc } from './nersc'
+import { watchLoadNotebooks } from './app'
+import { watchRedirectToJupyterHub } from './jupyterlab'
 import { user, token } from '../rest/girder'
 import * as rest from '../rest'
 
@@ -437,5 +439,7 @@ export default function* root() {
   yield fork(watchFetchTokenForApiKey)
   yield fork(watchNotifications)
   yield fork(watchAuthenticateNersc)
+  yield fork(watchLoadNotebooks)
+  yield fork(watchRedirectToJupyterHub)
 }
 

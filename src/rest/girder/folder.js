@@ -11,6 +11,7 @@ export function fetch(parentId, parentType, name) {
   })
   .then(response => response.data )
 }
+
 export function create(parentId, parentType, name, reuseExisting=true) {
   return post('folder', {}, {
     params: {

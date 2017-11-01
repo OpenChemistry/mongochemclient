@@ -2,6 +2,7 @@ import axios, { CancelToken } from 'axios';
 import { CANCEL } from 'redux-saga'
 import _ from 'lodash'
 import * as girder from './girder'
+import * as jupyterhub from './jupyterhub'
 
 
 var _girderClient = axios.create({
@@ -52,6 +53,7 @@ export function updateToken(token) {
 }
 
 export {
-  girder
+  girder,
+  jupyterhub
 }
 

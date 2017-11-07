@@ -13,6 +13,7 @@ import Avatar from 'material-ui/Avatar';
 import InsertDriveFile from 'material-ui/svg-icons/editor/insert-drive-file';
 import {blue500} from 'material-ui/styles/colors';
 import filesize from 'filesize'
+import moment from 'moment'
 
 import { redirectToJupyterHub } from '../redux/ducks/jupyterlab'
 
@@ -82,7 +83,7 @@ class Notebooks extends Component {
             <TableRow>
               <TableHeaderColumn style={style.iconColumn}></TableHeaderColumn>
               <TableHeaderColumn></TableHeaderColumn>
-              <TableHeaderColumn>Created</TableHeaderColumn>
+              <TableHeaderColumn>Last Modified</TableHeaderColumn>
               <TableHeaderColumn>Size</TableHeaderColumn>
             </TableRow>
           </TableHeader>
@@ -98,7 +99,7 @@ class Notebooks extends Component {
                 <Avatar icon={<InsertDriveFile />} backgroundColor={blue500} />
               </TableRowColumn>
               <TableRowColumn>{notebook.name}</TableRowColumn>
-              <TableRowColumn>{notebook.created}</TableRowColumn>
+              <TableRowColumn>{moment(notebook.created).fromNow()}</TableRowColumn>
               <TableRowColumn>{filesize(notebook.size)}</TableRowColumn>
             </TableRow>
           )}

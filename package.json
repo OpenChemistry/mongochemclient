@@ -20,6 +20,7 @@
     "lodash": "^4.17.4",
     "material-ui": "^0.18.3",
     "molecule-3d-for-react": "git+https://github.com/cjh1/molecule-3d-for-react.git",
+    "moment": "^2.19.1",
     "normalizr": "^3.2.2",
     "postinstall-build": "^3.0.1",
     "react": "^15.5.4",

@@ -29,6 +29,11 @@ module.exports = {
     path: './build',
     filename: 'mongochemclient.js',
   },
+  resolveLoader: {
+    root: [
+        path.join(__dirname, '../node_modules')
+    ]
+  },
   module: {
     loaders: [{
         test: /\.js$/,

@@ -15,10 +15,10 @@ import { requestUserMe, receiveUserMe, LOAD_USER_ME} from '../redux/ducks/users.
 
 import { setAuthenticating, requestOauthProviders, requestTokenInvalidation,
          receiveOauthProviders, loadOauthProviders, setMe, requestMe, newToken,
-         receiveMe, requestTokenForApiKey, connectToNotifications,
+         receiveMe, requestTokenForApiKey, connectToNotifications, setOauthEnabled,
          authenticated, LOAD_OAUTH_PROVIDERS, INVALIDATE_TOKEN, NEW_TOKEN,
          AUTHENTICATE, LOAD_ME, RECEIVE_NOTIFICATION,  FETCH_TOKEN_FOR_API_KEY,
-         AUTHENTICATED}  from '../redux/ducks/girder.js'
+         AUTHENTICATED, TEST_OAUTH_ENABLED}  from '../redux/ducks/girder.js'
 
 import { requestTaskFlow, receiveTaskFlow, receiveTaskFlowStatus,
          LOAD_TASKFLOW,
@@ -206,6 +206,20 @@ export function* fetchOauthProviders(action) {
 
 export function* watchFetchOauthProviders() {
   yield takeEvery(LOAD_OAUTH_PROVIDERS, fetchOauthProviders)
+}
+
+export function* testOauthEnabled(action) {
+  try {
+    yield call(fetchOAuthProvidersFromGirder, 'dummy')
+    yield put( setOauthEnabled(true) )
+  }
+  catch(error) {
+    yield put( setOauthEnabled(false) )
+  }
+}
+
+export function* watchTestOauthEnabled() {
+  yield takeEvery(TEST_OAUTH_ENABLED, testOauthEnabled)
 }
 
 export function* updateToken(action) {
@@ -441,5 +455,6 @@ export default function* root() {
   yield fork(watchAuthenticateNersc)
   yield fork(watchLoadNotebooks)
   yield fork(watchRedirectToJupyterHub)
+  yield fork(watchTestOauthEnabled)
 }
 

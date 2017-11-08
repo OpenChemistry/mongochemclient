@@ -50,7 +50,6 @@ export function* authenticateWithNersc(action) {
     resolve();
   }
   catch(error) {
-    console.log(error)
     yield put(  yield put( authenticateWithNewt(error) ))
     reject(error)
   }

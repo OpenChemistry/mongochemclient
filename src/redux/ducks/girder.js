@@ -15,6 +15,8 @@ export const LOAD_ME = 'LOAD_ME'
 export const LOAD_OAUTH_PROVIDERS = 'LOAD_OAUTH_PROVIDERS';
 export const REQUEST_OAUTH_PROVIDERS = 'REQUEST_OAUTH_PROVIDERS';
 export const RECEIVE_OAUTH_PROVIDERS = 'RECEIVE_OAUTH_PROVIDERS';
+export const TEST_OAUTH_ENABLED = 'TEST_OAUTH_ENABLED';
+export const SET_OAUTH_ENABLED = 'SET_OAUTH_ENABLED';
 
 export const RECEIVE_NOTIFICATION = 'RECEIVE_NOTIFICATION'
 export const EVENT_SOURCE_ERROR = 'EVENT_SOURCE_ERROR'
@@ -27,7 +29,8 @@ export const initialState = {
     token: null,
     authenticating: false,
     oauth: {
-      providers: {}
+      providers: {},
+      enabled: false,
     },
     me: null
   };
@@ -37,8 +40,10 @@ const reducer = handleActions({
   NEW_TOKEN: (state, action) => {
     const token = action.payload.token;
     const providers = null;
+    const currentOauth = state.oauth;
     const oauth = {
-        providers
+        ...currentOauth,
+        providers,
     }
     return {...state, token, oauth};
   },
@@ -60,7 +65,9 @@ const reducer = handleActions({
   },
   RECEIVE_OAUTH_PROVIDERS: (state, action) => {
     const providers = action.payload.providers
+    const currentOauth = state.oauth;
     const oauth = {
+        ...currentOauth,
         providers
     }
     return {...state, oauth};
@@ -80,7 +87,16 @@ const reducer = handleActions({
 
     return {...state, me};
   },
+  SET_OAUTH_ENABLED: (state, action) => {
+    const enabled = action.payload
+    const currentOauth = state.oauth;
+    const oauth = {
+        ...currentOauth,
+        enabled,
+    }
 
+    return {...state, oauth};
+  },
 }, initialState);
 
 // Action Creators
@@ -105,7 +121,8 @@ export const authenticated = createAction(AUTHENTICATED);
 export const loadOauthProviders = createAction(LOAD_OAUTH_PROVIDERS);
 export const requestOauthProviders = createAction(REQUEST_OAUTH_PROVIDERS);
 export const receiveOauthProviders = createAction(RECEIVE_OAUTH_PROVIDERS, (providers) => ({providers}));
-
+export const testOauthEnabled = createAction(TEST_OAUTH_ENABLED);
+export const setOauthEnabled = createAction(SET_OAUTH_ENABLED);
 
 export const receiveNotification = createAction(RECEIVE_NOTIFICATION);
 export const eventSourceError = createAction(EVENT_SOURCE_ERROR);

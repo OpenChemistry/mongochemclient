@@ -14,7 +14,7 @@ import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './contai
 import './index.css';
 import logo from './OpenChemistry_Logo.svg';
 import selectors from './redux/selectors';
-import {authenticate} from './redux/ducks/girder'
+import {authenticate, testOauthEnabled} from './redux/ducks/girder'
 import {selectAuthProvider, showNerscLogin} from './redux/ducks/app'
 
 import configureStore from './store/configureStore'
@@ -153,8 +153,8 @@ Header = connect(headerMapStateToProps)(Header)
 
 class OauthRedirect extends Component {
   render = () => {
-    const providers = this.props.providers;
-    if (providers && providers.Google) {
+    const {providers, isAuthenticating} = this.props;
+    if (isAuthenticating && providers && providers.Google) {
       return (
            <ReactRedirect location={providers.Google}/>
       );
@@ -174,9 +174,10 @@ OauthRedirect.defaultProps = {
 
 function redirectMapStateToProps(state, ownProps) {
   const providers = selectors.girder.getOauthProviders(state);
-
+  const isAuthenticating = selectors.girder.isAuthenticating(state);
   return {
     providers,
+    isAuthenticating,
   }
 }
 
@@ -220,6 +221,15 @@ class SelectLoginProvider extends Component {
 
   render = () => {
 
+  const contentStyle = {
+    width: '310px',
+    textAlign: 'center'
+  }
+
+  const buttonStyle = {
+    margin: '0px'
+  }
+
   const actions = [
     <FlatButton
       label="Cancel"
@@ -229,20 +239,26 @@ class SelectLoginProvider extends Component {
 
     return (
       <Dialog
-        title="Select a login providers"
+        contentStyle={contentStyle}
         actions={actions}
         modal={false}
         open={this.state.open}
         onRequestClose={this.handleClose}
       >
-      <FlatButton icon={<img className='oc-google' src={google} alt="google" />}
-        onTouchTap={this.handleGoogle}
-        label='Sign in with Google'
-        labelPosition='after' />
-      <FlatButton style={{'margin-left': '30px'}} icon={<img className='oc-nersc' src={nersc} alt="nim" />}
-        onTouchTap={this.handleNersc}
-        label='Sign in with NIM'
+      { this.props.oauth &&
+        <FlatButton icon={<img className='oc-google' src={google} alt="google" />}
+          style={{ buttonStyle }}
+          onTouchTap={this.handleGoogle}
+          label='Sign in with Google'
           labelPosition='after' />
+      }
+      { !this.props.oauth &&
+        <FlatButton style={{'margin-left': '30px'}} icon={<img className='oc-nersc' src={nersc} alt="nim" />}
+          style={{ buttonStyle }}
+          onTouchTap={this.handleNersc}
+          label='Sign in with NIM'
+          labelPosition='after' />
+      }
       </Dialog>
     );
 
@@ -251,9 +267,11 @@ class SelectLoginProvider extends Component {
 
 function selectLoginProviderMapStateToProps(state, ownProps) {
   const open = selectors.app.selectAuthProvider(state);
+  const oauth =  selectors.girder.isOauthEnabled(state);
 
   return {
     open,
+    oauth,
   }
 }
 
@@ -265,6 +283,8 @@ const cookieToken = cookies.get('girderToken');
 if (!_.isNil(cookieToken)) {
   store.dispatch(authenticate(cookieToken));
 }
+
+store.dispatch(testOauthEnabled())
 
 ReactDOM.render(
   <MuiThemeProvider >

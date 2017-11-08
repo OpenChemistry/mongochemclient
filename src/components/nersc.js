@@ -120,7 +120,7 @@ class NerscLogin extends Component {
               icon={<Input />}
             />
             <RaisedButton
-              disabled={pristine || submitting}
+              disabled={submitting}
               style={style.button}
               label="Cancel"
               labelPosition="after"

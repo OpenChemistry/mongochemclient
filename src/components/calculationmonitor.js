@@ -101,8 +101,8 @@ class CalculationMonitorTable extends Component {
           {this.props.calculations.map( (calculation, index) => (
             <TableRow key={index}>
               <TableRowColumn>{calculation.name}</TableRowColumn>
-              <TableRowColumn>{calculation.code}</TableRowColumn>
-              <TableRowColumn>{calculation.type}</TableRowColumn>
+              <TableRowColumn>{calculation.code ? calculation.code : 'N/A'}</TableRowColumn>
+              <TableRowColumn>{calculation.type ? calculation.type : 'N/A'}</TableRowColumn>
               <TableRowColumn>
                 <Chip
                   backgroundColor={'#ffffff'}

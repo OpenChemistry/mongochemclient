@@ -33,35 +33,28 @@ import { watchLoadNotebooks } from './app'
 import { watchRedirectToJupyterHub } from './jupyterlab'
 import { user, token } from '../rest/girder'
 import * as rest from '../rest'
+import { girderClient  } from '../rest'
 
-
-var girderClient = axios.create({
-  baseURL: window.location.origin,
-});
 
 export function fetchMoleculesFromGirder() {
-  const origin = window.location.origin;
-  return girderClient.get(`${origin}/api/v1/molecules`)
+  return girderClient().get('molecules')
           .then(response => response.data )
 }
 
 export function fetchMoleculeFromGirder(inchikey) {
-  const origin = window.location.origin;
-  return girderClient.get(`${origin}/api/v1/molecules/inchikey/${inchikey}`)
+  return girderClient().get(`molecules/inchikey/${inchikey}`)
           .then(response => response.data )
 }
 
 export function fetchMoleculeByIdFromGirder(id) {
-  const origin = window.location.origin;
-  return girderClient.get(`${origin}/api/v1/molecules/${id}`)
+  return girderClient().get(`molecules/${id}`)
           .then(response => response.data )
 }
 
 // Users
 
 export function fetchUserMeFromGirder() {
-  const origin = window.location.origin;
-  return girderClient.get(`${origin}/api/v1/user/me`)
+  return girderClient().get('user/me')
           .then(response => response.data )
 }
 
@@ -139,8 +132,7 @@ export function* watchFetchMoleculeById() {
 }
 
 export function fetchCalculationByIdFromGirder(id) {
-  let origin = window.location.origin;
-  return girderClient.get(`${origin}/api/v1/calculations/${id}`)
+  return girderClient().get(`calculations/${id}`)
           .then(response => response.data )
 }
 export function* fetchCalculationById(action) {
@@ -160,8 +152,7 @@ export function* watchFetchCalculationById() {
 
 // mo
 export function fetchOrbitalFromGirder(id, mo) {
-  let origin = window.location.origin;
-  return girderClient.get(`${origin}/api/v1/calculations/${id}/cube/${mo}`)
+  return girderClient().get(`calculations/${id}/cube/${mo}`)
           .then(response => response.data )
 }
 export function* fetchOrbital(action) {
@@ -183,13 +174,12 @@ export function* watchFetchOrbital() {
 
 // Fetch OAuth providers
 export function fetchOAuthProvidersFromGirder(redirect) {
-  let origin = window.location.origin;
   const params = {
     params: {
       redirect
     }
   }
-  return girderClient.get(`${origin}/api/v1/oauth/provider`, params)
+  return girderClient().get(`oauth/provider`, params)
     .then(response => response.data )
 }
 
@@ -341,8 +331,7 @@ export function* watchNotification() {
 // TaskFlow
 
 export function fetchTaskFlowFromGirder(id) {
-  let origin = window.location.origin;
-  return girderClient.get(`${origin}/api/v1/taskflows/${id}`)
+  return girderClient().get(`taskflows/${id}`)
           .then(response => response.data )
 }
 
@@ -387,8 +376,7 @@ export function* watchFetchTaskFlow() {
 // Job
 
 export function fetchJobFromGirder(id) {
-  let origin = window.location.origin;
-  return girderClient.get(`${origin}/api/v1/jobs/${id}`)
+  return girderClient().get(`jobs/${id}`)
           .then(response => response.data )
 }
 
@@ -411,11 +399,10 @@ export function* watchFetchJob() {
 // api key
 
 export function tokenForApiKey(apiKey) {
-  const origin = window.location.origin;
   const params = {
       key: apiKey,
   }
-  return girderClient.post(`${origin}/api_key/token`)
+  return girderClient().post('api_key/token')
           .then(response => response.data, {params})
 }
 

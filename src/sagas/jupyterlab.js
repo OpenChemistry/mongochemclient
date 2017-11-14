@@ -1,7 +1,8 @@
 import { put, call, select, takeEvery } from 'redux-saga/effects'
-import { authenticate } from '../rest/jupyterhub'
+import { authenticate, logout, stopServer } from '../rest/jupyterhub'
 import selectors from '../redux/selectors'
-import { REDIRECT_TO_JUPYTERHUB, redirectingToJupyterHub} from '../redux/ducks/jupyterlab'
+import { REDIRECT_TO_JUPYTERHUB, INVALIDATE_SESSION, redirectingToJupyterHub,
+  requestSessionInvalidation} from '../redux/ducks/jupyterlab'
 
 export function* redirect(action) {
   try {
@@ -22,3 +23,19 @@ export function* watchRedirectToJupyterHub() {
   yield takeEvery(REDIRECT_TO_JUPYTERHUB, redirect);
 }
 
+export function* invalidateSession(action) {
+  try {
+    const me = yield select(selectors.girder.getMe)
+    yield put( requestSessionInvalidation() )
+    yield call(stopServer, me.login)
+    yield call(logout)
+  }
+  catch(error) {
+    yield put( requestSessionInvalidation(error) )
+    console.log(error)
+  }
+}
+
+export function* watchInvalidateSession() {
+  yield takeEvery(INVALIDATE_SESSION, invalidateSession)
+}

@@ -10,3 +10,20 @@ export function authenticate(girderToken) {
   request[CANCEL] = () => source.cancel()
   return request.then(response => response.request.responseURL);
 }
+
+export function logout() {
+  const source = CancelToken.source()
+  const request = axios.get(`${window.location.origin}/jupyterhub/hub/logout`,
+      { cancelToken: source.token })
+  request[CANCEL] = () => source.cancel()
+  return request.then(response => response.request.responseURL);
+}
+
+export function stopServer(login) {
+  const source = CancelToken.source()
+  const request = axios.delete(`${window.location.origin}/jupyterhub/hub/api/users/${login}/server`,
+      { cancelToken: source.token })
+  request[CANCEL] = () => source.cancel()
+  return request.then(response => response.request.responseURL);
+
+}

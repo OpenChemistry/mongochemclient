@@ -9,6 +9,7 @@ import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 
 import selectors from '../redux/selectors';
 import { invalidateToken } from '../redux/ducks/girder'
+import { invalidateSession } from '../redux/ducks/jupyterlab'
 
 class LoginMenu extends Component {
 
@@ -40,6 +41,7 @@ class LoginMenu extends Component {
     // This prevents ghost click.
     event.preventDefault();
 
+    this.props.dispatch(invalidateSession())
     this.props.dispatch(invalidateToken())
   };
 

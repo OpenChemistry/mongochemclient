@@ -18,7 +18,7 @@ class MoleculeContainer extends Component {
   }
 
   render() {
-    return <Molecule cjson={this.props.cjson} />;
+    return <Molecule cjson={this.props.cjson} />
   }
 }
 

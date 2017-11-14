@@ -31,6 +31,7 @@ import google from './google.svg'
 import nersc from './nerscnim.png'
 import NerscLogin from './components/nersc'
 import LoginMenu from './components/loginmenu'
+import NotebookContainer from './containers/notebook'
 
 const store = configureStore()
 store.runSaga(rootSaga)
@@ -299,6 +300,7 @@ ReactDOM.render(
             <Route exact path='/chart' component={VibrationalModesChartContainer}/>
             <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
             <Route path='/calculations/:id' component={CalculationContainer}/>
+            <Route path='/notebooks/:id' component={NotebookContainer}/>
           </div>
          <OauthRedirect/>
          <SelectLoginProvider/>

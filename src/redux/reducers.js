@@ -8,6 +8,7 @@ import girder  from './ducks/girder';
 import app  from './ducks/app';
 import cumulus  from './ducks/cumulus';
 import nersc  from './ducks/nersc';
+import jupyterlab from './ducks/jupyterlab';
 
 export default combineReducers({
   molecules,
@@ -17,6 +18,7 @@ export default combineReducers({
   app,
   cumulus,
   nersc,
+  jupyterlab,
   router: routerReducer,
   form: formReducer
 });

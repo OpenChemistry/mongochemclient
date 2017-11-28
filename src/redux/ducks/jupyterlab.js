@@ -6,19 +6,18 @@ export const INVALIDATE_SESSION = 'INVALIDATE_SESSION'
 export const REQUEST_SESSION_INVALIDATION = 'REQUEST_SESSION_INVALIDATION';
 
 export const initialState = {
-  newt: {
-    error: null
-  }
+  error: null,
+  redirecting: false
 };
 
 // Reducer
 const reducer = handleActions({
   REDIRECTING_TO_JUPYTERHUB: (state, action) => {
     if (action.error) {
-      return {...state, error: action.payload.error};
+      return {...state, error: action.payload.error, redirecting: false};
     }
     else {
-      return {...state,  error: null };
+      return {...state,  error: null, redirecting: true };
     }
   },
   REQUEST_SESSION_INVALIDATION: (state, action) => {

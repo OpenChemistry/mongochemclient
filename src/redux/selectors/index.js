@@ -4,6 +4,7 @@ import * as app from './app'
 import * as users from './users'
 import * as girder from './girder'
 import * as cumulus from './cumulus'
+import * as jupyterlab from './jupyterlab'
 
 export default {
   molecules,
@@ -12,4 +13,5 @@ export default {
   users,
   girder,
   cumulus,
+  jupyterlab
 };

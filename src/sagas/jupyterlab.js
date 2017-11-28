@@ -6,6 +6,13 @@ import { REDIRECT_TO_JUPYTERHUB, INVALIDATE_SESSION, redirectingToJupyterHub,
 
 export function* redirect(action) {
   try {
+    const redirecting = yield select(selectors.jupyterlab.redirecting)
+
+    // If we are already redirecting, just return
+    if (redirecting) {
+      return;
+    }
+
     yield put(redirectingToJupyterHub());
 
     const token = yield select(selectors.girder.getToken)

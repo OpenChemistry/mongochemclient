@@ -34,7 +34,7 @@ import { watchRedirectToJupyterHub, watchInvalidateSession } from './jupyterlab'
 import { user, token } from '../rest/girder'
 import * as rest from '../rest'
 import { girderClient  } from '../rest'
-
+import { watchLoadCalculationNotebooks } from './calculations'
 
 export function fetchMoleculesFromGirder() {
   return girderClient().get('molecules')
@@ -444,5 +444,6 @@ export default function* root() {
   yield fork(watchRedirectToJupyterHub)
   yield fork(watchTestOauthEnabled)
   yield fork(watchInvalidateSession)
+  yield fork(watchLoadCalculationNotebooks)
 }
 

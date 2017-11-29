@@ -45,3 +45,8 @@ export function chunk(uploadId, offset, data, config) {
   })
   .then(response => response.data )
 }
+
+export function get(id) {
+  return put(`file/${id}`)
+  .then(response => response.data )
+}

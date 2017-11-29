@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import Assignment from 'material-ui/svg-icons/action/assignment';
+import Popover from 'material-ui/Popover/Popover';
 
 import { loadCalculationById, loadOrbital } from '../redux/ducks/calculations'
 import Molecule from '../components/molecule'
 import selectors from '../redux/selectors'
+import CalculationNotebooksContainer from './calculationnotebooks'
 
 class Calculation extends Component {
 
@@ -55,7 +59,9 @@ class CalculationContainer extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      open: false,
+    };
     this.onOrbital = this.onOrbital.bind(this);
   }
 
@@ -129,15 +135,63 @@ class CalculationContainer extends Component {
     }
   }
 
+  handleTouchTap = (event) => {
+    // This prevents ghost click.
+    event.preventDefault();
+    this.setState({
+      open: true,
+      anchorEl: event.currentTarget,
+    });
+  };
+
+  handleRequestClose = () => {
+    this.setState({
+      open: false,
+    });
+  }
+
   render() {
-    return <Calculation
-      cjson={this.props.cjson}
-      id={this.state.id}
-      orbital={this.state.orbital}
-      isoSurfaces={this.state.isoSurfaces}
-      onOrbital={this.onOrbital}
-      animation={this.props.animation}
-      animateMode={this.props.animateMode}/>;
+    const style = {
+        button: {
+          'padding-right': '50px',
+          float: 'right'
+        },
+        popover: {
+          width: '50%'
+        }
+    };
+
+    return <div>
+             <Calculation
+               cjson={this.props.cjson}
+               id={this.state.id}
+               orbital={this.state.orbital}
+               isoSurfaces={this.state.isoSurfaces}
+               onOrbital={this.onOrbital}
+               animation={this.props.animation}
+               animateMode={this.props.animateMode}/>
+             { this.props.showNotebooks &&
+               <div style={style.button}>
+                 <FloatingActionButton onClick={this.handleTouchTap}>
+                   <Assignment/>
+                 </FloatingActionButton>
+               </div>
+             }
+
+               <Popover
+                 open={this.state.open}
+                 anchorEl={this.state.anchorEl}
+                 anchorOrigin={{"horizontal":"left","vertical":"top"}}
+                 targetOrigin={{"horizontal":"right","vertical":"bottom"}}
+                 onRequestClose={this.handleRequestClose}
+                 style={style.popover}
+               >
+                 <CalculationNotebooksContainer
+                   calculationId={this.state.id}
+                 />
+               </Popover>
+
+           </div>;
   }
 
   onOrbital(orbital) {
@@ -151,14 +205,16 @@ class CalculationContainer extends Component {
 CalculationContainer.propTypes = {
   cjson: PropTypes.object,
   id: PropTypes.string,
-  inchikey: PropTypes.string
+  inchikey: PropTypes.string,
+  showNotebooks: PropTypes.string
 }
 
 CalculationContainer.defaultProps = {
   cjson: null,
   id: null,
   orbital: null,
-  inchikey: null
+  inchikey: null,
+  showNotebooks: true
 }
 
 export default connect()(CalculationContainer)

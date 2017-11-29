@@ -14,6 +14,8 @@ import InsertDriveFile from 'material-ui/svg-icons/editor/insert-drive-file';
 import {blue500} from 'material-ui/styles/colors';
 import filesize from 'filesize'
 import moment from 'moment'
+import _ from 'lodash';
+
 
 import { redirectToJupyterHub } from '../redux/ducks/jupyterlab'
 
@@ -69,6 +71,9 @@ class Notebooks extends Component {
 
   render = () => {
     const {notebooks} = this.props;
+    if (!_.isNil(this.props.onCellClick)) {
+      this.onCellClick = this.props.onCellClick;
+    }
 
     return (
         <div>

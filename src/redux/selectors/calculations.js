@@ -11,3 +11,11 @@ export const getOrbitals = (state, id) => {
 }
 
 export const error = state => state.calculations.error;
+
+export const getNotebooks = (state, id) => {
+  if (id in state.calculations.noteBooksById) {
+    return state.calculations.noteBooksById[id];
+  }
+
+  return []
+}

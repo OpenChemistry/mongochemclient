@@ -23,7 +23,7 @@ export default class MoleculeMenu extends React.Component {
 
     if (props.isoValue) {
       this.state.isoValue = props.isoValue;
-      this.state.isoScale = props.isoValue * 2000) -1;
+      this.state.isoScale = (props.isoValue * 2000) -1;
     }
 
     if (props.orbital) {

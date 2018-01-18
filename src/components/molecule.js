@@ -65,14 +65,10 @@ class Molecule extends Component {
     }
 
     if (this.props.isoSurfaces) {
-      this.setState({
-        isoSurfaces: this.props.isoSurfaces
-      });
+      this.state.isoSurfaces = this.props.isoSurfaces;
     }
     else {
-      this.setState({
-        isoSurfaces: this.isoSurfaces()
-      });
+      this.state.isoSurfaces = this.isoSurfaces();
     }
   }
 

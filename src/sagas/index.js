@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { put, call, fork, takeEvery, take, select } from 'redux-saga/effects'
 import Cookies from 'universal-cookie';
-var jp = require('jsonpath')
+
 import _ from 'lodash'
 import { requestMolecules, receiveMolecules,
          requestMolecule, requestMoleculeById, receiveMolecule,
@@ -35,6 +35,8 @@ import { user, token } from '../rest/girder'
 import * as rest from '../rest'
 import { girderClient  } from '../rest'
 import { watchLoadCalculationNotebooks } from './calculations'
+
+var jp = require('jsonpath')
 
 export function fetchMoleculesFromGirder() {
   return girderClient().get('molecules')

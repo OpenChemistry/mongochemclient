@@ -1,23 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Molecule3d from 'molecule-3d-for-react'
 import MoleculeMenu from './menu.js'
 
-const elementSymbols = [
-  "Xx", "H", "He", "Li", "Be", "B", "C", "N", "O", "F",
-  "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K",
-  "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu",
-  "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y",
-  "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In",
-  "Sn", "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr",
-  "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm",
-  "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au",
-  "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac",
-  "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es",
-  "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt",
-  "Ds", "Rg", "Cn", "Uut", "Uuq", "Uup", "Uuh", "Uus", "Uuo" ];
-
 class Molecule extends Component {
+
+  componentRef = 0;
 
   static generateOrbitals(cjson) {
     if (!cjson) {
@@ -85,6 +72,27 @@ class Molecule extends Component {
     this.setState({
       isoSurfaces: isoSurfaces
     })
+    this._setWcOptions()
+  }
+
+  componentDidMount() {
+    this._setWcCjson()
+    this._setWcOptions()
+  }
+
+  componentDidUpdate() {
+    this._setWcCjson()
+    this._setWcOptions()
+  }
+
+  _setWcCjson(){
+    this.componentRef.cjson = this.props.cjson;
+  }
+
+  _setWcOptions(){
+    let options = {};
+    options.isoSurfaces = this.state.isoSurfaces;
+    this.componentRef.options = options;
   }
 
   render() {
@@ -103,10 +111,13 @@ class Molecule extends Component {
                                                        onOrbital={this.props.onOrbital}
                                                        orbital={this.props.orbital}
                                                                             /> }
-        <Molecule3d modelData={ moleculeToModelData(this.props.cjson, this.props.animateMode) }
+        {/* <Molecule3d modelData={ moleculeToModelData(this.props.cjson, this.props.animateMode) }
                     volume={ this.props.cjson && this.props.cjson.cube ? this.props.cjson.cube : null }
                     isoSurfaces={ this.state.isoSurfaces }
-                    backgroundColor='#ffffff' animation={{...animation}}/>
+                    backgroundColor='#ffffff' animation={{...animation}}/> */}
+        <div style={{width: "50%", height: "20rem", position: "relative"}}>
+          <oc-molecule-moljs ref={node=>this.componentRef = node}/>
+        </div>
       </div>
     );
   }
@@ -140,6 +151,7 @@ Molecule.defaultProps = {
   animateMode: null
 }
 
+/* Obsolete, conversion from cjson is now done in the individual components
 function moleculeToModelData(cjson, mode) {
   let modelData = {
       atoms: [],
@@ -191,5 +203,6 @@ function moleculeToModelData(cjson, mode) {
 
   return modelData;
 }
+*/
 
 export default Molecule

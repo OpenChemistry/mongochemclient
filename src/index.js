@@ -5,7 +5,7 @@ import { Provider, connect } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux'
 import { Route } from 'react-router'
 import Cookies from 'universal-cookie';
-import _ from 'lodash'
+import { isNil } from 'lodash-es'
 
 import App from './components/app';
 import MoleculeContainer from './containers/molecule';
@@ -24,21 +24,24 @@ import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import ActionInput from 'material-ui/svg-icons/action/input';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import ReactRedirect from 'react-redirect'
-require('font-awesome/css/font-awesome.css');
+// import injectTapEventPlugin from 'react-tap-event-plugin';
+// Can't use react-redirect anymore with react > 15.5
+// import ReactRedirect from 'react-redirect'
+
 import google from './google.svg'
 import nersc from './nerscnim.png'
 import NerscLogin from './components/nersc'
 import LoginMenu from './components/loginmenu'
 import NotebookContainer from './containers/notebook'
 
+require('font-awesome/css/font-awesome.css');
+
 const store = configureStore()
 store.runSaga(rootSaga)
 
-// Needed for onTouchTap
+// Needed for onClick
 // http://stackoverflow.com/a/34015469/988941
-injectTapEventPlugin();
+// injectTapEventPlugin();
 
 const style = {
   backgroundColor: '#FAFAFA',
@@ -61,11 +64,12 @@ class PrivateRoute extends Component {
       }
 
       if (providers && providers.Google) {
-        return (<ReactRedirect location={providers.Google}>
+        return (//<ReactRedirect location={providers.Google}>
                 <div>
                   Redirecting...
-                  </div>
-               </ReactRedirect>)
+                </div>
+               //</ReactRedirect>
+              )
       }
 
       return <div>Authenticating...</div>
@@ -109,7 +113,7 @@ class Login extends Component {
   render = () => {
     return (
         <FlatButton icon={<ActionInput/>}
-                    onTouchTap={this.handleTouchTap}
+                    onClick={this.handleTouchTap}
                     label='Log in'
                     labelPosition='before' />
     );
@@ -157,7 +161,7 @@ class OauthRedirect extends Component {
     const {providers, isAuthenticating} = this.props;
     if (isAuthenticating && providers && providers.Google) {
       return (
-           <ReactRedirect location={providers.Google}/>
+          null //  <ReactRedirect location={providers.Google}/>
       );
     } else {
       return (null);
@@ -235,7 +239,7 @@ class SelectLoginProvider extends Component {
     <FlatButton
       label="Cancel"
       primary={true}
-      onTouchTap={this.handleClose}
+      onClick={this.handleClose}
     />]
 
     return (
@@ -249,14 +253,14 @@ class SelectLoginProvider extends Component {
       { this.props.oauth &&
         <FlatButton icon={<img className='oc-google' src={google} alt="google" />}
           style={{ buttonStyle }}
-          onTouchTap={this.handleGoogle}
+          onClick={this.handleGoogle}
           label='Sign in with Google'
           labelPosition='after' />
       }
       { !this.props.oauth &&
-        <FlatButton style={{'margin-left': '30px'}} icon={<img className='oc-nersc' src={nersc} alt="nim" />}
-          style={{ buttonStyle }}
-          onTouchTap={this.handleNersc}
+        <FlatButton icon={<img className='oc-nersc' src={nersc} alt="nim" />}
+          style={{...buttonStyle, ...{'margin-left': '30px'}}}
+          onClick={this.handleNersc}
           label='Sign in with NIM'
           labelPosition='after' />
       }
@@ -281,7 +285,7 @@ SelectLoginProvider = connect(selectLoginProviderMapStateToProps)(SelectLoginPro
 // Check to see if we have a cookie
 const cookies = new Cookies();
 const cookieToken = cookies.get('girderToken');
-if (!_.isNil(cookieToken)) {
+if (!isNil(cookieToken)) {
   store.dispatch(authenticate(cookieToken));
 }
 

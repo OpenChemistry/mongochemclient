@@ -5,8 +5,10 @@ import { connect } from 'react-redux'
 import { loadMolecule, loadMoleculeById } from '../redux/ducks/molecules'
 import Molecule from '../components/molecule'
 import selectors from '../redux/selectors'
+import {BenzeneWithHomo} from '@openchemistry/sample-data'
 
 class MoleculeContainer extends Component {
+
 
   componentDidMount() {
     if (this.props.id != null) {
@@ -18,7 +20,8 @@ class MoleculeContainer extends Component {
   }
 
   render() {
-    return <Molecule cjson={this.props.cjson} />
+     
+    return  <Molecule cjson={{...BenzeneWithHomo}} />
   }
 }
 

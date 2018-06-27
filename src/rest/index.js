@@ -1,6 +1,5 @@
 import axios, { CancelToken } from 'axios';
 import { CANCEL } from 'redux-saga'
-import _ from 'lodash'
 import * as girder from './girder'
 import * as jupyterhub from './jupyterhub'
 

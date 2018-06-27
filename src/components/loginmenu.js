@@ -65,7 +65,7 @@ class LoginMenu extends Component {
           >
             <Menu>
               <MenuItem primaryText='Sign out' leftIcon={<ActionExitToApp/>}
-                        onTouchTap={this.handleSignOut}  />
+                        onClick={this.handleSignOut}  />
             </Menu>
           </Popover>
         </div>

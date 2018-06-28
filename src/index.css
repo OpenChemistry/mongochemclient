@@ -9,7 +9,7 @@ pre {
 }
 
 .oc-logo {
-  width: 80px;
+  height: 2.5rem;
 }
 
 .oc-google {
@@ -20,3 +20,14 @@ pre {
   height: 20px;
 }
 
+.r-icon-btn{
+  margin-left: 0.5rem;
+}
+
+.l-icon-btn{
+  margin-right: 0.5rem;
+}
+
+.full-width{
+  width: 100%;
+}

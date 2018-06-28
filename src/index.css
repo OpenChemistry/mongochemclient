@@ -20,14 +20,18 @@ pre {
   height: 20px;
 }
 
-.r-icon-btn{
+.r-icon-btn {
   margin-left: 0.5rem;
 }
 
-.l-icon-btn{
+.l-icon-btn {
   margin-right: 0.5rem;
 }
 
-.full-width{
+.full-width {
   width: 100%;
+}
+
+.action-btn {
+  margin-left: 1rem;
 }

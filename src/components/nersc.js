@@ -1,35 +1,30 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import {
   TextField
-} from 'redux-form-material-ui'
+} from 'redux-form-material-ui';
 import { Field, reduxForm, SubmissionError } from 'redux-form'
-import RaisedButton from 'material-ui/RaisedButton';
-import Dialog from 'material-ui/Dialog';
-import Clear from 'material-ui/svg-icons/content/clear';
-import Input from 'material-ui/svg-icons/action/input';
+
+import Button from '@material-ui/core/Button';
+import ClearIcon from '@material-ui/icons/Clear';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import InputIcon from '@material-ui/icons/Input';
+import red from '@material-ui/core/colors/red'
+
 import { showNerscLogin } from '../redux/ducks/app';
 import { authenticateNersc } from '../redux/ducks/nersc';
 import selectors from '../redux/selectors';
 import _ from 'lodash'
-import { red500 } from 'material-ui/styles/colors'
+
+const red500 = red['500'];
 
 const style = {
-    content: {
-        maxWidth: '500px'
-    },
-    button: {
-      'margin-left': '10px',
-    },
-    actionsContainer: {
-      float: 'right',
-      'padding-top': '20px'
-    },
-    error: {
-      fontSize: 12,
-      lineHeight: '12px',
-      color: red500
-    }
+  error: {
+    color: red500
+  }
 }
 
 const login = (values, dispatch) => {
@@ -88,47 +83,56 @@ class NerscLogin extends Component {
 
     return (
       <Dialog
-        contentStyle={style.content}
-        title="Sign in using NERSC NIM credentials"
-        modal={false}
+        aria-labelledby="nersc-dialog-title"
         open={this.state.open}
-        onRequestClose={this.handleClose}
+        onClose={this.handleClose}
       >
+        <DialogTitle id="nersc-dialog-title">Sign in using NERSC NIM credentials</DialogTitle>
         <form onSubmit={handleSubmit(login)} >
-          <Field
-            name="username"
-            component={TextField}
-            hintText="NERSC Username"
-            floatingLabelText="NERSC Username"
-          />
-          <Field
-            name="password"
-            component={TextField}
-            hintText="NIM Password"
-            floatingLabelText="NIM Password"
-            type="password"
-          />
-          {error && <div style={style.error}>{_.has(error, 'message') ? error.message : error}</div>}
-          <div style={style.actionsContainer}>
-            <RaisedButton
+          <DialogContent>
+            <div>
+              <Field
+                className="full-width"
+                name="username"
+                component={TextField}
+                placeholder="NERSC Username"
+                label="NERSC Username"
+              />
+            </div>
+            <div>
+              <Field
+                className="full-width"
+                name="password"
+                component={TextField}
+                placeholder="NIM Password"
+                label="NIM Password"
+                type="password"
+              />
+            </div>
+            {error && <div style={style.error}>{_.has(error, 'message') ? error.message : error}</div>}
+          </DialogContent>
+          <DialogActions>
+            <Button
               disabled={pristine || submitting || invalid}
-              style={style.button}
-              label="Login"
-              labelPosition="after"
-              primary={true}
+              variant="contained"
+              color="secondary"
+              className="action-btn"
               type='submit'
-              icon={<Input />}
-            />
-            <RaisedButton
+            >
+              <InputIcon className="l-icon-btn" />
+              Login
+            </Button>
+            <Button
               disabled={submitting}
-              style={style.button}
-              label="Cancel"
-              labelPosition="after"
-              primary={true}
-              icon={<Clear />}
+              variant="contained"
+              color="secondary"
+              className="action-btn"
               onClick={() => this.handleClose()}
-            />
-          </div>
+            >
+              <ClearIcon className="l-icon-btn" />
+              Cancel
+            </Button>
+          </DialogActions>
         </form>
       </Dialog>
     );

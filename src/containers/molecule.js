@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { loadMolecule, loadMoleculeById } from '../redux/ducks/molecules'
 import Molecule from '../components/molecule'
 import selectors from '../redux/selectors'
-import {BenzeneWithHomo} from '@openchemistry/sample-data'
+import { Caffeine } from '@openchemistry/sample-data'
 
 class MoleculeContainer extends Component {
 
@@ -21,7 +21,7 @@ class MoleculeContainer extends Component {
 
   render() {
      
-    return  <Molecule cjson={{...BenzeneWithHomo}} />
+    return  <Molecule cjson={{...Caffeine}} />
   }
 }
 

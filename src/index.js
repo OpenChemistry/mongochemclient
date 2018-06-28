@@ -154,7 +154,7 @@ Login = connect(loginMapStateToProps)(Login)
 class Header extends Component {
   render = () => {
     return (
-        <AppBar color="inherit">
+        <AppBar color="inherit" position="fixed">
           <Toolbar>
             <Button color="inherit" aria-label="Logo" style={{marginRight: 9}}>
               <img className='oc-logo' src={logo} alt="logo" />
@@ -315,8 +315,8 @@ ReactDOM.render(
       <Provider store={store}>
         <ConnectedRouter history={store.history}>
           <div>
-          <Header />
-            <div>
+          <Header/>
+            <div style={{marginTop: 65}}>
               <Route exact path='/' component={App}/>
               <Route exact path='/molecules/:id' component={MoleculeContainer}/>
               <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>

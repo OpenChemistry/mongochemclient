@@ -13,6 +13,7 @@
   "dependencies": {
     "@material-ui/core": "^1.3.0",
     "@material-ui/icons": "^1.1.0",
+    "@material-ui/lab": "^1.0.0-alpha.5",
     "@openchemistry/molecule-moljs": "^0.3.148",
     "@openchemistry/sample-data": "^0.3.0",
     "@openchemistry/vibrational-spectrum": "^0.1.0",

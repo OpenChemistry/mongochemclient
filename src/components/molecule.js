@@ -42,9 +42,18 @@ class Molecule extends Component {
   constructor(props) {
     super(props)
 
-    if (this.props.animation) {
+    if (props.animation) {
       this.state = {
-          animation: {...this.props.animation}
+          animation: {...props.animation}
+      }
+    } else if (props.cjson && props.cjson.vibrations && props.cjson.vibrations.eigenVectors) {
+      this.state = {
+        animation: {
+          play: true,
+          scale: 1,
+          modeIdx: 1,
+          nModes: props.cjson.vibrations.eigenVectors.length
+        }
       }
     }
     else {
@@ -52,7 +61,7 @@ class Molecule extends Component {
     }
 
     if (this.props.isoSurfaces) {
-      this.state.isoSurfaces = this.props.isoSurfaces;
+      this.state.isoSurfaces = props.isoSurfaces;
     }
     else {
       this.state.isoSurfaces = this.isoSurfaces();
@@ -61,9 +70,19 @@ class Molecule extends Component {
 
   onAmplitude = (value) => {
     this.setState({
-      animation: {
-        amplitude: value
-      }
+      animation: {...this.state.animation, ...{scale: value}}
+    });
+  }
+
+  onModeChange = (value) => {
+    this.setState({
+      animation: {...this.state.animation, ...{modeIdx: value}}
+    });
+  }
+
+  onPlayToggled = (value) => {
+    this.setState({
+      animation: {...this.state.animation, ...{play: value}}
     })
   }
 
@@ -92,25 +111,31 @@ class Molecule extends Component {
   _setWcOptions(){
     let options = {};
     options.isoSurfaces = this.state.isoSurfaces;
+    options.normalMode = this.state.animation;
     this.componentRef.options = options;
   }
 
   render() {
     const animation = this.state.animation;
     const hasVolume = !!this.props.cjson && !!this.props.cjson.cube;
-    const hasAnimation = !!animation && !!this.props.animateMode;
+    const hasAnimation = !!animation;
 
     return (
       <div>
-        { (hasAnimation || hasVolume || this.props.orbitalControls) && <MoleculeMenu onAmplitude={this.onAmplitude}
-                                                       onIsoScale={this.onIsoScale}
-                                                       animationControls={hasAnimation}
-                                                       orbitalControls={hasVolume || this.props.orbitalControls}
-                                                       isoValue={this.state.isoSurfaces[0].value}
-                                                       orbitals={Molecule.generateOrbitals(this.props.cjson)}
-                                                       onOrbital={this.props.onOrbital}
-                                                       orbital={this.props.orbital}
-                                                                            /> }
+      { (hasAnimation || hasVolume || this.props.orbitalControls) &&
+        <MoleculeMenu 
+          onAmplitude={this.onAmplitude}
+          onIsoScale={this.onIsoScale}
+          animation={animation}
+          onModeChange={this.onModeChange}
+          onPlayToggled={this.onPlayToggled}
+          orbitalControls={hasVolume || this.props.orbitalControls}
+          isoValue={this.state.isoSurfaces[0].value}
+          orbitals={Molecule.generateOrbitals(this.props.cjson)}
+          onOrbital={this.props.onOrbital}
+          orbital={this.props.orbital}
+        />
+      }
         {/* <Molecule3d modelData={ moleculeToModelData(this.props.cjson, this.props.animateMode) }
                     volume={ this.props.cjson && this.props.cjson.cube ? this.props.cjson.cube : null }
                     isoSurfaces={ this.state.isoSurfaces }

@@ -98,6 +98,12 @@ export default class MoleculeMenu extends React.Component {
     }
   };
 
+  handlePlayClick = (event) => {
+    if (this.props.onPlayToggled) {
+      this.props.onPlayToggled(!this.props.animation.play);
+    }
+  };
+
   render() {
     const normalModeItems = [];
     normalModeItems.push(<MenuItem key={-1} value={-1}>None</MenuItem>);
@@ -163,10 +169,10 @@ export default class MoleculeMenu extends React.Component {
                   {normalModeItems}
                 </Select>
               </FormControl>
-              <IconButton>
+              <IconButton onClick={this.handlePlayClick}>
                 { this.props.animation.play
-                ? <PauseIcon onClick={()=>{ if (this.props.onPlayToggled) {this.props.onPlayToggled(false);} }}/>
-                : <PlayIcon  onClick={()=>{ if (this.props.onPlayToggled) {this.props.onPlayToggled(true);} }}/>
+                ? <PauseIcon />
+                : <PlayIcon />
                 }
                 </IconButton>
             </ListItem>

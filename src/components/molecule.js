@@ -49,9 +49,9 @@ class Molecule extends Component {
     } else if (props.cjson && props.cjson.vibrations && props.cjson.vibrations.eigenVectors) {
       this.state = {
         animation: {
-          play: true,
+          play: false,
           scale: 1,
-          modeIdx: 1,
+          modeIdx: -1,
           nModes: props.cjson.vibrations.eigenVectors.length
         }
       }
@@ -81,6 +81,7 @@ class Molecule extends Component {
   }
 
   onPlayToggled = (value) => {
+    console.log(value);
     this.setState({
       animation: {...this.state.animation, ...{play: value}}
     })

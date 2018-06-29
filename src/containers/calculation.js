@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import Assignment from 'material-ui/svg-icons/action/assignment';
-import Popover from 'material-ui/Popover/Popover';
+
+import Button from '@material-ui/core/Button';
+import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover';
+
+import { AssignmentIcon } from '@material-ui/icons/Assignment';
 
 import { loadCalculationById, loadOrbital } from '../redux/ducks/calculations'
 import Molecule from '../components/molecule'
@@ -172,9 +174,9 @@ class CalculationContainer extends Component {
                animateMode={this.props.animateMode}/>
              { this.props.showNotebooks &&
                <div style={style.button}>
-                 <FloatingActionButton onClick={this.handleTouchTap}>
-                   <Assignment/>
-                 </FloatingActionButton>
+                 <Button variant="fab" onClick={this.handleTouchTap}>
+                   <AssignmentIcon/>
+                 </Button>
                </div>
              }
 
@@ -182,9 +184,9 @@ class CalculationContainer extends Component {
                  open={this.state.open}
                  anchorEl={this.state.anchorEl}
                  anchorOrigin={{"horizontal":"left","vertical":"top"}}
-                 targetOrigin={{"horizontal":"right","vertical":"bottom"}}
-                 onRequestClose={this.handleRequestClose}
+                 onClose={this.handleRequestClose}
                  style={style.popover}
+                 animation={PopoverAnimationVertical}
                >
                  <CalculationNotebooksContainer
                    calculationId={this.state.id}

@@ -16,7 +16,7 @@
     "@material-ui/lab": "^1.0.0-alpha.5",
     "@openchemistry/molecule-moljs": "^0.3.148",
     "@openchemistry/sample-data": "^0.3.0",
-    "@openchemistry/vibrational-spectrum": "^0.1.1",
+    "@openchemistry/vibrational-spectrum": "^0.1.2",
     "axios": "^0.18.0",
     "enumify": "^1.0.4",
     "filesize": "^3.5.11",

@@ -152,7 +152,10 @@ class Molecule extends Component {
                 // Events
                 {barSelected: (e)=>{this.onModeChange(e.detail);}},
                 // Props
-                {vibrations: this.props.cjson.vibrations})
+                {
+                  vibrations: this.props.cjson.vibrations,
+                  options: this.state.animation
+                })
               }
             />
           </div>

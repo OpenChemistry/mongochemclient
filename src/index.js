@@ -260,7 +260,7 @@ class SelectLoginProvider extends Component {
       >
         <DialogTitle id="login-dialog-title">Login Provider</DialogTitle>
           <List>
-          { !this.props.oauth &&
+          { this.props.oauth &&
             <ListItem button onClick={this.handleGoogle}>
               <ListItemText primary="Sign in with Google" />
               <ListItemIcon>

@@ -20,8 +20,6 @@ import {selectAuthProvider, showNerscLogin} from './redux/ducks/app'
 import configureStore from './store/configureStore'
 import rootSaga from './sagas'
 
-import { MuiThemeProvider as V0MuiThemeProvider} from 'material-ui';
-
 // @material-ui components
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x
 import AppBar from '@material-ui/core/AppBar';
@@ -309,27 +307,25 @@ store.dispatch(testOauthEnabled())
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
-    <V0MuiThemeProvider>
-      <Provider store={store}>
-        <ConnectedRouter history={store.history}>
-          <div>
-          <Header/>
-            <div style={{marginTop: 65}}>
-              <Route exact path='/' component={App}/>
-              <Route exact path='/molecules/:id' component={MoleculeContainer}/>
-              <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
-              <Route exact path='/chart' component={VibrationalModesChartContainer}/>
-              <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
-              <Route path='/calculations/:id' component={CalculationContainer}/>
-              <Route path='/notebooks/:id' component={NotebookContainer}/>
-            </div>
-          <OauthRedirect/>
-          <SelectLoginProvider/>
-          <NerscLogin/>
+    <Provider store={store}>
+      <ConnectedRouter history={store.history}>
+        <div>
+        <Header/>
+          <div style={{marginTop: 65}}>
+            <Route exact path='/' component={App}/>
+            <Route exact path='/molecules/:id' component={MoleculeContainer}/>
+            <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
+            <Route exact path='/chart' component={VibrationalModesChartContainer}/>
+            <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
+            <Route path='/calculations/:id' component={CalculationContainer}/>
+            <Route path='/notebooks/:id' component={NotebookContainer}/>
           </div>
-        </ConnectedRouter>
-      </Provider>
-    </V0MuiThemeProvider>
+        <OauthRedirect/>
+        <SelectLoginProvider/>
+        <NerscLogin/>
+        </div>
+      </ConnectedRouter>
+    </Provider>
   </MuiThemeProvider>,
   document.getElementById('root')
 );

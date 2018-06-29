@@ -1,5 +1,8 @@
 #! /bin/bash
-components="molecule-moljs "
+components="molecule-moljs
+vibrational-spectrum
+"
+
 
 components_dir=public/components
 

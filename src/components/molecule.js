@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import MoleculeMenu from './menu.js'
+import { wc } from '../utils/webcomponent';
 
 class Molecule extends Component {
 
@@ -49,7 +50,7 @@ class Molecule extends Component {
     } else if (props.cjson && props.cjson.vibrations && props.cjson.vibrations.eigenVectors) {
       this.state = {
         animation: {
-          play: false,
+          play: true,
           scale: 1,
           modeIdx: -1,
           nModes: props.cjson.vibrations.eigenVectors.length
@@ -96,30 +97,20 @@ class Molecule extends Component {
   }
 
   componentDidMount() {
-    this._setWcCjson()
-    this._setWcOptions()
   }
 
   componentDidUpdate() {
-    this._setWcCjson()
-    this._setWcOptions()
-  }
-
-  _setWcCjson(){
-    this.componentRef.cjson = this.props.cjson;
-  }
-
-  _setWcOptions(){
-    let options = {};
-    options.isoSurfaces = this.state.isoSurfaces;
-    options.normalMode = this.state.animation;
-    this.componentRef.options = options;
   }
 
   render() {
     const animation = this.state.animation;
     const hasVolume = !!this.props.cjson && !!this.props.cjson.cube;
     const hasAnimation = !!animation;
+    const hasSpectrum = !!this.props.cjson.vibrations.frequencies;
+    let molWidth = "100%";
+    if (hasSpectrum) {
+      molWidth = "50%";
+    }
 
     return (
       <div>
@@ -137,12 +128,35 @@ class Molecule extends Component {
           orbital={this.props.orbital}
         />
       }
-        {/* <Molecule3d modelData={ moleculeToModelData(this.props.cjson, this.props.animateMode) }
-                    volume={ this.props.cjson && this.props.cjson.cube ? this.props.cjson.cube : null }
-                    isoSurfaces={ this.state.isoSurfaces }
-                    backgroundColor='#ffffff' animation={{...animation}}/> */}
-        <div style={{width: "50%", height: "20rem", position: "relative"}}>
-          <oc-molecule-moljs ref={node=>this.componentRef = node}/>
+        <div style={{display: "flex"}}>
+          <div style={{width: molWidth, height: "20rem", position: "relative"}}>
+            <oc-molecule-moljs 
+              ref={wc(
+                // Events
+                {},
+                // Props
+                {
+                  cjson: this.props.cjson,
+                  options: {
+                    isoSurfaces: this.state.isoSurfaces,
+                    normalMode: this.state.animation
+                  }
+                })
+              }
+            />
+          </div>
+          { hasSpectrum &&
+          <div style={{width: "50%", height: "20rem", position: "relative"}}>
+            <oc-vibrational-spectrum
+              ref={wc(
+                // Events
+                {barSelected: (e)=>{this.onModeChange(e.detail);}},
+                // Props
+                {vibrations: this.props.cjson.vibrations})
+              }
+            />
+          </div>
+          }
         </div>
       </div>
     );

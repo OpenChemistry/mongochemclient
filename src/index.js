@@ -46,8 +46,6 @@ import NerscLogin from './components/nersc'
 import LoginMenu from './components/loginmenu'
 import NotebookContainer from './containers/notebook'
 
-require('font-awesome/css/font-awesome.css');
-
 const store = configureStore()
 store.runSaga(rootSaga)
 

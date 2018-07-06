@@ -1,7 +1,7 @@
 'use strict';
 
 // Do this as the first thing so that any code reading it knows the right env.
-process.env.NODE_ENV = 'production';
+process.env.NODE_ENV = 'development';
 
 // Load environment variables from .env file. Suppress warnings using silent
 // if this file is missing. dotenv will never modify any environment variables
@@ -14,7 +14,7 @@ var fs = require('fs-extra');
 var path = require('path');
 var url = require('url');
 var webpack = require('webpack');
-var config = require('../config/webpack.config.prod');
+var config = require('../config/webpack.config.dev');
 var paths = require('../config/paths');
 var checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 var FileSizeReporter = require('react-dev-utils/FileSizeReporter');

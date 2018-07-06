@@ -17,7 +17,7 @@ import filesize from 'filesize'
 import moment from 'moment'
 import _ from 'lodash';
 
-import { redirectToJupyterHub } from '../redux/ducks/jupyterlab'
+import { redirectToJupyterHub } from '@openchemistry/redux';
 
 const blue500 = blue['500'];
 

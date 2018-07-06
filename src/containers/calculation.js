@@ -7,10 +7,11 @@ import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover';
 
 import { AssignmentIcon } from '@material-ui/icons/Assignment';
 
-import { loadCalculationById, loadOrbital } from '../redux/ducks/calculations'
 import Molecule from '../components/molecule'
-import selectors from '../redux/selectors'
 import CalculationNotebooksContainer from './calculationnotebooks'
+
+import { loadCalculationById, loadOrbital } from '@openchemistry/redux'
+import { selectors } from '@openchemistry/redux'
 
 class Calculation extends Component {
 

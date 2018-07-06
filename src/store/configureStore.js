@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware } from 'redux'
-import reducers from '../redux/reducers'
+import reducers from './reducers'
 import createSagaMiddleware from 'redux-saga'
 import logger from 'redux-logger'
 import createHistory from 'history/createBrowserHistory'

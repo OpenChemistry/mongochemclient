@@ -14,9 +14,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import InputIcon from '@material-ui/icons/Input';
 import red from '@material-ui/core/colors/red'
 
-import { showNerscLogin } from '../redux/ducks/app';
-import { authenticateNersc } from '../redux/ducks/nersc';
-import selectors from '../redux/selectors';
+import { showNerscLogin } from '@openchemistry/redux';
+import { authenticateNersc } from '@openchemistry/redux';
+import { selectors } from '@openchemistry/redux';
+
 import _ from 'lodash'
 
 const red500 = red['500'];

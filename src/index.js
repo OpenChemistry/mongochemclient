@@ -13,12 +13,12 @@ import CalculationContainer from './containers/calculation';
 import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './containers/charts';
 import './index.css';
 import logo from './OpenChemistry_Logo.svg';
-import selectors from './redux/selectors';
-import {authenticate, testOauthEnabled} from './redux/ducks/girder'
-import {selectAuthProvider, showNerscLogin} from './redux/ducks/app'
+import { selectors } from '@openchemistry/redux';
+import {authenticate, testOauthEnabled} from '@openchemistry/redux'
+import {selectAuthProvider, showNerscLogin} from '@openchemistry/redux'
 
 import configureStore from './store/configureStore'
-import rootSaga from './sagas'
+import rootSaga from '@openchemistry/sagas'
 
 // @material-ui components
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x

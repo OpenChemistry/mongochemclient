@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 import './app.css';
-import selectors from '../redux/selectors';
+import { selectors } from '@openchemistry/redux';
 import NotebooksContainer from '../containers/notebooks';
 
 

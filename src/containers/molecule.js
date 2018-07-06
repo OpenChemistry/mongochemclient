@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 
-import { loadMolecule, loadMoleculeById } from '../redux/ducks/molecules'
 import Molecule from '../components/molecule'
-import selectors from '../redux/selectors'
+
 import { Caffeine } from '@openchemistry/sample-data'
+
+import { selectors, loadMolecule, loadMoleculeById } from '@openchemistry/redux'
 
 class MoleculeContainer extends Component {
 

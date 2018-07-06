@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { push } from 'react-router-redux'
 
-import { loadCalculationNotebooks } from '../redux/ducks/calculations'
 import Notebooks from '../components/notebooks'
-import selectors from '../redux/selectors'
+
+import { loadCalculationNotebooks } from '@openchemistry/redux'
+import { selectors } from '@openchemistry/redux'
 
 class CalculationNotebooksContainer extends Component {
 

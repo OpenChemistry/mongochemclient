@@ -9,10 +9,7 @@ import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import PersonIcon from '@material-ui/icons/Person';
 
-
-import selectors from '../redux/selectors';
-import { invalidateToken } from '../redux/ducks/girder'
-import { invalidateSession } from '../redux/ducks/jupyterlab'
+import { invalidateSession, invalidateToken, selectors } from '@openchemistry/redux'
 
 class LoginMenu extends Component {
 

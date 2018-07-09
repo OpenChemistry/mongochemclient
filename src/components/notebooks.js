@@ -29,6 +29,14 @@ const style = {
 
 class Notebooks extends Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      loading: false
+    };
+  }
+
   // We fake up the appropriate local storage to get jlab to load our notebook :-)
   setJupyterLocalStorage = (name) => {
     const layoutKey = 'jupyterlab:layout-restorer:data';
@@ -65,10 +73,13 @@ class Notebooks extends Component {
   }
 
   onCellClick = (row) =>  {
-
+    if (this.state.loading) {
+      return;
+    }
     const name = this.props.notebooks[row].name
     this.setJupyterLocalStorage(name);
     this.props.dispatch(redirectToJupyterHub());
+    this.setState({loading: true});
   }
 
   render = () => {
@@ -82,7 +93,7 @@ class Notebooks extends Component {
         <TableHead>
           <TableRow>
             <TableCell style={style.iconColumn}></TableCell>
-            <TableCell></TableCell>
+            <TableCell>Filename</TableCell>
             <TableCell>Last Modified</TableCell>
             <TableCell>Size</TableCell>
           </TableRow>
@@ -93,6 +104,8 @@ class Notebooks extends Component {
         >
         {notebooks.map((notebook, i) =>
           <TableRow
+            style={{cursor: this.state.loading ? "progress" : "pointer"}}
+            hover
             onClick={event => this.onCellClick(i)}
             key={notebook._id}
           >

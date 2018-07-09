@@ -15,7 +15,7 @@ import './index.css';
 import logo from './OpenChemistry_Logo.svg';
 import { selectors } from '@openchemistry/redux';
 import {authenticate, testOauthEnabled} from '@openchemistry/redux'
-import {selectAuthProvider, showNerscLogin} from '@openchemistry/redux'
+import {selectAuthProvider, showNerscLogin, showGirderLogin} from '@openchemistry/redux'
 
 import configureStore from './store/configureStore'
 import rootSaga from '@openchemistry/sagas'
@@ -40,7 +40,9 @@ import Typography from '@material-ui/core/Typography';
 
 import google from './google.svg'
 import nersc from './nerscnim.png'
+import girderLogo from './girder.png'
 import NerscLogin from './components/nersc'
+import GirderLogin from './components/girder-login'
 import LoginMenu from './components/loginmenu'
 import NotebookContainer from './containers/notebook'
 
@@ -241,6 +243,11 @@ class SelectLoginProvider extends Component {
     this.props.dispatch(showNerscLogin(true));
   }
 
+  handleGirder = () => {
+    this.props.dispatch(selectAuthProvider(false));
+    this.props.dispatch(showGirderLogin(true));
+  }
+
 
   render = () => {
 
@@ -274,6 +281,12 @@ class SelectLoginProvider extends Component {
               </ListItemIcon>
             </ListItem>
           }
+            <ListItem button onClick={this.handleGirder}>
+              <ListItemText primary="Sign in with Girder" />
+              <ListItemIcon>
+                <img className='oc-girder' src={girderLogo} alt="girder" />
+              </ListItemIcon>
+            </ListItem>
           </List>
         <DialogActions>
           {actions}
@@ -323,6 +336,7 @@ ReactDOM.render(
         <OauthRedirect/>
         <SelectLoginProvider/>
         <NerscLogin/>
+        <GirderLogin/>
         </div>
       </ConnectedRouter>
     </Provider>

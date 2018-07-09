@@ -13,11 +13,15 @@ pre {
 }
 
 .oc-google {
-  height: 20px;
+  height: 1.25rem;
 }
 
 .oc-nersc {
-  height: 20px;
+  height: 1.25rem;
+}
+
+.oc-girder {
+  height: 1.25rem;
 }
 
 .r-icon-btn {

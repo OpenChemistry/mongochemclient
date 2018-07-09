@@ -78,38 +78,36 @@ class Notebooks extends Component {
     }
 
     return (
-        <div>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell style={style.iconColumn}></TableCell>
-                <TableCell></TableCell>
-                <TableCell>Last Modified</TableCell>
-                <TableCell>Size</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody
-              displayRowCheckbox={false}
-              showRowHover={true}
-            >
-            {notebooks.map((notebook, i) =>
-              <TableRow
-                onClick={event => this.onCellClick(i)}
-                key={notebook._id}>
-              >
-                <TableCell style={style.iconColumn}>
-                  <Avatar style={{backgroundColor: blue500}}>
-                    <InsertDriveFile />
-                  </Avatar>
-                </TableCell>
-                <TableCell>{notebook.name}</TableCell>
-                <TableCell>{moment(notebook.created).fromNow()}</TableCell>
-                <TableCell>{filesize(notebook.size)}</TableCell>
-              </TableRow>
-            )}
-            </TableBody>
-          </Table>
-        </div>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell style={style.iconColumn}></TableCell>
+            <TableCell></TableCell>
+            <TableCell>Last Modified</TableCell>
+            <TableCell>Size</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody
+          displayRowCheckbox={false}
+          showRowHover={true}
+        >
+        {notebooks.map((notebook, i) =>
+          <TableRow
+            onClick={event => this.onCellClick(i)}
+            key={notebook._id}
+          >
+            <TableCell style={style.iconColumn}>
+              <Avatar style={{backgroundColor: blue500}}>
+                <InsertDriveFile />
+              </Avatar>
+            </TableCell>
+            <TableCell>{notebook.name}</TableCell>
+            <TableCell>{moment(notebook.created).fromNow()}</TableCell>
+            <TableCell>{filesize(notebook.size)}</TableCell>
+          </TableRow>
+        )}
+        </TableBody>
+      </Table>
     );
   }
 }

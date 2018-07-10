@@ -1,6 +1,7 @@
 #! /bin/bash
 components="@openchemistry/molecule-moljs
 @openchemistry/vibrational-spectrum
+@openchemistry/molecule-menu
 split-me
 "
 

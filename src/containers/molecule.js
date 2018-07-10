@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import Molecule from '../components/molecule'
 
-import { Caffeine } from '@openchemistry/sample-data'
+import { Benzene, Caffeine } from '@openchemistry/sample-data'
 
 import { selectors, loadMolecule, loadMoleculeById } from '@openchemistry/redux'
 
@@ -22,7 +22,18 @@ class MoleculeContainer extends Component {
 
   render() {
      
-    return  <Molecule cjson={{...Caffeine}} />
+    return (
+      <div style={{width: "100%", height:"100%"}}>
+        <split-me n={2}>
+          <div slot="0" style={{width: "100%", height:"100%"}}>
+            <Molecule cjson={{...Caffeine}} />
+          </div>
+          <div slot="1" style={{width: "100%", height:"100%"}}>
+            <Molecule cjson={{...Benzene}} />
+          </div>
+        </split-me>
+      </div>
+    )
   }
 }
 

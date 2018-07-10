@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import MoleculeMenu from './menu.js'
 import { wc } from '../utils/webcomponent';
+
+// import '@openchemistry/molecule-menu';
 
 class Molecule extends Component {
 
@@ -89,11 +90,12 @@ class Molecule extends Component {
   }
 
   onIsoScale = (value) => {
+    console.log(value);
     const isoSurfaces = this.isoSurfaces(value);
+    console.log(isoSurfaces);
     this.setState({
       isoSurfaces: isoSurfaces
     })
-    this._setWcOptions()
   }
 
   componentDidMount() {
@@ -105,29 +107,29 @@ class Molecule extends Component {
   render() {
     const animation = this.state.animation;
     const hasVolume = !!this.props.cjson && !!this.props.cjson.cube;
-    const hasAnimation = !!animation;
+    // const hasAnimation = !!animation;
     const hasSpectrum = !!this.props.cjson.vibrations.frequencies;
     const n = hasSpectrum ? 2 : 1;
     const sizes = hasSpectrum ? "0.4, 0.6" : "1.0";
 
     return (
-      <div>
-      { (hasAnimation || hasVolume || this.props.orbitalControls) &&
+      <div style={{width: "100%", height: "100%"}}>
+      {/* { (hasAnimation || hasVolume || this.props.orbitalControls) &&
         <MoleculeMenu 
-          onAmplitude={this.onAmplitude}
-          onIsoScale={this.onIsoScale}
-          animation={animation}
-          onModeChange={this.onModeChange}
-          onPlayToggled={this.onPlayToggled}
-          orbitalControls={hasVolume || this.props.orbitalControls}
-          isoValue={this.state.isoSurfaces[0].value}
-          orbitals={Molecule.generateOrbitals(this.props.cjson)}
-          onOrbital={this.props.onOrbital}
-          orbital={this.props.orbital}
+          // onIsoScale={this.onIsoScale}
+          // animation={animation}
+          // onModeChange={this.onModeChange}
+          // onPlayToggled={this.onPlayToggled}
+          // orbitalControls={hasVolume || this.props.orbitalControls}
+          // isoValue={this.state.isoSurfaces[0].value}
+          // orbitals={Molecule.generateOrbitals(this.props.cjson)}
+          // onOrbital={this.props.onOrbital}
+          // orbital={this.props.orbital}
         />
-      }
-        <div style={{width: "100%", height: "30rem"}}>
-          <split-me n={n} sizes={sizes}>
+      } */}
+        <div style={{width: "100%", height: "40rem"}}>
+        <split-me n={2} sizes="1.0, 0.0" d="vertical">
+          <split-me slot="0" n={n} sizes={sizes}>
             <div slot="0" style={{width: "100%", height: "100%"}}>
               <oc-molecule-moljs
                 ref={wc(
@@ -138,7 +140,7 @@ class Molecule extends Component {
                     cjson: this.props.cjson,
                     options: {
                       isoSurfaces: this.state.isoSurfaces,
-                      normalMode: this.state.animation
+                      normalMode: animation
                     }
                   })
                 }
@@ -153,21 +155,41 @@ class Molecule extends Component {
                 // Props
                 {
                   vibrations: this.props.cjson.vibrations,
-                  options: this.state.animation
+                  options: animation
                 })
               }
             />
           </div>
           }
           </split-me>
+        </split-me>
         </div>
+        <oc-molecule-menu
+          ref={wc(
+            // Events
+            {
+              scaleValueChanged: (e)=>{this.onAmplitude(e.detail);},
+              isoValueChanged: (e) => {this.onIsoScale(e.detail);},
+              normalModeChanged: (e) => {this.onModeChange(e.detail);},
+              playChanged: (e) => {this.onPlayToggled(e.detail);},
+            },
+            // Props
+            {
+              nModes: animation.nModes,
+              iMode: animation.modeIdx,
+              scaleValue: animation.scale,
+              play: animation.play,
+              hasVolume: hasVolume,
+              isoValue: this.state.isoSurfaces[0].value,
+            })
+          }
+        >
+        </oc-molecule-menu>
       </div>
     );
   }
 
-  isoSurfaces(scale = 42) {
-    const iso = (scale + 1) / 2000.0;
-
+  isoSurfaces(iso = 0.005) {
     return [{
       value: iso,
       color: 'blue',

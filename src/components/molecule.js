@@ -107,7 +107,8 @@ class Molecule extends Component {
     const hasVolume = !!this.props.cjson && !!this.props.cjson.cube;
     const hasAnimation = !!animation;
     const hasSpectrum = !!this.props.cjson.vibrations.frequencies;
-    let n = hasSpectrum ? 2 : 1;
+    const n = hasSpectrum ? 2 : 1;
+    const sizes = hasSpectrum ? "0.4, 0.6" : "1.0";
 
     return (
       <div>
@@ -126,25 +127,26 @@ class Molecule extends Component {
         />
       }
         <div style={{width: "100%", height: "30rem"}}>
-          <split-me n={n}>
-            <oc-molecule-moljs 
-              slot="0"
-              ref={wc(
-                // Events
-                {},
-                // Props
-                {
-                  cjson: this.props.cjson,
-                  options: {
-                    isoSurfaces: this.state.isoSurfaces,
-                    normalMode: this.state.animation
-                  }
-                })
-              }
-            />
+          <split-me n={n} sizes={sizes}>
+            <div slot="0" style={{width: "100%", height: "100%"}}>
+              <oc-molecule-moljs
+                ref={wc(
+                  // Events
+                  {},
+                  // Props
+                  {
+                    cjson: this.props.cjson,
+                    options: {
+                      isoSurfaces: this.state.isoSurfaces,
+                      normalMode: this.state.animation
+                    }
+                  })
+                }
+              />
+            </div>
           { hasSpectrum &&
+          <div slot="1" style={{width: "100%", height: "100%"}}>
             <oc-vibrational-spectrum
-              slot="1"
               ref={wc(
                 // Events
                 {barSelected: (e)=>{this.onModeChange(e.detail);}},
@@ -155,6 +157,7 @@ class Molecule extends Component {
                 })
               }
             />
+          </div>
           }
           </split-me>
         </div>

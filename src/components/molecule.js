@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { wc } from '../utils/webcomponent';
 
-// import '@openchemistry/molecule-menu';
+import IconButton from '@material-ui/core/IconButton';
+import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover';
+
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 class Molecule extends Component {
-
-  componentRef = 0;
 
   static generateOrbitals(cjson) {
     if (!cjson) {
@@ -59,7 +60,14 @@ class Molecule extends Component {
       }
     }
     else {
-      this.state = {}
+      this.state = {
+        animation: {
+          play: false,
+          scale: 1,
+          modeIdx: -1,
+          nModes: -1
+        }
+      }
     }
 
     if (this.props.isoSurfaces) {
@@ -68,6 +76,14 @@ class Molecule extends Component {
     else {
       this.state.isoSurfaces = this.isoSurfaces();
     }
+
+    this.state.menu = {
+      open: false,
+      anchorEl: null
+    }
+
+    this.state.splitDirection = "horizontal";
+    this.updateSplitDirection = this.updateSplitDirection.bind(this);
   }
 
   onAmplitude = (value) => {
@@ -83,53 +99,68 @@ class Molecule extends Component {
   }
 
   onPlayToggled = (value) => {
-    console.log(value);
     this.setState({
       animation: {...this.state.animation, ...{play: value}}
     })
   }
 
   onIsoScale = (value) => {
-    console.log(value);
     const isoSurfaces = this.isoSurfaces(value);
-    console.log(isoSurfaces);
     this.setState({
       isoSurfaces: isoSurfaces
     })
   }
 
+  onMenuOpen = (event) => {
+    // This prevents ghost click.
+    event.preventDefault();
+    this.setState({
+      menu: {
+        open: true,
+        anchorEl: event.currentTarget
+      }
+    });
+  };
+
+  onMenuClose = () => {
+    this.setState({
+      menu: {
+        open: false
+      }
+    });
+  };
+
   componentDidMount() {
+    this.updateSplitDirection();
+    window.addEventListener('resize', this.updateSplitDirection);
   }
 
   componentDidUpdate() {
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateSplitDirection);
+  }
+  
+  updateSplitDirection() {
+    let dir = window.innerWidth / window.devicePixelRatio > 800 ? 'horizontal' : 'vertical';
+    if (dir !== this.state.splitDirection) {
+      this.setState({splitDirection: dir});
+    }
+  }
+
   render() {
     const animation = this.state.animation;
     const hasVolume = !!this.props.cjson && !!this.props.cjson.cube;
-    // const hasAnimation = !!animation;
-    const hasSpectrum = !!this.props.cjson.vibrations.frequencies;
+    const hasAnimation = !!animation;
+    const hasSpectrum = !!this.props.cjson && !!this.props.cjson.vibrations && !!this.props.cjson.vibrations.frequencies;
     const n = hasSpectrum ? 2 : 1;
     const sizes = hasSpectrum ? "0.4, 0.6" : "1.0";
 
     return (
-      <div style={{width: "100%", height: "100%"}}>
-      {/* { (hasAnimation || hasVolume || this.props.orbitalControls) &&
-        <MoleculeMenu 
-          // onIsoScale={this.onIsoScale}
-          // animation={animation}
-          // onModeChange={this.onModeChange}
-          // onPlayToggled={this.onPlayToggled}
-          // orbitalControls={hasVolume || this.props.orbitalControls}
-          // isoValue={this.state.isoSurfaces[0].value}
-          // orbitals={Molecule.generateOrbitals(this.props.cjson)}
-          // onOrbital={this.props.onOrbital}
-          // orbital={this.props.orbital}
-        />
-      } */}
-        <div style={{width: "100%", height: "40rem"}}>
-        <split-me n={2} sizes="1.0, 0.0" d="vertical">
-          <split-me slot="0" n={n} sizes={sizes}>
+      <div>
+        <div style={{width: "100%", height: "40rem", position: "relative"}}>
+          <split-me slot="0" n={n} d={this.state.splitDirection} sizes={sizes}>
             <div slot="0" style={{width: "100%", height: "100%"}}>
               <oc-molecule-moljs
                 ref={wc(
@@ -146,45 +177,60 @@ class Molecule extends Component {
                 }
               />
             </div>
-          { hasSpectrum &&
-          <div slot="1" style={{width: "100%", height: "100%"}}>
-            <oc-vibrational-spectrum
-              ref={wc(
-                // Events
-                {barSelected: (e)=>{this.onModeChange(e.detail);}},
-                // Props
-                {
-                  vibrations: this.props.cjson.vibrations,
-                  options: animation
-                })
-              }
-            />
+            { hasSpectrum &&
+            <div slot="1" style={{width: "100%", height: "100%"}}>
+              <oc-vibrational-spectrum
+                ref={wc(
+                  // Events
+                  {barSelected: (e)=>{this.onModeChange(e.detail);}},
+                  // Props
+                  {
+                    vibrations: this.props.cjson.vibrations,
+                    options: animation
+                  })
+                }
+              />
+            </div>
+            }
+          </split-me>
+          { (hasAnimation || hasVolume || this.props.orbitalControls) &&
+          <div style={{position: "absolute", right: 0, top: 0, marginTop: "0.5rem", marginRight: "0.5rem"}}>
+            <IconButton onClick={this.onMenuOpen}>
+              <MoreVertIcon/>
+            </IconButton>
+            <Popover
+              open={this.state.menu.open}
+              anchorEl={this.state.menu.anchorEl}
+              anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+              onClose={this.onMenuClose}
+              animation={PopoverAnimationVertical}
+            >
+              <div style={{width: "25rem"}}>
+                <oc-molecule-menu
+                  ref={wc(
+                    // Events
+                    {
+                      scaleValueChanged: (e)=>{this.onAmplitude(e.detail);},
+                      isoValueChanged: (e) => {this.onIsoScale(e.detail);},
+                      normalModeChanged: (e) => {this.onModeChange(e.detail);},
+                      playChanged: (e) => {this.onPlayToggled(e.detail);},
+                    },
+                    // Props
+                    {
+                      nModes: animation.nModes,
+                      iMode: animation.modeIdx,
+                      scaleValue: animation.scale,
+                      play: animation.play,
+                      hasVolume: hasVolume,
+                      isoValue: this.state.isoSurfaces[0].value,
+                    })
+                  }
+                ></oc-molecule-menu>
+              </div>
+            </Popover>
           </div>
           }
-          </split-me>
-        </split-me>
         </div>
-        <oc-molecule-menu
-          ref={wc(
-            // Events
-            {
-              scaleValueChanged: (e)=>{this.onAmplitude(e.detail);},
-              isoValueChanged: (e) => {this.onIsoScale(e.detail);},
-              normalModeChanged: (e) => {this.onModeChange(e.detail);},
-              playChanged: (e) => {this.onPlayToggled(e.detail);},
-            },
-            // Props
-            {
-              nModes: animation.nModes,
-              iMode: animation.modeIdx,
-              scaleValue: animation.scale,
-              play: animation.play,
-              hasVolume: hasVolume,
-              isoValue: this.state.isoSurfaces[0].value,
-            })
-          }
-        >
-        </oc-molecule-menu>
       </div>
     );
   }
@@ -215,59 +261,5 @@ Molecule.defaultProps = {
   isoSurfaces: null,
   animateMode: null
 }
-
-/* Obsolete, conversion from cjson is now done in the individual components
-function moleculeToModelData(cjson, mode) {
-  let modelData = {
-      atoms: [],
-      bonds: []
-  }
-  let eigenVectors = null;
-
-  if (cjson == null) {
-    return modelData
-  }
-
-  if (mode != null) {
-    eigenVectors = cjson.vibrations.eigenVectors[mode-1];
-  }
-
-  const atoms = cjson.atoms;
-  for (let [i, element] of atoms.elements.number.entries()) {
-    const coords = atoms.coords['3d'];
-    const coordsIndex = i * 3;
-    let positions = [coords[coordsIndex], coords[coordsIndex+1], coords[coordsIndex+2]];
-
-    let atom = {
-        elem: elementSymbols[element],
-        serial: i,
-        positions,
-    }
-
-    if (eigenVectors != null) {
-      atom.dx = eigenVectors[coordsIndex];
-      atom.dy = eigenVectors[coordsIndex+1];
-      atom.dz = eigenVectors[coordsIndex+2];
-    }
-
-    modelData.atoms.push(atom);
-  }
-
-  const bonds = cjson.bonds;
-  for (let [i, order] of bonds.order.entries()) {
-    const connections = bonds.connections.index;
-    const connectionIndex = i*2;
-    let bond = {
-      atom1_index: connections[connectionIndex],
-      atom2_index: connections[connectionIndex+1],
-      bond_order: order
-    }
-    modelData.bonds.push(bond);
-  }
-
-
-  return modelData;
-}
-*/
 
 export default Molecule

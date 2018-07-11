@@ -1,6 +1,6 @@
 /***
- *  Taken from: https://github.com/ionic-team/ionic-react-conference-app/blob/master/src/utils/stencil.js
- * 
+ Taken from: https://github.com/ionic-team/ionic-react-conference-app/blob/master/src/utils/stencil.js
+ 
 This function is meant to make it easier to use Props and Custom Events with Custom
 Elements in React.
 <ion-segment

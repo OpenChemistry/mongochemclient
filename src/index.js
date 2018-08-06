@@ -180,9 +180,7 @@ class OauthRedirect extends Component {
   render = () => {
     const {providers, isAuthenticating} = this.props;
     if (isAuthenticating && providers && providers.Google) {
-      return (
-          null //  <ReactRedirect location={providers.Google}/>
-      );
+      window.location = providers.Google;
     } else {
       return (null);
     }

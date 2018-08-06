@@ -14,8 +14,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import InputIcon from '@material-ui/icons/Input';
 import red from '@material-ui/core/colors/red'
 
-import { showGirderLogin } from '@openchemistry/redux';
-import { loginGirder } from '@openchemistry/redux';
+import { girder } from '@openchemistry/redux'
 import { selectors } from '@openchemistry/redux';
 
 import _ from 'lodash'
@@ -35,7 +34,7 @@ const login = (values, dispatch) => {
     password} = values;
 
   return new Promise((resolve, reject) => {
-    dispatch(loginGirder(username, password, resolve, reject));
+    dispatch(girder.loginGirder(username, password, resolve, reject));
   }).catch(_error => {
     throw new SubmissionError({ _error });
   });
@@ -76,7 +75,7 @@ class GirderLogin extends Component {
 
   handleClose = () => {
     this.setState({open: false});
-    this.props.dispatch(showGirderLogin(false))
+    this.props.dispatch(girder.showGirderLogin(false))
   };
 
   render = () => {

@@ -9,7 +9,9 @@ import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import PersonIcon from '@material-ui/icons/Person';
 
-import { invalidateSession, invalidateToken, selectors } from '@openchemistry/redux'
+import { selectors } from '@openchemistry/redux';
+import { jupyterlab } from '@openchemistry/redux';
+import { girder } from '@openchemistry/redux';
 
 class LoginMenu extends Component {
 
@@ -41,8 +43,8 @@ class LoginMenu extends Component {
     // This prevents ghost click.
     event.preventDefault();
 
-    this.props.dispatch(invalidateSession())
-    this.props.dispatch(invalidateToken())
+    this.props.dispatch(jupyterlab.invalidateSession())
+    this.props.dispatch(girder.invalidateToken())
   };
 
   render = () => {

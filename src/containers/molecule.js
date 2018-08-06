@@ -6,22 +6,23 @@ import Molecule from '../components/molecule'
 
 import { Caffeine } from '@openchemistry/sample-data'
 
-import { selectors, loadMolecule, loadMoleculeById } from '@openchemistry/redux'
+import { selectors } from '@openchemistry/redux'
+import { molecules } from '@openchemistry/redux'
 
 class MoleculeContainer extends Component {
 
 
   componentDidMount() {
     if (this.props.id != null) {
-      this.props.dispatch(loadMoleculeById(this.props.id));
+      this.props.dispatch(molecules.loadMoleculeById(this.props.id));
     }
     else if (this.props.inchikey != null) {
-      this.props.dispatch(loadMolecule(this.props.inchikey ));
+      this.props.dispatch(molecules.loadMolecule(this.props.inchikey ));
     }
   }
 
   render() {
-     
+
     return  <Molecule cjson={{...Caffeine}} />
   }
 }

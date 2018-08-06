@@ -14,8 +14,8 @@ import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './contai
 import './index.css';
 import logo from './OpenChemistry_Logo.svg';
 import { selectors } from '@openchemistry/redux';
-import {authenticate, testOauthEnabled} from '@openchemistry/redux'
-import {selectAuthProvider, showNerscLogin, showGirderLogin} from '@openchemistry/redux'
+import { girder } from '@openchemistry/redux';
+import { app } from '@openchemistry/redux';
 
 import configureStore from './store/configureStore'
 import rootSaga from '@openchemistry/sagas'
@@ -67,7 +67,7 @@ class PrivateRoute extends Component {
             providers,  ...rest } = this.props;
 
     if (!isAuthenticated && !isAuthenticating) {
-      store.dispatch(authenticate(token));
+      store.dispatch(girder.authenticate(token));
     }
 
     const render = (props) => {
@@ -135,7 +135,7 @@ class Login extends Component {
     // This prevents ghost click.
     event.preventDefault();
 
-    this.props.dispatch(selectAuthProvider(true));
+    this.props.dispatch(app.selectAuthProvider(true));
   };
 }
 
@@ -230,22 +230,22 @@ class SelectLoginProvider extends Component {
 
   handleClose = () => {
     this.setState({open: false});
-    this.props.dispatch(selectAuthProvider(false))
+    this.props.dispatch(app.selectAuthProvider(false))
   };
 
   handleGoogle = () => {
-    this.props.dispatch(selectAuthProvider(false))
-    this.props.dispatch(authenticate(this.props.token))
+    this.props.dispatch(app.selectAuthProvider(false))
+    this.props.dispatch(girder.authenticate(this.props.token))
   }
 
   handleNersc = () => {
-    this.props.dispatch(selectAuthProvider(false));
-    this.props.dispatch(showNerscLogin(true));
+    this.props.dispatch(app.selectAuthProvider(false));
+    this.props.dispatch(app.showNerscLogin(true));
   }
 
   handleGirder = () => {
-    this.props.dispatch(selectAuthProvider(false));
-    this.props.dispatch(showGirderLogin(true));
+    this.props.dispatch(app.selectAuthProvider(false));
+    this.props.dispatch(app.showGirderLogin(true));
   }
 
 
@@ -313,10 +313,10 @@ SelectLoginProvider = connect(selectLoginProviderMapStateToProps)(SelectLoginPro
 const cookies = new Cookies();
 const cookieToken = cookies.get('girderToken');
 if (!isNil(cookieToken)) {
-  store.dispatch(authenticate(cookieToken));
+  store.dispatch(girder.authenticate(cookieToken));
 }
 
-store.dispatch(testOauthEnabled())
+store.dispatch(girder.testOauthEnabled())
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>

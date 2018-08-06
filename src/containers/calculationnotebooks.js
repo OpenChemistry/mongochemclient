@@ -6,13 +6,13 @@ import { push } from 'react-router-redux'
 
 import Notebooks from '../components/notebooks'
 
-import { loadCalculationNotebooks } from '@openchemistry/redux'
+import { calculations } from '@openchemistry/redux'
 import { selectors } from '@openchemistry/redux'
 
 class CalculationNotebooksContainer extends Component {
 
   componentDidMount() {
-    this.props.dispatch(loadCalculationNotebooks(this.props.calculationId));
+    this.props.dispatch(calculations.loadCalculationNotebooks(this.props.calculationId));
   }
 
   onCellClick = (row) => {

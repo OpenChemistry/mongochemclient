@@ -10,8 +10,8 @@ import { AssignmentIcon } from '@material-ui/icons/Assignment';
 import Molecule from '../components/molecule'
 import CalculationNotebooksContainer from './calculationnotebooks'
 
-import { loadCalculationById, loadOrbital } from '@openchemistry/redux'
 import { selectors } from '@openchemistry/redux'
+import { calculations } from '@openchemistry/redux'
 
 class Calculation extends Component {
 
@@ -129,12 +129,12 @@ class CalculationContainer extends Component {
 
   componentDidMount() {
     if (this.state.id && !this.props.cjson) {
-      this.props.dispatch(loadCalculationById(this.state.id));
+      this.props.dispatch(calculations.loadCalculationById(this.state.id));
 
     }
 
     if (this.state.id && this.state.orbital) {
-        this.props.dispatch(loadOrbital(this.state.id, this.state.orbital));
+        this.props.dispatch(calculations.loadOrbital(this.state.id, this.state.orbital));
     }
   }
 
@@ -201,7 +201,7 @@ class CalculationContainer extends Component {
     this.setState({
       orbital,
     })
-    this.props.dispatch(loadOrbital(this.state.id, orbital));
+    this.props.dispatch(calculations.loadOrbital(this.state.id, orbital));
   }
 }
 

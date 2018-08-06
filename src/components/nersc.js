@@ -14,9 +14,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import InputIcon from '@material-ui/icons/Input';
 import red from '@material-ui/core/colors/red'
 
-import { showNerscLogin } from '@openchemistry/redux';
-import { authenticateNersc } from '@openchemistry/redux';
 import { selectors } from '@openchemistry/redux';
+import { nersc } from '@openchemistry/redux';
+import { app } from '@openchemistry/redux';
 
 import _ from 'lodash'
 
@@ -35,7 +35,7 @@ const login = (values, dispatch) => {
     password} = values;
 
   return new Promise((resolve, reject) => {
-    dispatch(authenticateNersc(username, password, reject, resolve));
+    dispatch(nersc.authenticateNersc(username, password, reject, resolve));
   }).catch(_error => {
     throw new SubmissionError({ _error });
   });
@@ -76,7 +76,7 @@ class NerscLogin extends Component {
 
   handleClose = () => {
     this.setState({open: false});
-    this.props.dispatch(showNerscLogin(false))
+    this.props.dispatch(app.showNerscLogin(false))
   };
 
   render = () => {

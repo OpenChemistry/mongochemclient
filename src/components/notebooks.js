@@ -17,7 +17,7 @@ import filesize from 'filesize'
 import moment from 'moment'
 import _ from 'lodash';
 
-import { redirectToJupyterHub } from '@openchemistry/redux';
+import { jupyterlab } from '@openchemistry/redux';
 
 const blue500 = blue['500'];
 
@@ -78,7 +78,7 @@ class Notebooks extends Component {
     }
     const name = this.props.notebooks[row].name
     this.setJupyterLocalStorage(name);
-    this.props.dispatch(redirectToJupyterHub());
+    this.props.dispatch(jupyterlab.redirectToJupyterHub());
     this.setState({loading: true});
   }
 

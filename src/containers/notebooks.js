@@ -4,13 +4,13 @@ import { connect } from 'react-redux'
 
 import Notebooks from '../components/notebooks'
 
-import { loadNotebooks } from '@openchemistry/redux'
+import { app } from '@openchemistry/redux'
 import { selectors } from '@openchemistry/redux'
 
 class NotebooksContainer extends Component {
 
   componentDidMount() {
-    this.props.dispatch(loadNotebooks());
+    this.props.dispatch(app.loadNotebooks());
   }
 
   render() {

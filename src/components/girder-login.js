@@ -14,6 +14,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import InputIcon from '@material-ui/icons/Input';
 import red from '@material-ui/core/colors/red'
 
+import { app } from '@openchemistry/redux'
 import { girder } from '@openchemistry/redux'
 import { selectors } from '@openchemistry/redux';
 
@@ -75,7 +76,7 @@ class GirderLogin extends Component {
 
   handleClose = () => {
     this.setState({open: false});
-    this.props.dispatch(girder.showGirderLogin(false))
+    this.props.dispatch(app.showGirderLogin(false))
   };
 
   render = () => {

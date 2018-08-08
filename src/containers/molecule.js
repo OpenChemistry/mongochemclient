@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 
-import Molecule from '../components/molecule'
-
-import { Caffeine } from '@openchemistry/sample-data'
-
 import { selectors } from '@openchemistry/redux'
 import { molecules } from '@openchemistry/redux'
+
+import { wc } from '../utils/webcomponent';
 
 class MoleculeContainer extends Component {
 
@@ -22,8 +20,26 @@ class MoleculeContainer extends Component {
   }
 
   render() {
+    const { cjson } = this.props;
 
-    return  <Molecule cjson={{...Caffeine}} />
+    if (cjson) {
+      return (
+        <div style={{height: '30rem', width: '100%'}}>
+          <oc-molecule
+            ref={wc(
+              // Events
+              {},
+              //Props
+              {
+                cjson: cjson
+              }
+            )}
+          />
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 }
 

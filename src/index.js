@@ -35,9 +35,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-// Can't use react-redirect anymore with react > 15.5
-// import ReactRedirect from 'react-redirect'
-
 import google from './google.svg'
 import nersc from './nerscnim.png'
 import girderLogo from './girder.png'
@@ -45,6 +42,11 @@ import NerscLogin from './components/nersc'
 import GirderLogin from './components/girder-login'
 import LoginMenu from './components/loginmenu'
 import NotebookContainer from './containers/notebook'
+
+// Webcomponents
+import { defineCustomElements as defineMolecule } from '@openchemistry/molecule';
+
+defineMolecule(window);
 
 const store = configureStore()
 store.runSaga(rootSaga)

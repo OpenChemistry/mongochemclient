@@ -7,6 +7,8 @@ import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
+import { makeBins } from '@openchemistry/utils';
+
 class Molecule extends Component {
 
   static generateOrbitals(cjson) {
@@ -55,7 +57,8 @@ class Molecule extends Component {
           play: true,
           scale: 1,
           modeIdx: -1,
-          nModes: props.cjson.vibrations.eigenVectors.length
+          nModes: props.cjson.vibrations.eigenVectors.length,
+          framesPerPeriod: 15,
         }
       }
     }
@@ -80,6 +83,23 @@ class Molecule extends Component {
     this.state.menu = {
       open: false,
       anchorEl: null
+    }
+
+    this.state.volume = {
+      opacity: [1, 0.75, 0, 0, 0.75, 1],
+      colors: [],
+      mapName: 'Viridis',
+      range: [-0.1, 0.1],
+      histograms: []
+    }
+
+    this.state.visibility = {
+      isoSurfaces: true,
+      volume: false
+    }
+
+    if (props.cjson.cube) {
+      this.state.volume.histograms = makeBins(props.cjson.cube.scalars, 100);
     }
 
     this.state.splitDirection = "horizontal";
@@ -109,6 +129,14 @@ class Molecule extends Component {
     this.setState({
       isoSurfaces: isoSurfaces
     })
+  }
+
+  onOpacitiesChanged = (value) => {
+    this.setState({volume: {...this.state.volume, ...value}});
+  }
+
+  onVisibilityChanged = (value) => {
+    this.setState({visibility: {...this.state.visibility, ...value}});
   }
 
   onMenuOpen = (event) => {
@@ -154,15 +182,15 @@ class Molecule extends Component {
     const hasVolume = !!this.props.cjson && !!this.props.cjson.cube;
     const hasAnimation = !!animation;
     const hasSpectrum = !!this.props.cjson && !!this.props.cjson.vibrations && !!this.props.cjson.vibrations.frequencies;
-    const n = hasSpectrum ? 2 : 1;
-    const sizes = hasSpectrum ? "0.4, 0.6" : "1.0";
+    const n = hasSpectrum ? 3 : 2;
+    const sizes = hasSpectrum ? "0.33, 0.33, 0.34" : "0.5, 0.5";
 
     return (
       <div>
         <div style={{width: "100%", height: "40rem", position: "relative"}}>
           <split-me slot="0" n={n} d={this.state.splitDirection} sizes={sizes}>
             <div slot="0" style={{width: "100%", height: "100%"}}>
-              <oc-molecule-moljs
+              <oc-molecule-vtkjs
                 ref={wc(
                   // Events
                   {},
@@ -177,8 +205,39 @@ class Molecule extends Component {
                 }
               />
             </div>
-            { hasSpectrum &&
             <div slot="1" style={{width: "100%", height: "100%"}}>
+              <oc-molecule-vtkjs
+                ref={wc(
+                  // Events
+                  {},
+                  // Props
+                  {
+                    cjson: this.props.cjson,
+                    options: {
+                      isoSurfaces: this.state.isoSurfaces,
+                      normalMode: animation,
+                      visibility: this.state.visibility,
+                      volume: this.state.volume
+                      // {
+                      //   colors: [
+                      //     [1, 0, 0],
+                      //     [1, 1, 0],
+                      //     [1, 1, 1],
+                      //     [0, 1, 1],
+                      //     [0, 0, 1]
+                      //   ],
+                      //   opacity: [
+                      //     0.2, 0.4, 0, 0, 0, 0.4, 0.2
+                      //   ],
+                      //   range: [-0.001, 0.001]
+                      // }
+                    },
+                  })
+                }
+              />
+            </div>
+            { hasSpectrum &&
+            <div slot="2" style={{width: "100%", height: "100%"}}>
               <oc-vibrational-spectrum
                 ref={wc(
                   // Events
@@ -205,6 +264,7 @@ class Molecule extends Component {
               onClose={this.onMenuClose}
               animation={PopoverAnimationVertical}
             >
+              {this.state.menu.open &&
               <div style={{width: "25rem"}}>
                 <oc-molecule-menu
                   ref={wc(
@@ -214,6 +274,8 @@ class Molecule extends Component {
                       isoValueChanged: (e) => {this.onIsoScale(e.detail);},
                       normalModeChanged: (e) => {this.onModeChange(e.detail);},
                       playChanged: (e) => {this.onPlayToggled(e.detail);},
+                      opacitiesChanged: (e) => {this.onOpacitiesChanged(e.detail);},
+                      visibilityChanged: (e) => {this.onVisibilityChanged(e.detail);},
                     },
                     // Props
                     {
@@ -223,10 +285,33 @@ class Molecule extends Component {
                       play: animation.play,
                       hasVolume: hasVolume,
                       isoValue: this.state.isoSurfaces[0].value,
+                      volumeOptions: this.state.volume,
+                      visibilityOptions: this.state.visibility,
+                      colorMaps: ['Viridis', 'Plasma'],
+                      activeMap: this.state.volume.mapName
                     })
                   }
                 ></oc-molecule-menu>
+                {/* <div style={{width: "100%", height: "8rem"}}>
+                  <oc-volume-controls
+                    ref={wc(
+                      // Events
+                      {
+                        opacitiesChanged: (e)=>{this.onOpacitiesChanged(e.detail);}
+                      },
+                      // Props
+                      {
+                        colors: this.state.volume.colors,
+                        opacities: this.state.volume.opacity,
+                        opacitiesX: this.state.volume.opacityScalarValue,
+                        range: this.state.volume.range,
+                        histograms: this.state.volume.histograms
+                      })
+                    }
+                  />
+                </div> */}
               </div>
+              }
             </Popover>
           </div>
           }

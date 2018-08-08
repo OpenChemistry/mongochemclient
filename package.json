@@ -14,13 +14,11 @@
     "@material-ui/core": "^1.3.0",
     "@material-ui/icons": "^1.1.0",
     "@material-ui/lab": "^1.0.0-alpha.5",
-    "@openchemistry/molecule-menu": "^0.1.0",
-    "@openchemistry/molecule-moljs": "^0.3.148",
+    "@openchemistry/molecule": "^0.2.8",
     "@openchemistry/redux": "^0.3.1",
     "@openchemistry/rest": "^0.3.0",
     "@openchemistry/sagas": "^0.3.2",
-    "@openchemistry/sample-data": "^0.3.0",
-    "@openchemistry/vibrational-spectrum": "^0.1.2",
+    "@openchemistry/utils": "^0.3.3",
     "axios": "^0.18.0",
     "enumify": "^1.0.4",
     "filesize": "^3.5.11",
@@ -51,7 +49,6 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "postinstall": "./scripts/copy_web_components.sh"
+    "eject": "react-scripts eject"
   }
 }

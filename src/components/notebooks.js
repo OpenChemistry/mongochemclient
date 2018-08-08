@@ -41,32 +41,36 @@ class Notebooks extends Component {
   setJupyterLocalStorage = (name) => {
     const layoutKey = 'jupyterlab:layout-restorer:data';
     const layoutValue = {
-      main: {
-        dock: {
-          type: 'tab-area',
-          currentIndex: 3,
-          widgets: [`notebook:${name}`]
+      v: {
+        main: {
+          dock: {
+            type: 'tab-area',
+            currentIndex: 0,
+            widgets: [`notebook:${name}`]
+          },
+          mode: 'multiple-document',
+          current:`notebook:${name}`
         },
-        mode: 'multiple-document',
-        current:`notebook:${name}`
-      },
-      left: {
-        collapsed: false,
-        current: 'filebrowser',
-        widgets: ['filebrowser','running-sessions','command-palette','tab-manager']
-      },
-      right:{
-        collapsed:true,
-        widgets:[]
+        left: {
+          collapsed: false,
+          current: 'filebrowser',
+          widgets: ['filebrowser','running-sessions','command-palette','tab-manager']
+        },
+        right:{
+          collapsed:true,
+          widgets:[]
+        }
       }
     }
     localStorage.setItem(layoutKey, JSON.stringify(layoutValue))
 
     const notebookKey = `jupyterlab:notebook:${name}`;
     const notebookValue = {
-      data: {
-        path: name,
-        factory:'Notebook'
+      v: {
+        data: {
+          path: name,
+          factory:'Notebook'
+        }
       }
     }
     localStorage.setItem(notebookKey, JSON.stringify(notebookValue))

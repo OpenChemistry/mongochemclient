@@ -36,7 +36,7 @@ CalculationNotebooksContainer.defaultProps = {
 }
 
 function mapStateToProps(state, ownProps) {
-  const props = { };
+  const props = {...ownProps};
 
   if (!_.isNil(ownProps.calculationId)) {
     const notebooks = selectors.calculations.getNotebooks(state, ownProps.calculationId);

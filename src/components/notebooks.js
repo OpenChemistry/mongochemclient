@@ -103,8 +103,6 @@ class Notebooks extends Component {
           </TableRow>
         </TableHead>
         <TableBody
-          displayRowCheckbox={false}
-          showRowHover={true}
         >
         {notebooks.map((notebook, i) =>
           <TableRow

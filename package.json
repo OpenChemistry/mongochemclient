@@ -17,7 +17,7 @@
     "@openchemistry/molecule": "^0.2.8",
     "@openchemistry/redux": "^0.3.1",
     "@openchemistry/rest": "^0.3.0",
-    "@openchemistry/sagas": "^0.3.2",
+    "@openchemistry/sagas": "^0.3.4",
     "@openchemistry/utils": "^0.3.3",
     "axios": "^0.18.0",
     "enumify": "^1.0.4",

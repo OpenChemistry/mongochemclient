@@ -14,7 +14,7 @@
     "@material-ui/core": "^1.3.0",
     "@material-ui/icons": "^1.1.0",
     "@material-ui/lab": "^1.0.0-alpha.5",
-    "@openchemistry/molecule": "^0.2.8",
+    "@openchemistry/molecule": "^0.3.1",
     "@openchemistry/redux": "^0.3.1",
     "@openchemistry/rest": "^0.3.0",
     "@openchemistry/sagas": "^0.3.4",

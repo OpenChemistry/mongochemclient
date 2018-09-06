@@ -14,9 +14,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import InputIcon from '@material-ui/icons/Input';
 import red from '@material-ui/core/colors/red'
 
+import { app } from '@openchemistry/redux'
+import { girder } from '@openchemistry/redux'
 import { selectors } from '@openchemistry/redux';
-import { nersc } from '@openchemistry/redux';
-import { app } from '@openchemistry/redux';
 
 import _ from 'lodash'
 
@@ -35,7 +35,7 @@ const login = (values, dispatch) => {
     password} = values;
 
   return new Promise((resolve, reject) => {
-    dispatch(nersc.authenticateNersc(username, password, reject, resolve));
+    dispatch(girder.loginGirder(username, password, resolve, reject));
   }).catch(_error => {
     throw new SubmissionError({ _error });
   });
@@ -54,7 +54,7 @@ const validate = values => {
 }
 
 
-class NerscLogin extends Component {
+class GirderLogin extends Component {
   constructor(props) {
     super(props)
 
@@ -76,7 +76,7 @@ class NerscLogin extends Component {
 
   handleClose = () => {
     this.setState({open: false});
-    this.props.dispatch(app.showNerscLogin(false))
+    this.props.dispatch(app.showGirderLogin(false))
   };
 
   render = () => {
@@ -84,11 +84,11 @@ class NerscLogin extends Component {
 
     return (
       <Dialog
-        aria-labelledby="nersc-dialog-title"
+        aria-labelledby="girder-dialog-title"
         open={this.state.open}
         onClose={this.handleClose}
       >
-        <DialogTitle id="nersc-dialog-title">Sign in using NERSC NIM credentials</DialogTitle>
+        <DialogTitle id="girder-dialog-title">Sign in using Girder credentials</DialogTitle>
         <form onSubmit={handleSubmit(login)} >
           <DialogContent>
             <div>
@@ -96,8 +96,8 @@ class NerscLogin extends Component {
                 className="full-width"
                 name="username"
                 component={TextField}
-                placeholder="NERSC Username"
-                label="NERSC Username"
+                placeholder="Username"
+                label="Username"
               />
             </div>
             <div>
@@ -105,8 +105,8 @@ class NerscLogin extends Component {
                 className="full-width"
                 name="password"
                 component={TextField}
-                placeholder="NIM Password"
-                label="NIM Password"
+                placeholder="Password"
+                label="Password"
                 type="password"
               />
             </div>
@@ -141,17 +141,17 @@ class NerscLogin extends Component {
 }
 
 function mapStateToProps(state, ownProps) {
-  const open = selectors.app.showNerscLogin(state);
+  const open = selectors.app.showGirderLogin(state);
 
   return {
     open,
   }
 }
 
-NerscLogin = connect(mapStateToProps)(NerscLogin)
+GirderLogin = connect(mapStateToProps)(GirderLogin)
 
 
 export default reduxForm({
-  form: 'nerscLogin',
+  form: 'girderLogin',
   validate
-})(NerscLogin)
+})(GirderLogin)

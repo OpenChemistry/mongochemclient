@@ -5,7 +5,7 @@ import { Provider, connect } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux'
 import { Route } from 'react-router'
 import Cookies from 'universal-cookie';
-import _ from 'lodash'
+import { isNil } from 'lodash-es'
 
 import App from './components/app';
 import MoleculeContainer from './containers/molecule';
@@ -13,36 +13,53 @@ import CalculationContainer from './containers/calculation';
 import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './containers/charts';
 import './index.css';
 import logo from './OpenChemistry_Logo.svg';
-import selectors from './redux/selectors';
-import {authenticate, testOauthEnabled} from './redux/ducks/girder'
-import {selectAuthProvider, showNerscLogin} from './redux/ducks/app'
+import { selectors } from '@openchemistry/redux';
+import { girder } from '@openchemistry/redux';
+import { app } from '@openchemistry/redux';
 
 import configureStore from './store/configureStore'
-import rootSaga from './sagas'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
-import ActionInput from 'material-ui/svg-icons/action/input';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import ReactRedirect from 'react-redirect'
-require('font-awesome/css/font-awesome.css');
+import rootSaga from '@openchemistry/sagas'
+
+// @material-ui components
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import InputIcon from '@material-ui/icons/Input';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+
 import google from './google.svg'
 import nersc from './nerscnim.png'
+import girderLogo from './girder.png'
 import NerscLogin from './components/nersc'
+import GirderLogin from './components/girder-login'
 import LoginMenu from './components/loginmenu'
 import NotebookContainer from './containers/notebook'
+
+// Webcomponents
+import { defineCustomElements as defineMolecule } from '@openchemistry/molecule';
+
+defineMolecule(window);
 
 const store = configureStore()
 store.runSaga(rootSaga)
 
-// Needed for onTouchTap
+// Needed for onClick
 // http://stackoverflow.com/a/34015469/988941
-injectTapEventPlugin();
+// injectTapEventPlugin();
 
-const style = {
-  backgroundColor: '#FAFAFA',
-}
+// const style = {
+//   backgroundColor: '#FAFAFA',
+// }
+
+const theme = createMuiTheme();
 
 class PrivateRoute extends Component {
 
@@ -52,7 +69,7 @@ class PrivateRoute extends Component {
             providers,  ...rest } = this.props;
 
     if (!isAuthenticated && !isAuthenticating) {
-      store.dispatch(authenticate(token));
+      store.dispatch(girder.authenticate(token));
     }
 
     const render = (props) => {
@@ -61,11 +78,12 @@ class PrivateRoute extends Component {
       }
 
       if (providers && providers.Google) {
-        return (<ReactRedirect location={providers.Google}>
+        return (//<ReactRedirect location={providers.Google}>
                 <div>
                   Redirecting...
-                  </div>
-               </ReactRedirect>)
+                </div>
+               //</ReactRedirect>
+              )
       }
 
       return <div>Authenticating...</div>
@@ -108,10 +126,10 @@ PrivateRoute.defaultProps = {
 class Login extends Component {
   render = () => {
     return (
-        <FlatButton icon={<ActionInput/>}
-                    onTouchTap={this.handleTouchTap}
-                    label='Log in'
-                    labelPosition='before' />
+        <Button onClick={this.handleTouchTap}>
+          Log in
+          <InputIcon className="r-icon-btn" />
+        </Button>
     );
   }
 
@@ -119,7 +137,7 @@ class Login extends Component {
     // This prevents ghost click.
     event.preventDefault();
 
-    this.props.dispatch(selectAuthProvider(true))
+    this.props.dispatch(app.selectAuthProvider(true));
   };
 }
 
@@ -136,8 +154,16 @@ Login = connect(loginMapStateToProps)(Login)
 class Header extends Component {
   render = () => {
     return (
-        <AppBar style={style} iconElementLeft={<img className='oc-logo' src={logo} alt="logo" />}
-          iconElementRight={!this.props.isAuthenticated ? <Login/> : <LoginMenu/>} />
+        <AppBar color="inherit" position="fixed">
+          <Toolbar>
+            <Button color="inherit" aria-label="Logo" style={{marginRight: 9}}>
+              <img className='oc-logo' src={logo} alt="logo" />
+            </Button>
+            <Typography variant="title" color="inherit" style={{flex: 1}}>
+            </Typography>
+            {!this.props.isAuthenticated ? <Login/> : <LoginMenu/>}
+          </Toolbar>
+        </AppBar>
     );
   }
 }
@@ -156,9 +182,7 @@ class OauthRedirect extends Component {
   render = () => {
     const {providers, isAuthenticating} = this.props;
     if (isAuthenticating && providers && providers.Google) {
-      return (
-           <ReactRedirect location={providers.Google}/>
-      );
+      window.location = providers.Google;
     } else {
       return (null);
     }
@@ -206,60 +230,67 @@ class SelectLoginProvider extends Component {
 
   handleClose = () => {
     this.setState({open: false});
-    this.props.dispatch(selectAuthProvider(false))
+    this.props.dispatch(app.selectAuthProvider(false))
   };
 
   handleGoogle = () => {
-    this.props.dispatch(selectAuthProvider(false))
-    this.props.dispatch(authenticate(this.props.token))
+    this.props.dispatch(app.selectAuthProvider(false))
+    this.props.dispatch(girder.authenticate(this.props.token))
   }
 
   handleNersc = () => {
-    this.props.dispatch(selectAuthProvider(false));
-    this.props.dispatch(showNerscLogin(true));
+    this.props.dispatch(app.selectAuthProvider(false));
+    this.props.dispatch(app.showNerscLogin(true));
+  }
+
+  handleGirder = () => {
+    this.props.dispatch(app.selectAuthProvider(false));
+    this.props.dispatch(app.showGirderLogin(true));
   }
 
 
   render = () => {
 
-  const contentStyle = {
-    width: '310px',
-    textAlign: 'center'
-  }
-
-  const buttonStyle = {
-    margin: '0px'
-  }
-
-  const actions = [
-    <FlatButton
-      label="Cancel"
-      primary={true}
-      onTouchTap={this.handleClose}
-    />]
+    const actions = [
+      <Button key="cancel" color="primary" onClick={this.handleClose}>
+        Cancel
+      </Button>
+    ]
 
     return (
       <Dialog
-        contentStyle={contentStyle}
-        actions={actions}
-        modal={false}
+        aria-labelledby="login-dialog-title"
         open={this.state.open}
-        onRequestClose={this.handleClose}
+        onClose={this.handleClose}
       >
-      { this.props.oauth &&
-        <FlatButton icon={<img className='oc-google' src={google} alt="google" />}
-          style={{ buttonStyle }}
-          onTouchTap={this.handleGoogle}
-          label='Sign in with Google'
-          labelPosition='after' />
-      }
-      { !this.props.oauth &&
-        <FlatButton style={{'margin-left': '30px'}} icon={<img className='oc-nersc' src={nersc} alt="nim" />}
-          style={{ buttonStyle }}
-          onTouchTap={this.handleNersc}
-          label='Sign in with NIM'
-          labelPosition='after' />
-      }
+        <DialogTitle id="login-dialog-title">Login Provider</DialogTitle>
+          <List>
+          { this.props.oauth &&
+            <ListItem button onClick={this.handleGoogle}>
+              <ListItemText primary="Sign in with Google" />
+              <ListItemIcon>
+                <img className='oc-google' src={google} alt="google" />
+              </ListItemIcon>
+            </ListItem>
+          }
+          { !this.props.oauth &&
+            <ListItem button onClick={this.handleNersc}>
+              <ListItemText primary="Sign in with NIM" />
+              <ListItemIcon>
+                <img className='oc-nersc' src={nersc} alt="nim" />
+              </ListItemIcon>
+            </ListItem>
+          }
+            <ListItem button onClick={this.handleGirder}>
+              <ListItemText primary="Sign in with Girder" />
+              <ListItemIcon>
+                <img className='oc-girder' src={girderLogo} alt="girder" />
+              </ListItemIcon>
+            </ListItem>
+          </List>
+        <DialogActions>
+          {actions}
+        </DialogActions>
       </Dialog>
     );
 
@@ -281,19 +312,19 @@ SelectLoginProvider = connect(selectLoginProviderMapStateToProps)(SelectLoginPro
 // Check to see if we have a cookie
 const cookies = new Cookies();
 const cookieToken = cookies.get('girderToken');
-if (!_.isNil(cookieToken)) {
-  store.dispatch(authenticate(cookieToken));
+if (!isNil(cookieToken)) {
+  store.dispatch(girder.authenticate(cookieToken));
 }
 
-store.dispatch(testOauthEnabled())
+store.dispatch(girder.testOauthEnabled())
 
 ReactDOM.render(
-  <MuiThemeProvider >
+  <MuiThemeProvider theme={theme}>
     <Provider store={store}>
       <ConnectedRouter history={store.history}>
         <div>
-         <Header />
-          <div>
+        <Header/>
+          <div style={{marginTop: 65}}>
             <Route exact path='/' component={App}/>
             <Route exact path='/molecules/:id' component={MoleculeContainer}/>
             <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
@@ -302,9 +333,10 @@ ReactDOM.render(
             <Route path='/calculations/:id' component={CalculationContainer}/>
             <Route path='/notebooks/:id' component={NotebookContainer}/>
           </div>
-         <OauthRedirect/>
-         <SelectLoginProvider/>
-         <NerscLogin/>
+        <OauthRedirect/>
+        <SelectLoginProvider/>
+        <NerscLogin/>
+        <GirderLogin/>
         </div>
       </ConnectedRouter>
     </Provider>

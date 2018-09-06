@@ -2,23 +2,44 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 
-import { loadMolecule, loadMoleculeById } from '../redux/ducks/molecules'
-import Molecule from '../components/molecule'
-import selectors from '../redux/selectors'
+import { selectors } from '@openchemistry/redux'
+import { molecules } from '@openchemistry/redux'
+
+import { wc } from '../utils/webcomponent';
 
 class MoleculeContainer extends Component {
 
+
   componentDidMount() {
     if (this.props.id != null) {
-      this.props.dispatch(loadMoleculeById(this.props.id));
+      this.props.dispatch(molecules.loadMoleculeById(this.props.id));
     }
     else if (this.props.inchikey != null) {
-      this.props.dispatch(loadMolecule(this.props.inchikey ));
+      this.props.dispatch(molecules.loadMolecule(this.props.inchikey ));
     }
   }
 
   render() {
-    return <Molecule cjson={this.props.cjson} />
+    const { cjson } = this.props;
+
+    if (cjson) {
+      return (
+        <div style={{height: '30rem', width: '100%'}}>
+          <oc-molecule
+            ref={wc(
+              // Events
+              {},
+              //Props
+              {
+                cjson: cjson
+              }
+            )}
+          />
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 }
 

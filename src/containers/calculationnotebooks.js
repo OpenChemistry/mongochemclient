@@ -4,14 +4,15 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { push } from 'react-router-redux'
 
-import { loadCalculationNotebooks } from '../redux/ducks/calculations'
 import Notebooks from '../components/notebooks'
-import selectors from '../redux/selectors'
+
+import { calculations } from '@openchemistry/redux'
+import { selectors } from '@openchemistry/redux'
 
 class CalculationNotebooksContainer extends Component {
 
   componentDidMount() {
-    this.props.dispatch(loadCalculationNotebooks(this.props.calculationId));
+    this.props.dispatch(calculations.loadCalculationNotebooks(this.props.calculationId));
   }
 
   onCellClick = (row) => {
@@ -35,7 +36,7 @@ CalculationNotebooksContainer.defaultProps = {
 }
 
 function mapStateToProps(state, ownProps) {
-  const props = { };
+  const props = {...ownProps};
 
   if (!_.isNil(ownProps.calculationId)) {
     const notebooks = selectors.calculations.getNotebooks(state, ownProps.calculationId);

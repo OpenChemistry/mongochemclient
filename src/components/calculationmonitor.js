@@ -1,35 +1,37 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
-import Avatar from 'material-ui/Avatar';
-import Chip from 'material-ui/Chip';
-import AccessTime from 'material-ui/svg-icons/device/access-time';
-import AutoRenew from 'material-ui/svg-icons/action/autorenew';
-import Launch from 'material-ui/svg-icons/action/launch';
-import ReportProblem from 'material-ui/svg-icons/action/report-problem';
-import Done from 'material-ui/svg-icons/action/done';
-import Backup from 'material-ui/svg-icons/action/backup';
-import Help from 'material-ui/svg-icons/action/help';
 
+import Avatar from '@material-ui/core/Avatar';
+import Chip from '@material-ui/core/Chip';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
-import { lightGreenA700,
-         grey300,
-         indigoA200,
-         lightGreen200,
-         red500,
-         blue500,
-         blue200,
-} from 'material-ui/styles/colors';
+import AccessTime from '@material-ui/icons/AccessTime';
+import AutoRenew from '@material-ui/icons/Autorenew';
+import Backup from '@material-ui/icons/Backup';
+import Done from '@material-ui/icons/Done';
+import Help from '@material-ui/icons/Help';
+import Launch from '@material-ui/icons/Launch';
+import ReportProblem from '@material-ui/icons/ReportProblem';
 
+import blue from '@material-ui/core/colors/blue';
+import grey from '@material-ui/core/colors/grey';
+import indigo from '@material-ui/core/colors/indigo';
+import lightGreen from '@material-ui/core/colors/lightGreen';
+import red from '@material-ui/core/colors/red';
 
-import { CalculationState } from '../utils/constants'
+import { CalculationState } from '../utils/constants';
+
+const blue200 = blue['200'];
+const blue500 = blue['500'];
+const red500 = red['500'];
+const lightGreen200 = lightGreen['200'];
+const lightGreenA700 = lightGreen['A700'];
+const grey300 = grey['300'];
+const indigoA200 = indigo['A200'];
 
 const statusToStyle = (status) => {
     const iconMap = {
@@ -71,50 +73,41 @@ const statusToStyle = (status) => {
 }
 
 
-
 class CalculationMonitorTable extends Component {
   render() {
     return (
-      <Table
-        selectable={false}
-      >
-        <TableHeader
-          displaySelectAll={false}
-          adjustForCheckbox={false}
-        >
-          <TableRow>
-            <TableHeaderColumn colSpan="4" tooltip={this.props.title} style={{textAlign: 'center'}}>
-              {this.props.title}
-            </TableHeaderColumn>
-          </TableRow>
-          <TableRow>
-            <TableHeaderColumn tooltip="ID">ID</TableHeaderColumn>
-            <TableHeaderColumn tooltip="Code">Code</TableHeaderColumn>
-            <TableHeaderColumn tooltip="Type">Type</TableHeaderColumn>
-            <TableHeaderColumn tooltip="The Status">Status</TableHeaderColumn>
-          </TableRow>
-        </TableHeader>
-        <TableBody
-          showRowHover={true}
-          displayRowCheckbox={false}
-        >
-          {this.props.calculations.map( (calculation, index) => (
-            <TableRow key={index}>
-              <TableRowColumn>{calculation.name}</TableRowColumn>
-              <TableRowColumn>{calculation.code ? calculation.code : 'N/A'}</TableRowColumn>
-              <TableRowColumn>{calculation.type ? calculation.type : 'N/A'}</TableRowColumn>
-              <TableRowColumn>
-                <Chip
-                  backgroundColor={'#ffffff'}
-                >
-                  <Avatar icon={statusToStyle(calculation.status).icon} backgroundColor={statusToStyle(calculation.status).color}/>
-                  {calculation.status ? calculation.status.toUpperCase() : ''}
-                </Chip>
-              </TableRowColumn>
+      <div>
+        <h2 style={{textAlign: 'center'}}>{this.props.title}</h2>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell tooltip="ID">ID</TableCell>
+              <TableCell tooltip="Code">Code</TableCell>
+              <TableCell tooltip="Type">Type</TableCell>
+              <TableCell tooltip="The Status">Status</TableCell>
             </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {this.props.calculations.map( (calculation, index) => (
+              <TableRow key={index}>
+                <TableCell>{calculation.name}</TableCell>
+                <TableCell>{calculation.code ? calculation.code : 'N/A'}</TableCell>
+                <TableCell>{calculation.type ? calculation.type : 'N/A'}</TableCell>
+                <TableCell>
+                  <Chip
+                    avatar={
+                      <Avatar style={{backgroundColor: statusToStyle(calculation.status).color}}>
+                        {statusToStyle(calculation.status).icon}
+                      </Avatar>
+                    }
+                    label={calculation.status ? calculation.status.toUpperCase() : ''}
+                  />
+                </TableCell>
+              </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </div>
     );
   }
 }

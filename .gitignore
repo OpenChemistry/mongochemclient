@@ -2,4 +2,7 @@ node_modules/
 .project
 .settings
 dist/
+build/
+public/components
 npm-debug.log
+package-lock.json

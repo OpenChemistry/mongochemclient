@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import {VibrationalModesChart, FreeEnergyChart} from '../components/charts'
+// import {VibrationalModesChart, FreeEnergyChart} from '../components/charts'
 
 export class VibrationalModesChartContainer extends Component {
 
   render() {
-    return <VibrationalModesChart data={this.props.data}/>;
+    return null;
+    // return <VibrationalModesChart data={this.props.data}/>;
   }
 }
 
@@ -21,7 +22,8 @@ VibrationalModesChartContainer.defaultProps = {
 export class FreeEnergyChartContainer extends Component {
 
   render() {
-    return <FreeEnergyChart data={this.props.data}/>;
+    return null;
+    // return <FreeEnergyChart data={this.props.data}/>;
   }
 }
 

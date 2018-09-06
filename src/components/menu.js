@@ -1,23 +1,33 @@
 import React from 'react';
-import IconButton from 'material-ui/IconButton';
-import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
-import {List, ListItem} from 'material-ui/List';
-import Slider from 'material-ui/Slider';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-require('font-awesome/css/font-awesome.css');
+
+import FormControl from '@material-ui/core/FormControl';
+import IconButton from '@material-ui/core/IconButton';
+import InputLabel from '@material-ui/core/InputLabel';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import MenuItem from '@material-ui/core/MenuItem';
+import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover';
+import Select from '@material-ui/core/Select';
+import Slider from '@material-ui/lab/Slider';
+import Typography from '@material-ui/core/Typography';
+
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import PauseIcon from '@material-ui/icons/Pause';
+import PlayIcon from '@material-ui/icons/PlayArrow';
+
 import PropTypes from 'prop-types';
 import './menu.css'
 
-
 export default class MoleculeMenu extends React.Component {
+
+  dragCount = 0;
 
   constructor(props) {
     super(props);
 
     this.state = {
       open: false,
-      amplitude: 1,
+      amplitude: props.animation && props.animation.scale ? props.animation.scale : 1.0,
       isoScale: 42,
     };
 
@@ -49,12 +59,13 @@ export default class MoleculeMenu extends React.Component {
 
   handleAmplitudeSliderOnChange = (event, value) => {
     this.setState({amplitude: value});
-  };
-
-  handleAmplitudeSliderOnDragStop = (event) => {
-    if (this.props.onAmplitude) {
-      this.props.onAmplitude(this.state.amplitude);
-    }
+    this.dragCount += 1;
+    let myCount = this.dragCount;
+    setTimeout(()=>{
+      if (this.dragCount === myCount && this.props.onAmplitude) {
+        this.props.onAmplitude(this.state.amplitude);
+      }
+    }, 200);
   };
 
   handleIsoScaleSliderOnChange = (event, value) => {
@@ -62,12 +73,13 @@ export default class MoleculeMenu extends React.Component {
       isoScale: value,
       isoValue: (this.state.isoScale + 1) / 2000.0,
     });
-  };
-
-  handleIsoScaleSliderOnDragStop = (event) => {
-    if (this.props.onIsoScale) {
-      this.props.onIsoScale(this.state.isoScale);
-    }
+    this.dragCount += 1;
+    let myCount = this.dragCount;
+    setTimeout(()=>{
+      if (this.dragCount === myCount && this.props.onIsoScale) {
+        this.props.onIsoScale(this.state.isoScale);
+      }
+    }, 200);
   };
 
   handleOrbitalChanged = (event, index, value) => {
@@ -79,13 +91,35 @@ export default class MoleculeMenu extends React.Component {
     }
   };
 
+  handleModeChange = (event) => {
+    if (this.props.onModeChange) {
+      // console.log(event, event.target.value);
+      this.props.onModeChange(event.target.value);
+    }
+  };
+
+  handlePlayClick = (event) => {
+    if (this.props.onPlayToggled) {
+      this.props.onPlayToggled(!this.props.animation.play);
+    }
+  };
+
   render() {
+    const normalModeItems = [];
+    normalModeItems.push(<MenuItem key={-1} value={-1}>None</MenuItem>);
+    if (this.props.animation) {
+      for (let i = 0; i < this.props.animation.nModes; ++i) {
+        normalModeItems.push(<MenuItem key={i} value={i}>{i}</MenuItem>);
+      }
+    }
+
     const orbitalMenuItems = [];
 
     if (this.props.orbitals) {
       let homo = null, lumo = null;
       for (let orbital of this.props.orbitals) {
-        orbitalMenuItems.push(<MenuItem value={orbital.id} primaryText={orbital.label} />);
+        console.log("Orbital: ", orbital);
+        orbitalMenuItems.push(<MenuItem value={orbital.id}>{orbital.label}</MenuItem>);
         if (orbital.label.indexOf('HOMO') !== -1) {
           homo = orbital.id;
         }
@@ -110,66 +144,78 @@ export default class MoleculeMenu extends React.Component {
       }
     }
 
-    const sliderStyle = {
-      marginTop: 3,
-      marginBottom: 3,
-    }
-
-    const popOverStyle = {
-      'min-width': '200px',
-    }
-
     return (
       <div>
-       <IconButton iconClassName="fa fa-bars"  onTouchTap={this.handleTouchTap} />
+        <IconButton onClick={this.handleTouchTap}>
+          <MoreVertIcon/>
+        </IconButton>
         <Popover
-          style={popOverStyle}
           open={this.state.open}
           anchorEl={this.state.anchorEl}
           anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-          targetOrigin={{horizontal: 'left', vertical: 'top'}}
-          onRequestClose={this.handleRequestClose}
+          onClose={this.handleRequestClose}
           animation={PopoverAnimationVertical}
         >
-          <List>
-            {this.props.animationControls && <ListItem>
-              <p>
-                <label className='oc-menu-label'>{'Animation Amplitude'}</label>
-                <label>{this.state.amplitude}</label>
-              </p>
-              <Slider
-                style={sliderStyle}
-                min={1}
-                max={5}
-                step={1}
-                value={this.state.amplitude}
-                onChange={this.handleAmplitudeSliderOnChange}
-                onDragStop={this.handleAmplitudeSliderOnDragStop}
-              />
-            </ListItem>}
-            {this.props.orbitalControls && <ListItem >
-              <p>
-                <label className='oc-menu-label'>{'Isovalue'}</label>
-                <label>{this.state.isoValue.toFixed(4)}</label>
-              </p>
-              <Slider
-                sliderStyle={sliderStyle}
-                min={0}
-                max={100}
-                step={1}
-                value={this.state.isoScale}
-                onChange={this.handleIsoScaleSliderOnChange}
-                onDragStop={this.handleIsoScaleSliderOnDragStop}
-              />
-          </ListItem>}
-          {this.props.orbitalControls && <ListItem>
-              <SelectField
-                floatingLabelText="Molecular orbital"
+          <List style={{width: 300}}>
+          { this.props.animation &&
+            <div>
+            <ListItem className="full-width">
+              <FormControl className="full-width">
+                <InputLabel>Normal mode</InputLabel>
+                <Select
+                  value={this.props.animation.modeIdx}
+                  onChange={this.handleModeChange}
+                >
+                  {normalModeItems}
+                </Select>
+              </FormControl>
+              <IconButton onClick={this.handlePlayClick}>
+                { this.props.animation.play
+                ? <PauseIcon />
+                : <PlayIcon />
+                }
+                </IconButton>
+            </ListItem>
+            <ListItem>
+              <div className="full-width">
+                <Typography id="animation-label" color="primary">Animation Scale: {this.state.amplitude.toFixed(1)}</Typography>
+                <Slider
+                  disabled={!this.props.animation.play}
+                  aria-labelledby="animation-label"
+                  min={0.5}
+                  max={3}
+                  step={0.5}
+                  value={this.state.amplitude}
+                  onChange={this.handleAmplitudeSliderOnChange}
+                />
+              </div>
+            </ListItem>
+            </div>
+          }
+          {this.props.orbitalControls &&
+            <ListItem >
+              <div className="full-width">
+                <Typography id="isovalue-label" color="primary">Isovalue: {this.state.isoValue.toFixed(4)}</Typography>
+                <Slider
+                  aria-labelledby="isovalue-label"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={this.state.isoScale}
+                  onChange={this.handleIsoScaleSliderOnChange}
+                />
+              </div>
+          </ListItem>
+          }
+          {this.props.orbitalControls && this.state.orbital &&
+            <ListItem>
+              <Select
                 value={this.state.orbital}
                 onChange={this.handleOrbitalChanged}>
                 {orbitalMenuItems}
-              </SelectField>
-            </ListItem>}
+              </Select>
+            </ListItem>
+          }
           </List>
         </Popover>
       </div>
@@ -178,13 +224,13 @@ export default class MoleculeMenu extends React.Component {
 }
 
 MoleculeMenu.propTypes = {
-  animationControls: PropTypes.boolean,
-  orbitalControls: PropTypes.boolean,
+  animation: PropTypes.object,
+  orbitalControls: PropTypes.bool,
   orbitals: PropTypes.array,
 }
 
 MoleculeMenu.defaultProps = {
-  animationControls: false,
+  animation: {play: false, modeIdx: -1, scale: 1},
   orbitalControls: false,
   orbitals: null,
 }

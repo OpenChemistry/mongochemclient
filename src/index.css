@@ -9,14 +9,33 @@ pre {
 }
 
 .oc-logo {
-  width: 80px;
+  height: 2.5rem;
 }
 
 .oc-google {
-  height: 20px;
+  height: 1.25rem;
 }
 
 .oc-nersc {
-  height: 20px;
+  height: 1.25rem;
 }
 
+.oc-girder {
+  height: 1.25rem;
+}
+
+.r-icon-btn {
+  margin-left: 0.5rem;
+}
+
+.l-icon-btn {
+  margin-right: 0.5rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.action-btn {
+  margin-left: 1rem;
+}

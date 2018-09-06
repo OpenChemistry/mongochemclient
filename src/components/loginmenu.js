@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import FlatButton from 'material-ui/FlatButton';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
-import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
-import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
-import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 
-import selectors from '../redux/selectors';
-import { invalidateToken } from '../redux/ducks/girder'
-import { invalidateSession } from '../redux/ducks/jupyterlab'
+import IconButton from '@material-ui/core/IconButton';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover';
+
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import PersonIcon from '@material-ui/icons/Person';
+
+import { selectors } from '@openchemistry/redux';
+import { jupyterlab } from '@openchemistry/redux';
+import { girder } from '@openchemistry/redux';
 
 class LoginMenu extends Component {
 
@@ -41,8 +43,8 @@ class LoginMenu extends Component {
     // This prevents ghost click.
     event.preventDefault();
 
-    this.props.dispatch(invalidateSession())
-    this.props.dispatch(invalidateToken())
+    this.props.dispatch(jupyterlab.invalidateSession())
+    this.props.dispatch(girder.invalidateToken())
   };
 
   render = () => {
@@ -50,23 +52,26 @@ class LoginMenu extends Component {
 
     return (
         <div>
-          <FlatButton
-            label={me ? me.login : '' }
-            onClick={this.handleTouchTap}
-            labelPosition='before'
-            icon={<NavigationArrowDropDown />} />
+          <IconButton onClick={this.handleTouchTap}>
+            <PersonIcon/>
+          </IconButton>
           <Popover
             open={this.state.open}
             anchorEl={this.state.anchorEl}
             anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-            targetOrigin={{horizontal: 'left', vertical: 'top'}}
-            onRequestClose={this.handleRequestClose}
+            onClose={this.handleRequestClose}
             animation={PopoverAnimationVertical}
           >
-            <Menu>
-              <MenuItem primaryText='Sign out' leftIcon={<ActionExitToApp/>}
-                        onTouchTap={this.handleSignOut}  />
-            </Menu>
+            <MenuList>
+              <MenuItem>
+                <PersonIcon className="l-icon-btn"/>
+                {me ? me.login : '' }
+              </MenuItem>
+              <MenuItem button onClick={this.handleSignOut}  >
+                <ExitToAppIcon className="l-icon-btn"/>
+                Sign out
+              </MenuItem>
+            </MenuList>
           </Popover>
         </div>
 

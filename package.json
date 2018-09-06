@@ -26,7 +26,6 @@
     "lodash-es": "^4.17.10",
     "moment": "^2.19.1",
     "normalizr": "^3.2.2",
-    "postinstall-build": "^5.0.1",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-iframe": "^1.1.0",

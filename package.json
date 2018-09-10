@@ -20,6 +20,7 @@
     "@openchemistry/sagas": "^0.3.4",
     "@openchemistry/utils": "^0.4.1",
     "axios": "^0.18.0",
+    "core-js": "^2.5.7",
     "enumify": "^1.0.4",
     "filesize": "^3.5.11",
     "jsonpath": "^1.0.0",

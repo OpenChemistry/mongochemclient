@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux'
-import { Route } from 'react-router'
+import { Route, Switch } from 'react-router'
 import Cookies from 'universal-cookie';
 import { isNil } from 'lodash-es'
 
-import App from './components/app';
 import MoleculeContainer from './containers/molecule';
 import CalculationContainer from './containers/calculation';
 import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './containers/charts';
@@ -22,6 +21,7 @@ import rootSaga from '@openchemistry/sagas'
 
 // @material-ui components
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x
+import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -34,6 +34,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import teal from '@material-ui/core/colors/teal';
+import pink from '@material-ui/core/colors/pink';
 
 import google from './google.svg'
 import nersc from './nerscnim.png'
@@ -41,7 +43,10 @@ import girderLogo from './girder.png'
 import NerscLogin from './components/nersc'
 import GirderLogin from './components/girder-login'
 import LoginMenu from './components/loginmenu'
-import NotebookContainer from './containers/notebook'
+import NotebookContainer from './containers/notebook';
+import NotebooksContainer from './containers/notebooks';
+import SideBar from './containers/sidebar';
+import Home from './containers/home';
 
 // Webcomponents
 import { defineCustomElements as defineMolecule } from '@openchemistry/molecule';
@@ -59,7 +64,24 @@ store.runSaga(rootSaga)
 //   backgroundColor: '#FAFAFA',
 // }
 
-const theme = createMuiTheme();
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: teal[400]
+    },
+    secondary: pink,
+  },
+  pageHead: {
+    paddingTop: 4,
+    paddingBottom: 14
+  },
+  pageBody: {
+    marginTop: -13
+  },
+  pageContent: {
+    width: 150
+  }
+});
 
 class PrivateRoute extends Component {
 
@@ -154,7 +176,7 @@ Login = connect(loginMapStateToProps)(Login)
 class Header extends Component {
   render = () => {
     return (
-        <AppBar color="inherit" position="fixed">
+        <AppBar color="inherit" position="static">
           <Toolbar>
             <Button color="inherit" aria-label="Logo" style={{marginRight: 9}}>
               <img className='oc-logo' src={logo} alt="logo" />
@@ -320,26 +342,44 @@ store.dispatch(girder.testOauthEnabled())
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
-    <Provider store={store}>
-      <ConnectedRouter history={store.history}>
-        <div>
-        <Header/>
-          <div style={{marginTop: 65}}>
-            <Route exact path='/' component={App}/>
-            <Route exact path='/molecules/:id' component={MoleculeContainer}/>
-            <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
-            <Route exact path='/chart' component={VibrationalModesChartContainer}/>
-            <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
-            <Route path='/calculations/:id' component={CalculationContainer}/>
-            <Route path='/notebooks/:id' component={NotebookContainer}/>
-          </div>
-        <OauthRedirect/>
-        <SelectLoginProvider/>
-        <NerscLogin/>
-        <GirderLogin/>
-        </div>
-      </ConnectedRouter>
-    </Provider>
+    <div className="fill">
+      <CssBaseline/>
+        <Provider store={store}>
+          <ConnectedRouter history={store.history}>
+            <div className="app-container">
+              <div className="header-container">
+                <Header />
+              </div>
+              <div className="body-container">
+                <div className="sidebar-container">
+                  <SideBar />
+                </div>
+                <div className="content-wrapper">
+                  <div className="content-container">
+                    <Switch>
+                      <Route exact path='/' component={Home}/>
+                      <Route exact path='/molecules/:id' component={MoleculeContainer}/>
+                      <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
+                      <Route exact path='/chart' component={VibrationalModesChartContainer}/>
+                      <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
+                      <Route path='/calculations/:id' component={CalculationContainer}/>
+                      <Route path='/notebooks/:id' component={NotebookContainer}/>
+                      <Route path='/notebooks' component={NotebooksContainer} />
+                    </Switch>
+                  </div>
+                  <div className="footer-container">
+                    {/* <Footer /> */}
+                  </div>
+                </div>
+              </div>
+            <OauthRedirect/>
+            <SelectLoginProvider/>
+            <NerscLogin/>
+            <GirderLogin/>
+            </div>
+          </ConnectedRouter>
+        </Provider>
+      </div>
   </MuiThemeProvider>,
   document.getElementById('root')
 );

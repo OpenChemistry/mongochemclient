@@ -47,6 +47,7 @@ import NotebookContainer from './containers/notebook';
 import NotebooksContainer from './containers/notebooks';
 import SideBar from './containers/sidebar';
 import Home from './containers/home';
+import Molecules from './containers/molecules';
 
 // Webcomponents
 import { defineCustomElements as defineMolecule } from '@openchemistry/molecule';
@@ -360,6 +361,7 @@ ReactDOM.render(
                       <Route exact path='/' component={Home}/>
                       <Route exact path='/molecules/:id' component={MoleculeContainer}/>
                       <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
+                      <Route exact path='/molecules' component={Molecules}/>
                       <Route exact path='/chart' component={VibrationalModesChartContainer}/>
                       <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
                       <Route path='/calculations/:id' component={CalculationContainer}/>

@@ -12,6 +12,8 @@ import ChromeReaderIcon from '@material-ui/icons/ChromeReaderMode'
 import ContactsIcon from '@material-ui/icons/ImportContacts';
 import GroupIcon from '@material-ui/icons/GroupWork';
 
+import { TwitterTimelineEmbed } from 'react-twitter-embed';
+
 import PageHead from '../page-head';
 import PageBody from '../page-body';
 
@@ -157,7 +159,11 @@ class Home extends Component {
                 </Typography>
               </div>
               <Paper>
-                <a className="twitter-timeline" data-height="800" href="https://twitter.com/OpenChem?ref_src=twsrc%5Etfw">Tweets by OpenChem</a>
+                <TwitterTimelineEmbed
+                  sourceType="profile"
+                  screenName="openchem"
+                  options={{height: 800}}
+                />
               </Paper>
             </Grid>
             <Grid item xs={12} md={4} className={classes.evenColumns}>

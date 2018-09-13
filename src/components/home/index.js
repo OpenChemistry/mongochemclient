@@ -4,6 +4,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
+import Card from '@material-ui/core/Card';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import grey from '@material-ui/core/colors/grey';
@@ -57,9 +58,11 @@ const style = theme => (
 
 let EmbeddedVideo = () => {
   return (
-    <div className="intrinsic-container intrinsic-container-16x9">
-      <iframe title="reproducible-quantum-chemistry" src="https://www.youtube.com/embed/31THsQEyjYQ" frameBorder="0" allowFullScreen></iframe>
-    </div>
+    <Card>
+      <div className="intrinsic-container intrinsic-container-16x9">
+        <iframe title="reproducible-quantum-chemistry" src="https://www.youtube.com/embed/31THsQEyjYQ" frameBorder="0" allowFullScreen></iframe>
+      </div>
+    </Card>
   );
 }
 

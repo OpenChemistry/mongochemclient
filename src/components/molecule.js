@@ -17,7 +17,7 @@ class Molecule extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rotate: true
+      rotate: false
     }
   }
 

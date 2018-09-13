@@ -16,8 +16,8 @@ const style = theme => (
       left: '50%',
       transform: 'translateX(-50%)',
       color: theme.palette.primary.contrastText,
-      marginLeft: theme.spacing.unit * 2,
-      marginRight: theme.spacing.unit * 2
+      paddingLeft: theme.spacing.unit * theme.pageContent.paddingLeft,
+      paddingRight: theme.spacing.unit * theme.pageContent.paddingRight
     },
     overlap: {
       paddingBottom: theme.spacing.unit * theme.pageHead.paddingBottom,

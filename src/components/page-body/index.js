@@ -16,8 +16,8 @@ const style = theme => (
       maxWidth: theme.spacing.unit * theme.pageContent.width,
       left: '50%',
       transform: 'translateX(-50%)',
-      marginLeft: theme.spacing.unit * 2,
-      marginRight: theme.spacing.unit * 2
+      paddingLeft: theme.spacing.unit * theme.pageContent.paddingLeft,
+      paddingRight: theme.spacing.unit * theme.pageContent.paddingRight
     },
     overlap: {
       marginTop: theme.spacing.unit * theme.pageBody.marginTop

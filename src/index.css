@@ -47,7 +47,9 @@ pre {
 
 .app-container {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
+  flex-grow: 1;
+  position: relative;
   height: 100%;
 }
 
@@ -78,6 +80,7 @@ pre {
 
 .content-container {
   flex-grow: 1;
+  min-width: 0;
   /* position: relative;
   max-width: 50rem;
   width: 100%;

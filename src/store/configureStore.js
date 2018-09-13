@@ -5,7 +5,7 @@ import {createLogger} from 'redux-logger'
 import createHistory from 'history/createBrowserHistory'
 import { routerMiddleware } from 'react-router-redux'
 
-const history = createHistory()
+export const history = createHistory()
 const reduxRouterMiddleware = routerMiddleware(history)
 
 export { reducers };

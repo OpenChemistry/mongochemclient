@@ -6,7 +6,13 @@ import SideBar from '../../components/sidebar';
 
 class SideBarContainter extends Component {
 
-  pushRoute = (route) => {this.props.dispatch(push(route))};
+  pushRoute = (route) => {
+    this.props.dispatch(push(route))
+    if (this.props.onLinkClick) {
+      // Callback to close the sidebar
+      this.props.onLinkClick();
+    }
+  };
 
   render() {
     return (

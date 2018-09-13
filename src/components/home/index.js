@@ -39,18 +39,18 @@ const style = theme => (
     },
     evenColumns: {
       backgroundColor: 'none',
-      padding: '1.5rem'
+      padding: theme.spacing.unit * 3
     },
     oddColumns: {
       backgroundColor: grey[200],
-      padding: '1.5rem'
+      padding: theme.spacing.unit * 3
     },
     molecule: {
       width: '100%',
-      height: '20rem'
+      height: theme.spacing.unit * 40
     },
     columnTitle: {
-      marginBottom: '1.5rem'
+      marginBottom: theme.spacing.unit * 3
     }
   }
 )

@@ -123,16 +123,24 @@ class Home extends Component {
             <Grid container spacing={24} alignItems="center">
               <Grid item xs={12} md={7}>
                 <Typography color="inherit" gutterBottom variant="display1">
-                  Open Chemistry
+                  Open Chemistry Data Plaform
                 </Typography>
                 <Typography variant="title" paragraph color="inherit">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Prototype data server, online notebook, visualization, and analytics
                 </Typography>
                 <Typography color="inherit" gutterBottom variant="body2">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec augue ac ante semper facilisis vitae sed tellus. Aliquam non suscipit sapien, vel bibendum augue. Vivamus pharetra maximus ante. Sed finibus turpis et nibh sollicitudin malesuada. In hac habitasse platea dictumst.
+                  Welcome to the online home of the Open Chemistry Data Platform,
+                  open source project, currently in beta, and deployed on AWS.
+                  This project offers a powerful data server, using RESTful APIs,
+                  using Python, CherryPy, Girder, and many other open source
+                  projects.
                 </Typography>
                 <Typography color="inherit" gutterBottom variant="body2">
-                  Aenean vitae tortor at purus convallis sagittis. Aliquam erat volutpat. Praesent ut tortor lacus. Cras ac augue et mi blandit blandit ac vel orci. Praesent semper condimentum ultrices. Ut a tellus eleifend, finibus nunc consectetur, malesuada enim.
+                  The screencast shows an early version of the platform executing
+                  computational chemistry calculations using NWChem, with a
+                  JupyterLab frontend, and a number of visualization/analytics
+                  capabilites from 3DMol, vtk.js, and D3. Code for the platform
+                  is hosted on <a href="https://github.com/openchemistry" target="_blank">GitHub</a>.
                 </Typography>
               </Grid>
               <Grid item xs={12} md={5}>

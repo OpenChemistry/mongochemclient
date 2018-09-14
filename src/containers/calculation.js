@@ -97,10 +97,14 @@ class CalculationContainer extends Component {
 
   onIOrbitalChanged = (e) => {
     let iOrbital = e.detail;
-    if (iOrbital != this.props.iOrbital) {
+    if (iOrbital !== this.props.iOrbital) {
       const {id, dispatch} = this.props;
-      dispatch(push(`/calculations/${id}/orbital/${iOrbital}`));
-      dispatch(calculations.loadOrbital(id, iOrbital));
+      if (iOrbital === '-1') {
+        dispatch(push(`/calculations/${id}`));
+      } else {
+        dispatch(push(`/calculations/${id}?mo=${iOrbital}`));
+        dispatch(calculations.loadOrbital(id, iOrbital));
+      }
     }
   }
 
@@ -114,7 +118,7 @@ class CalculationContainer extends Component {
         <Calculation
           cjson={cjson}
           id={id}
-          orbital={iOrbital}
+          iOrbital={iOrbital}
           onIOrbitalChanged={this.onIOrbitalChanged}
           showNotebooks={showNotebooks}
           calculationProperties={calculationProperties}
@@ -134,7 +138,7 @@ class CalculationContainer extends Component {
 CalculationContainer.propTypes = {
   cjson: PropTypes.object,
   id: PropTypes.string,
-  iOrbital: PropTypes.string,
+  iOrbital: PropTypes.any,
   inchikey: PropTypes.string,
   showNotebooks: PropTypes.bool,
   calculationProperties: PropTypes.object
@@ -154,6 +158,23 @@ function mapStateToProps(state, ownProps) {
   let iOrbital = ownProps.match.params.iOrbital;
   let cjson;
   let calculationProperties;
+
+  const params = new URLSearchParams(ownProps.location.search);
+
+  // iOrbital can come either from the route or from a query parameter
+
+  let mo = params.get('mo');
+  if (!isNil(mo)) {
+    mo = mo.toLowerCase();
+    if (mo === 'homo' || mo ==='lumo') {
+      iOrbital = mo;
+    } else {
+      let iMo = parseInt(mo);
+      if (isFinite(iMo)) {
+        iOrbital = iMo;
+      }
+    }
+  }
 
   let props = {
     id,

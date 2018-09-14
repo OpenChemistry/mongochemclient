@@ -123,7 +123,7 @@ class Home extends Component {
             <Grid container spacing={24} alignItems="center">
               <Grid item xs={12} md={7}>
                 <Typography color="inherit" gutterBottom variant="display1">
-                  Open Chemistry Data Plaform
+                  Open Chemistry Data Platform
                 </Typography>
                 <Typography variant="title" paragraph color="inherit">
                   Prototype data server, online notebook, visualization, and analytics

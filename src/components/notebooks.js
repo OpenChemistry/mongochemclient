@@ -8,6 +8,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
 
 import InsertDriveFile from '@material-ui/icons/InsertDriveFile';
 
@@ -18,6 +19,10 @@ import moment from 'moment'
 import _ from 'lodash';
 
 import { jupyterlab } from '@openchemistry/redux';
+
+import PageHead from './page-head';
+import PageBody from './page-body';
+import { Paper } from '@material-ui/core';
 
 const blue500 = blue['500'];
 
@@ -93,36 +98,50 @@ class Notebooks extends Component {
     }
 
     return (
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell style={style.iconColumn}></TableCell>
-            <TableCell>Filename</TableCell>
-            <TableCell>Last Modified</TableCell>
-            <TableCell>Size</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody
-        >
-        {notebooks.map((notebook, i) =>
-          <TableRow
-            style={{cursor: this.state.loading ? "progress" : "pointer"}}
-            hover
-            onClick={event => this.onCellClick(i)}
-            key={notebook._id}
-          >
-            <TableCell style={style.iconColumn}>
-              <Avatar style={{backgroundColor: blue500}}>
-                <InsertDriveFile />
-              </Avatar>
-            </TableCell>
-            <TableCell>{notebook.name}</TableCell>
-            <TableCell>{moment(notebook.created).fromNow()}</TableCell>
-            <TableCell>{filesize(notebook.size)}</TableCell>
-          </TableRow>
-        )}
-        </TableBody>
-      </Table>
+      <div>
+        <PageHead>
+          <Typography  color="inherit" gutterBottom variant="display1">
+            Notebooks
+          </Typography>
+          <Typography variant="subheading" paragraph color="inherit">
+            Click on any notebook to be redirected to JupyterHub
+          </Typography>
+        </PageHead>
+        <PageBody>
+          <Paper>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell style={style.iconColumn}></TableCell>
+                  <TableCell>Filename</TableCell>
+                  <TableCell>Last Modified</TableCell>
+                  <TableCell>Size</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody
+              >
+              {notebooks.map((notebook, i) =>
+                <TableRow
+                  style={{cursor: this.state.loading ? "progress" : "pointer"}}
+                  hover
+                  onClick={event => this.onCellClick(i)}
+                  key={notebook._id}
+                >
+                  <TableCell style={style.iconColumn}>
+                    <Avatar style={{backgroundColor: blue500}}>
+                      <InsertDriveFile />
+                    </Avatar>
+                  </TableCell>
+                  <TableCell>{notebook.name}</TableCell>
+                  <TableCell>{moment(notebook.created).fromNow()}</TableCell>
+                  <TableCell>{filesize(notebook.size)}</TableCell>
+                </TableRow>
+              )}
+              </TableBody>
+            </Table>
+          </Paper>
+        </PageBody>
+      </div>
     );
   }
 }

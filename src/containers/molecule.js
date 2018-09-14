@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { selectors } from '@openchemistry/redux'
 import { molecules } from '@openchemistry/redux'
 
-import { wc } from '../utils/webcomponent';
+import Molecule from '../components/molecule';
 
 class MoleculeContainer extends Component {
 
@@ -20,22 +20,11 @@ class MoleculeContainer extends Component {
   }
 
   render() {
-    const { cjson } = this.props;
+    const { molecule } = this.props;
 
-    if (cjson) {
+    if (molecule) {
       return (
-        <div style={{height: '30rem', width: '100%'}}>
-          <oc-molecule
-            ref={wc(
-              // Events
-              {},
-              //Props
-              {
-                cjson: cjson
-              }
-            )}
-          />
-        </div>
+        <Molecule molecule={molecule} />
       );
     } else {
       return null;
@@ -45,12 +34,14 @@ class MoleculeContainer extends Component {
 
 MoleculeContainer.propTypes = {
   id: PropTypes.string,
-  inchikey: PropTypes.string
+  inchikey: PropTypes.string,
+  molecule: PropTypes.object
 }
 
 MoleculeContainer.defaultProps = {
   id: null,
-  inchikey: null
+  inchikey: null,
+  molecule: null
 }
 
 function mapStateToProps(state, ownProps) {
@@ -63,13 +54,13 @@ function mapStateToProps(state, ownProps) {
 
   let molecules = selectors.molecules.getMoleculesById(state);
   if (id != null && id in molecules) {
-    props.cjson = molecules[id].cjson;
+    props.molecule = molecules[id];
   }
   else if (inchikey != null) {
     let byInchiKey = selectors.molecules.byInchiKey(state);
     if (inchikey in byInchiKey) {
       // TODO change we hide this in a selector with a parameter?
-      props.cjson = molecules[byInchiKey[inchikey]].cjson;
+      props.molecule = molecules[byInchiKey[inchikey]];
     }
   }
 

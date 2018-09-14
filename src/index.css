@@ -39,3 +39,55 @@ pre {
 .action-btn {
   margin-left: 1rem;
 }
+
+.fill {
+  width: 100%;
+  height: 100%;
+}
+
+.app-container {
+  display: flex;
+  /* flex-direction: column; */
+  flex-grow: 1;
+  position: relative;
+  height: 100%;
+}
+
+.header-container {
+  z-index: 1000;
+}
+
+.body-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  /* background: linear-gradient( #26A69A 0%, #26A69A 15rem, #F5F5F5 15rem, #F5F5F5 100%); */
+}
+
+.sidebar-container {
+  background-color: #37474F;
+  /* background-color: #455A64; */
+  width: 15rem;
+  z-index: 10;
+}
+
+.content-wrapper {
+  /* padding-top: 2rem; */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-container {
+  flex-grow: 1;
+  min-width: 0;
+  /* position: relative;
+  max-width: 50rem;
+  width: 100%;
+  left: 50%;
+  transform: translateX(-50%); */
+}
+
+.footer-container {
+
+}

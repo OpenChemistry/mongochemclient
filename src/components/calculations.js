@@ -30,7 +30,7 @@ class Calculations extends Component {
                 return(
                   <Grid key={calculation._id} item xs={12} sm={6} md={4} lg={3}>
                     <Card>
-                      <CardActionArea onClick={() => {onOpen(calculation._id)}} disabled={calculation.properties.pending}>
+                      <CardActionArea onClick={() => {onOpen(calculation._id)}} disabled={calculation.properties.pending} style={{width: '100%'}}>
                         <CardHeader title='Calculation'></CardHeader>
                         <CardContent>
                           { calculation.properties &&

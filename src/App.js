@@ -127,6 +127,7 @@ class App extends Component {
                     <Route exact path='/molecules' component={Molecules}/>
                     <Route exact path='/chart' component={VibrationalModesChartContainer}/>
                     <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
+                    <Route path='/calculations/:id/orbital/:iOrbital' component={CalculationContainer}/>
                     <Route path='/calculations/:id' component={CalculationContainer}/>
                     <Route path='/calculations' component={Calculations}/>
                     <Route path='/notebooks/:id' component={NotebookContainer}/>

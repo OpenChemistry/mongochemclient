@@ -42,7 +42,6 @@ class Molecule extends Component {
           <Typography variant="subheading" paragraph color="inherit">
             ID: {molecule._id}
           </Typography>
-
         </PageHead>
         <PageBody>
           <Card>

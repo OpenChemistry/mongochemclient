@@ -82,20 +82,26 @@ class Home extends Component {
   componentDidMount() {
     fetch('/api/v1/molecules/')
     .then((res) => {
-      return res.json();
-    })
-    .then((molecules) => {
-      if (molecules.length > 0) {
-        const molecule = molecules[molecules.length - 1];
-        const id = molecule.id;
-        return fetch(`/api/v1/molecules/${id}`)
+      if (res.status === 200) {
+        res.json()
+        .then((molecules) => {
+          if (molecules.length > 0) {
+            const molecule = molecules[molecules.length - 1];
+            const id = molecule._id;
+            fetch(`/api/v1/molecules/${id}`)
+            .then((res) => {
+              if (res.status === 200) {
+                res.json()
+                .then((molecule) => {
+                  if (molecule && molecule.cjson) {
+                    this.setState({...this.state, molecule: molecule.cjson});
+                  }
+                });
+              }
+            })
+          }
+        })
       }
-    })
-    .then((res) => {
-      return res.json();
-    })
-    .then((cjson) => {
-      this.setState({...this.state, molecule: cjson.cjson});
     });
 
     fetch('https://blog.kitware.com/wp-json/wp/v2/posts?tags=12&per_page=4')

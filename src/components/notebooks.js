@@ -42,52 +42,12 @@ class Notebooks extends Component {
     };
   }
 
-  // We fake up the appropriate local storage to get jlab to load our notebook :-)
-  setJupyterLocalStorage = (name) => {
-    const layoutKey = 'jupyterlab:layout-restorer:data';
-    const layoutValue = {
-      v: {
-        main: {
-          dock: {
-            type: 'tab-area',
-            currentIndex: 0,
-            widgets: [`notebook:${name}`]
-          },
-          mode: 'multiple-document',
-          current:`notebook:${name}`
-        },
-        left: {
-          collapsed: false,
-          current: 'filebrowser',
-          widgets: ['filebrowser','running-sessions','command-palette','tab-manager']
-        },
-        right:{
-          collapsed:true,
-          widgets:[]
-        }
-      }
-    }
-    localStorage.setItem(layoutKey, JSON.stringify(layoutValue))
-
-    const notebookKey = `jupyterlab:notebook:${name}`;
-    const notebookValue = {
-      v: {
-        data: {
-          path: name,
-          factory:'Notebook'
-        }
-      }
-    }
-    localStorage.setItem(notebookKey, JSON.stringify(notebookValue))
-  }
-
   onCellClick = (row) =>  {
     if (this.state.loading) {
       return;
     }
     const name = this.props.notebooks[row].name
-    this.setJupyterLocalStorage(name);
-    this.props.dispatch(jupyterlab.redirectToJupyterHub());
+    this.props.dispatch(jupyterlab.redirectToJupyterHub(name));
     this.setState({loading: true});
   }
 

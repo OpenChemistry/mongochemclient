@@ -19,7 +19,7 @@ import configureStore from './store/configureStore'
 import rootSaga from '@openchemistry/sagas'
 
 // Webcomponents
-import { defineCustomElements as defineMolecule } from '@openchemistry/molecule';
+import { defineCustomElements as defineMolecule } from '@openchemistry/molecule/dist/loader';
 
 defineMolecule(window);
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { selectors } from '@openchemistry/redux';
+import { auth as authRedux } from '@openchemistry/girder-redux';
 
 import Home from '../components/home/index.js';
 
@@ -13,7 +13,7 @@ class HomeContainer extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const me = selectors.girder.getMe(state);
+  const me = authRedux.selectors.getMe(state);
 
   return {
     me,

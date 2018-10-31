@@ -26,62 +26,6 @@ class CalculationContainer extends Component {
     if (!isNil(iOrbital)) {
       dispatch(calculations.loadOrbital(id, iOrbital));
     }
-    // if (this.props.match) {
-    //   const params = new URLSearchParams(this.props.location.search);
-    //   let iso = params.get('iso');
-    //   iso = parseFloat(iso);
-    //   if (iso) {
-    //     this.setState({
-    //       isoSurfaces: [{
-    //         value: iso,
-    //         color: 'blue',
-    //         opacity: 0.9,
-    //       }, {
-    //         value: -iso,
-    //         color: 'red',
-    //         opacity: 0.9
-    //       }
-    //       ]
-    //     });
-    //   }
-
-    //   let orbital = params.get('mo')
-
-    //   if (orbital) {
-    //     orbital = orbital.toLowerCase();
-    //   }
-
-    //   if ( orbital !== 'lumo' && orbital !== 'homo') {
-    //     orbital = parseInt(orbital, 10);
-    //   }
-    //   if (orbital) {
-    //     this.setState({
-    //       orbital,
-    //     })
-    //   }
-
-    //   if (this.props.match.params.id) {
-    //     const id = this.props.match.params.id;
-    //     this.setState({
-    //       id,
-    //     })
-    //   }
-    // }
-    // else {
-    //   if (this.props.id) {
-    //     const id = this.props.id;
-    //     this.setState({
-    //       id,
-    //     })
-    //   }
-
-    //   if (this.props.orbital) {
-    //     const orbital = this.props.orbital;
-    //     this.setState({
-    //       orbital,
-    //     })
-    //   }
-    // }
   }
 
   componentDidMount() {

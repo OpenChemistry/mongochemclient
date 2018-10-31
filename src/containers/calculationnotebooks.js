@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { push } from 'react-router-redux'
 
-import Notebooks from '../components/notebooks'
+import NotebooksTable from '../components/notebooks/table'
 
 import { calculations } from '@openchemistry/redux'
 import { selectors } from '@openchemistry/redux'
@@ -15,13 +15,13 @@ class CalculationNotebooksContainer extends Component {
     this.props.dispatch(calculations.loadCalculationNotebooks(this.props.calculationId));
   }
 
-  onCellClick = (row) => {
-    const notebookId = this.props.notebooks[row]['_id'];
+  onOpen = (notebook) => {
+    const notebookId = notebook['_id'];
     this.props.dispatch(push(`/notebooks/${notebookId}`))
   }
 
   render() {
-    return <Notebooks notebooks={this.props.notebooks} onCellClick={(row) => this.onCellClick(row)} />;
+    return <NotebooksTable notebooks={this.props.notebooks} onOpen={this.onOpen} />;
   }
 }
 

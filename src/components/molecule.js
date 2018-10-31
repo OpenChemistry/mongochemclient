@@ -10,6 +10,8 @@ import PageHead from './page-head';
 import PageBody from './page-body';
 import { Paper, Card } from '@material-ui/core';
 
+import { formatFormula } from '../utils/formulas';
+
 import { wc } from '../utils/webcomponent';
 
 class Molecule extends Component {
@@ -34,15 +36,18 @@ class Molecule extends Component {
       <div>
         <PageHead>
           <Typography  color="inherit" gutterBottom variant="display1">
-            Molecule
+            {molecule.properties.formula ? formatFormula(molecule.properties.formula) : 'Molecule'}
           </Typography>
+          { molecule.properties.atomCount &&
           <Typography variant="subheading" paragraph color="inherit">
-            InChIKey: {molecule.inchikey}
+            Atoms: {molecule.properties.atomCount}
           </Typography>
+          }
+          { molecule.properties.mass &&
           <Typography variant="subheading" paragraph color="inherit">
-            ID: {molecule._id}
+            Mass: {molecule.properties.mass.toFixed(2)} g/mol
           </Typography>
-
+          }
         </PageHead>
         <PageBody>
           <Card>

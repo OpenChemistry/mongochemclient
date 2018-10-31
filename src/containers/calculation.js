@@ -109,7 +109,7 @@ class CalculationContainer extends Component {
   }
 
   render() {
-    const { id, iOrbital, cjson, showNotebooks, calculationProperties} = this.props;
+    const { id, iOrbital, cjson, showNotebooks, calculationProperties, molecule} = this.props;
     if (isNil(cjson)) {
       return null;
     }
@@ -122,6 +122,7 @@ class CalculationContainer extends Component {
           onIOrbitalChanged={this.onIOrbitalChanged}
           showNotebooks={showNotebooks}
           calculationProperties={calculationProperties}
+          molecule={molecule}
         />
       </div>
     );
@@ -141,7 +142,8 @@ CalculationContainer.propTypes = {
   iOrbital: PropTypes.any,
   inchikey: PropTypes.string,
   showNotebooks: PropTypes.bool,
-  calculationProperties: PropTypes.object
+  calculationProperties: PropTypes.object,
+  molecule: PropTypes.object
 }
 
 CalculationContainer.defaultProps = {
@@ -150,7 +152,8 @@ CalculationContainer.defaultProps = {
   iOrbital: null,
   inchikey: null,
   showNotebooks: true,
-  calculationProperties: null
+  calculationProperties: null,
+  molecule: null
 }
 
 function mapStateToProps(state, ownProps) {
@@ -158,6 +161,7 @@ function mapStateToProps(state, ownProps) {
   let iOrbital = ownProps.match.params.iOrbital;
   let cjson;
   let calculationProperties;
+  let molecule;
 
   const params = new URLSearchParams(ownProps.location.search);
 
@@ -180,13 +184,18 @@ function mapStateToProps(state, ownProps) {
     id,
     iOrbital,
     cjson,
-    calculationProperties
+    calculationProperties,
+    molecule
   }
 
   let calculations = selectors.calculations.getCalculationsById(state);
   if (!isNil(id) && id in calculations) {
     props.calculationProperties = calculations[id].properties;
     props.cjson = calculations[id].cjson;
+    const molecules = selectors.molecules.getMoleculesById(state);
+    if (calculations[id].moleculeId in molecules) {
+      props.molecule = molecules[calculations[id].moleculeId];
+    }
   }
 
   let orbitals = selectors.calculations.getOrbitals(state, id);

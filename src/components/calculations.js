@@ -6,9 +6,19 @@ import Typography from '@material-ui/core/Typography';
 
 import PageHead from './page-head';
 import PageBody from './page-body';
+import { formatFormula } from '../utils/formulas';
 import { Card, CardContent, CardHeader, CardActionArea, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
 
 class Calculations extends Component {
+
+  getFormula(calculation) {
+    const { molecules } = this.props;
+    if (molecules && calculation.moleculeId in molecules) {
+      return formatFormula(molecules[calculation.moleculeId].properties.formula);
+    } else {
+      return 'Calculation';
+    }
+  }
 
   render = () => {
     const {calculations, onOpen} = this.props;
@@ -31,7 +41,7 @@ class Calculations extends Component {
                   <Grid key={calculation._id} item xs={12} sm={6} md={4} lg={3}>
                     <Card>
                       <CardActionArea onClick={() => {onOpen(calculation._id)}} disabled={calculation.properties.pending} style={{width: '100%'}}>
-                        <CardHeader title='Calculation'></CardHeader>
+                        <CardHeader title={this.getFormula(calculation)}></CardHeader>
                         <CardContent>
                           { calculation.properties &&
                           <div>

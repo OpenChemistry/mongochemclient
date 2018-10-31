@@ -14,6 +14,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import CalculationNotebooksContainer from '../containers/calculationnotebooks'
 import PageHead from './page-head';
 import PageBody from './page-body';
+import { formatFormula } from '../utils/formulas';
 
 
 class Calculation extends Component {
@@ -56,7 +57,7 @@ class Calculation extends Component {
         maxWidth: '100%'
       }
     };
-    const {cjson, onIOrbitalChanged, id, calculationProperties, showNotebooks} = this.props;
+    const {cjson, onIOrbitalChanged, id, calculationProperties, showNotebooks, molecule} = this.props;
     let { iOrbital } = this.props;
     if (isNil(iOrbital)) {
       iOrbital = -1;
@@ -69,8 +70,18 @@ class Calculation extends Component {
       <div>
         <PageHead>
           <Typography  color="inherit" gutterBottom variant="display1">
-            Calculation
+            {molecule && molecule.properties.formula ? formatFormula(molecule.properties.formula) : 'Calculation'}
           </Typography>
+          { (molecule && molecule.properties.atomCount) &&
+          <Typography variant="subheading" paragraph color="inherit">
+            Atoms: {molecule.properties.atomCount}
+          </Typography>
+          }
+          { (molecule && molecule.properties.mass) &&
+          <Typography variant="subheading" paragraph color="inherit">
+            Mass: {molecule.properties.mass.toFixed(2)} g/mol
+          </Typography>
+          }
           {has(calculationProperties, 'runDate') &&
           <Typography variant="subheading" paragraph color="inherit">
             Date: {calculationProperties.runDate}

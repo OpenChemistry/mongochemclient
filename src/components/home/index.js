@@ -48,7 +48,8 @@ const style = theme => (
     },
     molecule: {
       width: '100%',
-      height: theme.spacing.unit * 40
+      height: theme.spacing.unit * 40,
+      marginBottom: theme.spacing.unit * 3
     },
     columnTitle: {
       marginBottom: theme.spacing.unit * 3
@@ -72,7 +73,10 @@ class Home extends Component {
     super(props);
 
     this.state = {
-      molecule: null,
+      molecules: {
+        0: null,
+        1: null
+      },
       rotate: true,
       posts: null
     }
@@ -80,29 +84,26 @@ class Home extends Component {
 
   // Fake fetch of a molecule of the week
   componentDidMount() {
-    fetch('/api/v1/molecules/')
-    .then((res) => {
-      if (res.status === 200) {
-        res.json()
-        .then((molecules) => {
-          if (molecules.length > 0) {
-            const molecule = molecules[molecules.length - 1];
-            const id = molecule._id;
-            fetch(`/api/v1/molecules/${id}`)
-            .then((res) => {
-              if (res.status === 200) {
-                res.json()
-                .then((molecule) => {
-                  if (molecule && molecule.cjson) {
-                    this.setState({...this.state, molecule: molecule.cjson});
-                  }
-                });
-              }
-            })
-          }
-        })
-      }
-    });
+    const inchiKeys = [
+      'RYYVLZVUVIJVGH-UHFFFAOYSA-N',
+      'TYQCGQRIZGCHNB-DUZGATOHSA-N'
+    ];
+
+    for (let i = 0; i < inchiKeys.length; ++i) {
+      fetch(`/api/v1/molecules/inchikey/${inchiKeys[i]}`)
+      .then((res) => {
+        if (res.status === 200) {
+          res.json()
+          .then((molecule) => {
+            if (molecule && molecule.cjson) {
+              this.setState((state, props) => {
+                state.molecules[i] = molecule.cjson;
+              });
+            }
+          });
+        }
+      });
+    }
 
     fetch('https://blog.kitware.com/wp-json/wp/v2/posts?tags=12&per_page=4')
     .then((res) => {
@@ -121,7 +122,7 @@ class Home extends Component {
   
   render = () => {
     const { classes } = this.props;
-    const { molecule, rotate, posts } = this.state;
+    const { molecules, rotate, posts } = this.state;
     return (
       <div className={classes.root}>
         <div className={classes.header}>
@@ -189,19 +190,22 @@ class Home extends Component {
                   <GroupIcon />&nbsp;Structures
                 </Typography>
               </div>
+              {Object.values(molecules).map((cjson, i) =>
                 <Paper className={classes.molecule}
                   onMouseEnter={(e) => {this.onMoleculeInteract()}}
+                  key={i}
                 >
                   <oc-molecule
                     ref={wc(
                       {},
                       {
-                        cjson: molecule,
-                        rotate: rotate
+                        cjson,
+                        rotate
                       }
                     )}
                   />
                 </Paper>
+              )}
             </Grid>
           </Grid>
           </PageBody>

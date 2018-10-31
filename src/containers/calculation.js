@@ -199,7 +199,7 @@ function mapStateToProps(state, ownProps) {
   }
 
   let orbitals = selectors.calculations.getOrbitals(state, id);
-  if (!isNil(iOrbital) && iOrbital in orbitals) {
+  if (!isNil(props.cjson) && !isNil(iOrbital) && iOrbital in orbitals) {
     props.cjson  = {...props.cjson, cube: orbitals[iOrbital].cube};
   } else if (!isNil(props.cjson)) {
     // Remove any orbital data

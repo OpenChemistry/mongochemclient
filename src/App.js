@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux'
 import { Route, Switch } from 'react-router'
 
@@ -10,7 +9,6 @@ import './index.css';
 import logo from './OpenChemistry_Logo.svg';
 import { selectors } from '@openchemistry/redux';
 
-import { auth as authRedux } from '@openchemistry/girder-redux';
 import { auth as authUI } from '@openchemistry/girder-ui';
 
 // @material-ui components
@@ -31,6 +29,7 @@ import SideBar from './containers/sidebar';
 import Home from './containers/home';
 import Molecules from './containers/molecules';
 import Calculations from './containers/calculations';
+import Header from './containers/header';
 
 import { history } from './store';
 
@@ -76,65 +75,65 @@ class App extends Component {
     
     return (
       <ConnectedRouter history={history}>
-      <div className={classes.root}>
-        <Header onToggleMenu={this.toggleSideBar}/>
-        <div className={classes.body}>
-          {/* Desktop side menu */}
-          <Hidden smDown>
-            <Drawer
-              variant='persistent'
-              open
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-            >
-              <SideBar />
-            </Drawer>
-          </Hidden>
+        <div className={classes.root}>
+          <Header onToggleMenu={this.toggleSideBar}/>
+          <div className={classes.body}>
+            {/* Desktop side menu */}
+            <Hidden smDown>
+              <Drawer
+                variant='persistent'
+                open
+                classes={{
+                  paper: classes.drawerPaper,
+                }}
+              >
+                <SideBar />
+              </Drawer>
+            </Hidden>
 
-          {/* Mobile side menu */}
-          <Hidden mdUp>
-            <Drawer
-              variant='temporary'
-              anchor={'left'}
-              open={this.state.openSideBar}
-              onClose={this.toggleSideBar}
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-              ModalProps={{
-                keepMounted: true, // Better open performance on mobile.
-              }}
-            >
-              <SideBar onLinkClick={this.toggleSideBar} />
-            </Drawer>
-          </Hidden>
-          <div className={classes.content}>
+            {/* Mobile side menu */}
+            <Hidden mdUp>
+              <Drawer
+                variant='temporary'
+                anchor={'left'}
+                open={this.state.openSideBar}
+                onClose={this.toggleSideBar}
+                classes={{
+                  paper: classes.drawerPaper,
+                }}
+                ModalProps={{
+                  keepMounted: true, // Better open performance on mobile.
+                }}
+              >
+                <SideBar onLinkClick={this.toggleSideBar} />
+              </Drawer>
+            </Hidden>
+            <div className={classes.content}>
 
-            <Switch>
-              <Route exact path='/' component={Home}/>
-              <Route exact path='/molecules/:id' component={MoleculeContainer}/>
-              <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
-              <Route exact path='/molecules' component={Molecules}/>
-              <Route exact path='/chart' component={VibrationalModesChartContainer}/>
-              <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
-              <Route path='/calculations/:id/orbital/:iOrbital' component={CalculationContainer}/>
-              <Route path='/calculations/:id' component={CalculationContainer}/>
-              <Route path='/calculations' component={Calculations}/>
-              <Route path='/notebooks/:id' component={NotebookContainer}/>
-              <Route path='/notebooks' component={NotebooksContainer} />
-            </Switch>
+              <Switch>
+                <Route exact path='/' component={Home}/>
+                <Route exact path='/molecules/:id' component={MoleculeContainer}/>
+                <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
+                <Route exact path='/molecules' component={Molecules}/>
+                <Route exact path='/chart' component={VibrationalModesChartContainer}/>
+                <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
+                <Route path='/calculations/:id/orbital/:iOrbital' component={CalculationContainer}/>
+                <Route path='/calculations/:id' component={CalculationContainer}/>
+                <Route path='/calculations' component={Calculations}/>
+                <Route path='/notebooks/:id' component={NotebookContainer}/>
+                <Route path='/notebooks' component={NotebooksContainer} />
+              </Switch>
 
-            <div className="footer-container">
-              {/* <Footer /> */}
+              <div className="footer-container">
+                {/* <Footer /> */}
+              </div>
+
+              <authUI.LoginOptions girder={development} nersc={true}/>
+              <authUI.GirderLogin/>
+              <authUI.NerscLogin/>
+              <authUI.OauthRedirect/>
             </div>
-
-            <authUI.LoginOptions girder={development} nersc={true}/>
-            <authUI.GirderLogin/>
-            <authUI.NerscLogin/>
-            <authUI.OauthRedirect/>
           </div>
-        </div>
         </div>
       </ConnectedRouter>
     );
@@ -142,58 +141,3 @@ class App extends Component {
 }
 
 export default withStyles(appStyles)(App);
-
-const appBarStyles = theme => ({
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    // position: 'absolute',
-    // marginLeft: drawerWidth,
-    // [theme.breakpoints.up('md')]: {
-    //   width: `calc(100% - ${drawerWidth}px)`,
-    // },
-  },
-  navIconHide: {
-    [theme.breakpoints.up('md')]: {
-      display: 'none',
-    },
-  },
-});
-
-class Header extends Component {
-  render = () => {
-    const {classes, onToggleMenu, loggedIn} = this.props;
-    return (
-        <AppBar color="inherit" position="static" className={classes.appBar}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={onToggleMenu}
-              className={classes.navIconHide}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Button color="inherit" aria-label="Logo" style={{marginRight: 9}}>
-              <img className='oc-logo' src={logo} alt="logo" />
-            </Button>
-            <Typography variant="title" color="inherit" style={{flex: 1}}>
-            </Typography>
-            { loggedIn ? <authUI.UserMenu/> : <authUI.LoginButton />}
-          </Toolbar>
-        </AppBar>
-    );
-  }
-}
-
-Header = withStyles(appBarStyles)(Header);
-
-
-function headerMapStateToProps(state, ownProps) {
-  const loggedIn = authRedux.selectors.isAuthenticated(state);
-
-  return {
-    loggedIn,
-  }
-}
-
-Header = connect(headerMapStateToProps)(Header)

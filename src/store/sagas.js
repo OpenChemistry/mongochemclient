@@ -9,7 +9,6 @@ import {
   watchNotification,
   watchFetchTaskFlow,
   watchFetchJob,
-  watchFetchTokenForApiKey,
   watchNotifications,
   watchLoadNotebooks,
   watchRedirectToJupyterHub,
@@ -29,7 +28,6 @@ export default function* root() {
   yield fork(watchNotification)
   yield fork(watchFetchTaskFlow)
   yield fork(watchFetchJob)
-  yield fork(watchFetchTokenForApiKey)
   yield fork(watchNotifications)
   yield fork(watchLoadNotebooks)
   yield fork(watchRedirectToJupyterHub)

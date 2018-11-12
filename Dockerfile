@@ -1,7 +1,7 @@
-FROM node:8.0 AS build
+FROM node:10.13.0 AS build
 
 COPY ./ /mongochemclient
-
+RUN npm --version
 RUN cd /mongochemclient && \
   npm install && \
   npm run build

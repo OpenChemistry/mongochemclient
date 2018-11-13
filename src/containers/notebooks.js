@@ -15,7 +15,6 @@ class NotebooksContainer extends Component {
   onOpen = (notebook) =>  {
     const name = notebook.name
     this.props.dispatch(jupyterlab.redirectToJupyterHub(name));
-    this.setState({loading: true});
   }
 
   componentDidMount() {

@@ -6,8 +6,9 @@ import { push } from 'connected-react-router';
 
 import NotebooksTable from '../components/notebooks/table'
 
-import { calculations } from '@openchemistry/redux'
+import { calculations, jupyterlab } from '@openchemistry/redux'
 import { selectors } from '@openchemistry/redux'
+import { auth } from '@openchemistry/girder-redux';
 
 class CalculationNotebooksContainer extends Component {
 
@@ -16,8 +17,17 @@ class CalculationNotebooksContainer extends Component {
   }
 
   onOpen = (notebook) => {
-    const notebookId = notebook['_id'];
-    this.props.dispatch(push(`/notebooks/${notebookId}`))
+    const { me, dispatch } = this.props;
+    const meId = me ? me['_id'] : '';
+    if (meId === notebook['creatorId']) {
+      // If owner redirect to the notebook
+      const name = notebook['name'];
+      dispatch(jupyterlab.redirectToJupyterHub(name));
+    } else {
+      // Else, redirect to a read-only view of the notebook
+      const notebookId = notebook['_id'];
+      this.props.dispatch(push(`/notebooks/${notebookId}`));
+    }
   }
 
   render() {
@@ -44,6 +54,9 @@ function mapStateToProps(state, ownProps) {
       props.notebooks = notebooks;
     }
   }
+
+  props.me = auth.selectors.getMe(state);
+
   return props;
 }
 

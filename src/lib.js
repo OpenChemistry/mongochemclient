@@ -1,7 +1,7 @@
 import {VibrationalModesChart, FreeEnergyChart} from './components'
 import {CalculationMonitorTableContainer, CalculationContainer}  from './containers'
 import rootSaga from './sagas'
-import configureStore from './store/configureStore'
+// import configureStore from './store/configureStore'
 import { authenticate } from './redux/ducks/girder'
 
 
@@ -11,6 +11,6 @@ export  {
   VibrationalModesChart,
   FreeEnergyChart,
   rootSaga,
-  configureStore,
+  // configureStore,
   authenticate,
 }

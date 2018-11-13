@@ -1,17 +1,16 @@
-import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 import { reducer as formReducer } from 'redux-form';
-import { reducers } from '@openchemistry/redux';
+import { reducers as ocReducers } from '@openchemistry/redux';
 
-export default combineReducers({
-  molecules: reducers.molecules,
-  calculations: reducers.calculations,
-  users: reducers.users,
-  girder: reducers.girder,
-  app: reducers.app,
-  cumulus: reducers.cumulus,
-  nersc: reducers.nersc,
-  jupyterlab: reducers.jupyterlab,
+const reducers = {
+  molecules: ocReducers.molecules,
+  calculations: ocReducers.calculations,
+  girder: ocReducers.girder,
+  app: ocReducers.app,
+  cumulus: ocReducers.cumulus,
+  jupyterlab: ocReducers.jupyterlab,
   router: routerReducer,
   form: formReducer
-});
+};
+
+export default reducers;

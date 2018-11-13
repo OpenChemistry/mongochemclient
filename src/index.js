@@ -12,20 +12,16 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import teal from '@material-ui/core/colors/teal';
 import pink from '@material-ui/core/colors/pink';
 
+import { auth } from '@openchemistry/girder-redux';
+
 import App from './App';
 
-
-import configureStore from './store/configureStore'
-import rootSaga from '@openchemistry/sagas'
+import store from './store'
 
 // Webcomponents
 import { defineCustomElements as defineMolecule } from '@openchemistry/molecule/dist/loader';
 
 defineMolecule(window);
-
-const store = configureStore()
-store.runSaga(rootSaga)
-
 
 const theme = createMuiTheme({
   palette: {
@@ -117,11 +113,13 @@ PrivateRoute.defaultProps = {
 // Check to see if we have a cookie
 const cookies = new Cookies();
 const cookieToken = cookies.get('girderToken');
-if (!isNil(cookieToken)) {
-  store.dispatch(girder.authenticate(cookieToken));
+// if there is no token the string "undefined" is returned ?!!
+// if (!isNil(cookieToken)) {
+if (cookieToken !== 'undefined') {
+  store.dispatch(auth.actions.authenticate({token: cookieToken}));
 }
 
-store.dispatch(girder.testOauthEnabled())
+store.dispatch(auth.actions.testOauthEnabled());
 
 ReactDOM.render(
   <Provider store={store}>

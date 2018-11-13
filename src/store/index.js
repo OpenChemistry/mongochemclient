@@ -3,23 +3,14 @@ import { createStore, compose, applyMiddleware, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import {createLogger} from 'redux-logger'
 import createHistory from 'history/createBrowserHistory'
-import { routerMiddleware } from 'react-router-redux'
+import { routerMiddleware } from 'connected-react-router'
 
-import { auth } from '@openchemistry/girder-redux';
-import { connectRouter } from 'connected-react-router';
-
-import reducers from './reducers';
+import createRootReducer from './reducers';
 import rootSaga from './sagas';
 
 export const history = createHistory()
 
-const rootReducer = connectRouter(history)(combineReducers({
-  ...reducers,
-  auth: auth.reducer
-}));
-
-const authSelector = (state) => state.auth;
-auth.selectors.setRoot(authSelector);
+const rootReducer = createRootReducer(history);
 
 const middlewares = [];
 

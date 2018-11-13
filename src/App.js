@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { ConnectedRouter } from 'react-router-redux'
+import { ConnectedRouter } from 'connected-react-router';
 import { Route, Switch } from 'react-router'
 
 import MoleculeContainer from './containers/molecule';

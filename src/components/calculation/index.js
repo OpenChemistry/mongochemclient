@@ -1,28 +1,57 @@
 import React, { Component } from 'react';
 
+import { withStyles, CardHeader, IconButton, CardContent } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 
-import { wc } from '../utils/webcomponent';
+import { wc } from '../../utils/webcomponent';
 import { isNil, has } from 'lodash-es';
 
 import Button from '@material-ui/core/Button';
 import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover';
+import Collapse from '@material-ui/core/Collapse';
 
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import KeyBoardArrowDown from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
 
-import CalculationNotebooksContainer from '../containers/calculationnotebooks'
-import PageHead from './page-head';
-import PageBody from './page-body';
-import { formatFormula } from '../utils/formulas';
+import CalculationNotebooksContainer from '../../containers/calculationnotebooks'
+import PageHead from '../page-head';
+import PageBody from '../page-body';
+import { formatFormula } from '../../utils/formulas';
+import CalculatedProperties from './calculated-properties';
 
+const styles = theme => ({
+  buttonDiv: {
+    position: 'relative',
+    width: '100%',
+  },
+  button: {
+    position: 'absolute',
+    right: 0,
+    bottom: 3 * theme.spacing.unit,
+    right: 3 * theme.spacing.unit
+  },
+  popover: {
+    width: 80 * theme.spacing.unit,
+    maxWidth: '100%'
+  },
+  moleculeContainer: {
+    height: 80 * theme.spacing.unit,
+    width: '100%'
+  },
+  propertiesContainer: {
+    marginBottom: 3 * theme.spacing.unit
+  }
+});
 
 class Calculation extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
+      openProps: true
     }
   }
 
@@ -41,23 +70,9 @@ class Calculation extends Component {
   }
 
   render() {
-    const style = {
-      buttonDiv: {
-        position: 'relative',
-        width: '100%',
-      },
-      button: {
-        position: 'absolute',
-        right: 0,
-        bottom: '1.5rem',
-        right: '1.5rem'
-      },
-      popover: {
-        width: "40rem",
-        maxWidth: '100%'
-      }
-    };
-    const {cjson, onIOrbitalChanged, id, calculationProperties, showNotebooks, molecule} = this.props;
+    const {cjson, onIOrbitalChanged, id, calculationProperties, showNotebooks, molecule, classes} = this.props;
+    const { calculatedProperties } = cjson;
+    const { open, openProps, anchorEl } = this.state;
     let { iOrbital } = this.props;
     if (isNil(iOrbital)) {
       iOrbital = -1;
@@ -106,42 +121,56 @@ class Calculation extends Component {
           }
         </PageHead>
         <PageBody>
-          <Card>
-            <div style={{height: '40rem', width: '100%'}}>
-                <oc-molecule
-                  ref={wc(
-                    // Events
-                    {
-                      iOrbitalChanged: onIOrbitalChanged
-                    },
-                    //Props
-                    {
-                      cjson: cjson,
-                      moleculeRenderer: 'moljs',
-                      orbitalSelect: true,
-                      iOrbital: iOrbital
-                    }
-                  )}
-                />
-            </div>
+          {calculatedProperties &&
+          <Card className={classes.propertiesContainer}>
+            <CardHeader subheader='Predicted Properties' action={
+              <IconButton
+                onClick={() => {this.setState({openProps: !openProps})}}
+              >
+                {openProps ? <KeyboardArrowUp/> : <KeyBoardArrowDown/>}
+              </IconButton>
+            }></CardHeader>
+            <Collapse in={openProps}>
+              <CardContent>
+                <CalculatedProperties calculatedProperties={calculatedProperties}/>
+              </CardContent>
+            </Collapse>
+          </Card>
+          }
+          <Card className={classes.moleculeContainer}>
+            <oc-molecule
+              ref={wc(
+                // Events
+                {
+                  iOrbitalChanged: onIOrbitalChanged
+                },
+                //Props
+                {
+                  cjson: cjson,
+                  moleculeRenderer: 'moljs',
+                  orbitalSelect: true,
+                  iOrbital: iOrbital
+                }
+              )}
+            />
           </Card>
           { showNotebooks &&
-          <div style={style.buttonDiv}>
-            <Button variant="fab" onClick={this.handleTouchTap} style={style.button}>
+          <div className={classes.buttonDiv}>
+            <Button variant="fab" onClick={this.handleTouchTap} className={classes.button}>
               <AssignmentIcon/>
             </Button>
           </div>
           }
 
           <Popover
-            open={this.state.open}
-            anchorEl={this.state.anchorEl}
+            open={open}
+            anchorEl={anchorEl}
             transformOrigin={{vertical: 'bottom', horizontal: 'right'}}
             anchorOrigin={{vertical: 'top', horizontal: 'left'}}
             onClose={this.handleRequestClose}
             animation={PopoverAnimationVertical}
           >
-            <div style={style.popover}>
+            <div className={classes.popover}>
               <CalculationNotebooksContainer
                 calculationId={id}
               />
@@ -153,4 +182,4 @@ class Calculation extends Component {
   }
 }
 
-export default Calculation;
+export default withStyles(styles)(Calculation);

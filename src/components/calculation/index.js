@@ -70,7 +70,27 @@ class Calculation extends Component {
   }
 
   render() {
-    const {cjson, onIOrbitalChanged, id, calculationProperties, showNotebooks, molecule, classes} = this.props;
+    const {
+      cjson,
+      onIOrbitalChanged,
+      id,
+      calculationProperties,
+      showNotebooks,
+      molecule,
+      classes,
+      moleculeRenderer,
+      showIsoSurface,
+      showVolume,
+      showSpectrum,
+      showMenu,
+      isoValue,
+      iMode,
+      play,
+      colors,
+      colorsX,
+      opacities,
+      opacitiesX
+    } = this.props;
     const { calculatedProperties } = cjson;
     const { open, openProps, anchorEl } = this.state;
     let { iOrbital } = this.props;
@@ -146,10 +166,21 @@ class Calculation extends Component {
                 },
                 //Props
                 {
-                  cjson: cjson,
-                  moleculeRenderer: 'moljs',
+                  cjson,
                   orbitalSelect: true,
-                  iOrbital: iOrbital
+                  moleculeRenderer,
+                  showIsoSurface,
+                  showVolume,
+                  showSpectrum,
+                  showMenu,
+                  isoValue,
+                  iOrbital,
+                  iMode,
+                  play,
+                  colors,
+                  colorsX,
+                  opacities,
+                  opacitiesX
                 }
               )}
             />

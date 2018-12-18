@@ -17,7 +17,7 @@ class CalculationsContainer extends Component {
   }
 
   onOpen = (id) => {
-    this.props.dispatch(push(`/calculations/${id}?mo=homo`));
+    this.props.dispatch(push(`/calculations/${id}?iOrbital=homo`));
   }
 
   render() {

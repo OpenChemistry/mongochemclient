@@ -21,10 +21,10 @@ class CalculationContainer extends Component {
   }
 
   componentWillMount() {
-    const { dispatch, id, iOrbital} = this.props;
+    const { dispatch, id, mo} = this.props;
     dispatch(calculations.loadCalculationById(id));
-    if (!isNil(iOrbital)) {
-      dispatch(calculations.loadOrbital(id, iOrbital));
+    if (!isNil(mo)) {
+      dispatch(calculations.loadOrbital(id, mo));
     }
   }
 
@@ -41,7 +41,7 @@ class CalculationContainer extends Component {
 
   onIOrbitalChanged = (e) => {
     let iOrbital = e.detail;
-    if (iOrbital === this.props.iOrbital) {
+    if (iOrbital === this.props.mo) {
       return;
     }
     const {id, location, dispatch} = this.props;
@@ -49,16 +49,16 @@ class CalculationContainer extends Component {
 
     if (iOrbital != -1) {
       dispatch(calculations.loadOrbital(id, iOrbital));
-      params.set('iOrbital', iOrbital);
+      params.set('mo', iOrbital);
     } else {
-      params.delete('iOrbital');
+      params.delete('mo');
     }
 
     dispatch(push(`/calculations/${id}?${params.toString()}`));
   }
 
   render() {
-    const { id, iOrbital, cjson, showNotebooks, calculationProperties, molecule} = this.props;
+    const { id, cjson, showNotebooks, calculationProperties, molecule} = this.props;
     if (isNil(cjson)) {
       return null;
     }
@@ -88,13 +88,13 @@ class CalculationContainer extends Component {
 CalculationContainer.propTypes = {
   cjson: PropTypes.object,
   id: PropTypes.string,
-  iOrbital: PropTypes.any,
+  mo: PropTypes.any,
   inchikey: PropTypes.string,
   showNotebooks: PropTypes.bool,
   calculationProperties: PropTypes.object,
   molecule: PropTypes.object,
   isoValue: PropTypes.number,
-  iMode: PropTypes.number,
+  mode: PropTypes.number,
   play: PropTypes.bool,
   showVolume: PropTypes.bool,
   showIsoSurface: PropTypes.bool,
@@ -111,18 +111,18 @@ CalculationContainer.propTypes = {
 CalculationContainer.defaultProps = {
   cjson: null,
   id: null,
-  iOrbital: null,
+  mo: null,
   inchikey: null,
   showNotebooks: true,
   calculationProperties: null,
   molecule: null,
-  isoValue: null,
-  iMode: null,
+  isoValue: 0.05,
+  mode: null,
   play: null,
-  showVolume: null,
-  showIsoSurface: null,
-  showSpectrum: null,
-  showMenu: null,
+  showVolume: false,
+  showIsoSurface: true,
+  showSpectrum: false,
+  showMenu: true,
   colors: null,
   colorsX: null,
   opacities: null,
@@ -140,7 +140,7 @@ function mapStateToProps(state, ownProps) {
 
   let props = {
     id,
-    iOrbital,
+    mo: iOrbital,
     cjson,
     calculationProperties,
     molecule
@@ -150,25 +150,25 @@ function mapStateToProps(state, ownProps) {
 
   // iOrbital can come either from the route or from a query parameter
 
-  if (params.has('iOrbital')) {
-    let mo = params.get('iOrbital');
+  if (params.has('mo')) {
+    let mo = params.get('mo');
     mo = mo.toLowerCase();
     if (mo === 'homo' || mo ==='lumo') {
       iOrbital = mo;
     } else {
-      let iMo = parseInt(mo);
-      if (isFinite(iMo)) {
-        iOrbital = iMo;
+      mo = parseInt(mo);
+      if (isFinite(mo)) {
+        iOrbital = mo;
       }
     }
-    props['iOrbital'] = iOrbital;
+    props['mo'] = iOrbital;
   }
 
-  if (params.has('iMode')) {
-    let mode = params.get('iMode');
+  if (params.has('mode')) {
+    let mode = params.get('mode');
     mode = parseInt(mode);
     if (isFinite(mode)) {
-      props['iMode'] = mode;
+      props['mode'] = mode;
     }
   }
 

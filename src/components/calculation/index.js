@@ -84,7 +84,8 @@ class Calculation extends Component {
       showSpectrum,
       showMenu,
       isoValue,
-      iMode,
+      mode,
+      mo,
       play,
       colors,
       colorsX,
@@ -93,7 +94,7 @@ class Calculation extends Component {
     } = this.props;
     const { calculatedProperties } = cjson;
     const { open, openProps, anchorEl } = this.state;
-    let { iOrbital } = this.props;
+    let iOrbital = mo;
     if (isNil(iOrbital)) {
       iOrbital = -1;
     }
@@ -175,7 +176,7 @@ class Calculation extends Component {
                   showMenu,
                   isoValue,
                   iOrbital,
-                  iMode,
+                  iMode: mode,
                   play,
                   colors,
                   colorsX,

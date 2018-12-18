@@ -21,10 +21,10 @@ class CalculationContainer extends Component {
   }
 
   componentWillMount() {
-    const { dispatch, id, iOrbital} = this.props;
+    const { dispatch, id, mo} = this.props;
     dispatch(calculations.loadCalculationById(id));
-    if (!isNil(iOrbital)) {
-      dispatch(calculations.loadOrbital(id, iOrbital));
+    if (!isNil(mo)) {
+      dispatch(calculations.loadOrbital(id, mo));
     }
   }
 
@@ -41,19 +41,24 @@ class CalculationContainer extends Component {
 
   onIOrbitalChanged = (e) => {
     let iOrbital = e.detail;
-    if (iOrbital !== this.props.iOrbital) {
-      const {id, dispatch} = this.props;
-      if (iOrbital === '-1') {
-        dispatch(push(`/calculations/${id}`));
-      } else {
-        dispatch(push(`/calculations/${id}?mo=${iOrbital}`));
-        dispatch(calculations.loadOrbital(id, iOrbital));
-      }
+    if (iOrbital === this.props.mo) {
+      return;
     }
+    const {id, location, dispatch} = this.props;
+    let params = new URLSearchParams(location.search);
+
+    if (iOrbital != -1) {
+      dispatch(calculations.loadOrbital(id, iOrbital));
+      params.set('mo', iOrbital);
+    } else {
+      params.delete('mo');
+    }
+
+    dispatch(push(`/calculations/${id}?${params.toString()}`));
   }
 
   render() {
-    const { id, iOrbital, cjson, showNotebooks, calculationProperties, molecule} = this.props;
+    const { id, cjson, showNotebooks, calculationProperties, molecule} = this.props;
     if (isNil(cjson)) {
       return null;
     }
@@ -62,11 +67,11 @@ class CalculationContainer extends Component {
         <Calculation
           cjson={cjson}
           id={id}
-          iOrbital={iOrbital}
           onIOrbitalChanged={this.onIOrbitalChanged}
           showNotebooks={showNotebooks}
           calculationProperties={calculationProperties}
           molecule={molecule}
+          {...this.props}
         />
       </div>
     );
@@ -83,21 +88,47 @@ class CalculationContainer extends Component {
 CalculationContainer.propTypes = {
   cjson: PropTypes.object,
   id: PropTypes.string,
-  iOrbital: PropTypes.any,
+  mo: PropTypes.any,
   inchikey: PropTypes.string,
   showNotebooks: PropTypes.bool,
   calculationProperties: PropTypes.object,
-  molecule: PropTypes.object
+  molecule: PropTypes.object,
+  isoValue: PropTypes.number,
+  mode: PropTypes.number,
+  play: PropTypes.bool,
+  showVolume: PropTypes.bool,
+  showIsoSurface: PropTypes.bool,
+  showSpectrum: PropTypes.bool,
+  showMenu: PropTypes.bool,
+  colors: PropTypes.array,
+  colorsX: PropTypes.array,
+  opacities: PropTypes.array,
+  opacitiesX: PropTypes.array,
+  activeMapName: PropTypes.string,
+  moleculeRenderer: PropTypes.string
 }
 
 CalculationContainer.defaultProps = {
   cjson: null,
   id: null,
-  iOrbital: null,
+  mo: null,
   inchikey: null,
   showNotebooks: true,
   calculationProperties: null,
-  molecule: null
+  molecule: null,
+  isoValue: 0.05,
+  mode: null,
+  play: null,
+  showVolume: false,
+  showIsoSurface: true,
+  showSpectrum: false,
+  showMenu: true,
+  colors: null,
+  colorsX: null,
+  opacities: null,
+  opacitiesX: null,
+  activeMapName: null,
+  moleculeRenderer: 'moljs'
 }
 
 function mapStateToProps(state, ownProps) {
@@ -107,29 +138,100 @@ function mapStateToProps(state, ownProps) {
   let calculationProperties;
   let molecule;
 
+  let props = {
+    id,
+    mo: iOrbital,
+    cjson,
+    calculationProperties,
+    molecule
+  }
+
   const params = new URLSearchParams(ownProps.location.search);
 
   // iOrbital can come either from the route or from a query parameter
 
-  let mo = params.get('mo');
-  if (!isNil(mo)) {
+  if (params.has('mo')) {
+    let mo = params.get('mo');
     mo = mo.toLowerCase();
     if (mo === 'homo' || mo ==='lumo') {
       iOrbital = mo;
     } else {
-      let iMo = parseInt(mo);
-      if (isFinite(iMo)) {
-        iOrbital = iMo;
+      mo = parseInt(mo);
+      if (isFinite(mo)) {
+        iOrbital = mo;
       }
+    }
+    props['mo'] = iOrbital;
+  }
+
+  if (params.has('mode')) {
+    let mode = params.get('mode');
+    mode = parseInt(mode);
+    if (isFinite(mode)) {
+      props['mode'] = mode;
     }
   }
 
-  let props = {
-    id,
-    iOrbital,
-    cjson,
-    calculationProperties,
-    molecule
+  if (params.has('isoValue')) {
+    let val = params.get('isoValue');
+    val = parseFloat(val);
+    if (isFinite(val)) {
+      props['isoValue'] = val;
+    }
+  }
+
+  if (params.has('moleculeRenderer')) {
+    if (params.get('moleculeRenderer') === 'vtkjs') {
+      props['moleculeRenderer'] = 'vtkjs';
+    } else {
+      props['moleculeRenderer'] = 'moljs';
+    }
+  }
+
+  if (params.has('showIsoSurface')) {
+    props['showIsoSurface'] = params.get('showIsoSurface').toLowerCase() === 'true';
+  }
+
+  if (params.has('showVolume')) {
+    props['showVolume'] = params.get('showVolume').toLowerCase() === 'true';
+  }
+
+  if (params.has('showSpectrum')) {
+    props['showSpectrum'] = params.get('showSpectrum').toLowerCase() === 'true';
+  }
+
+  if (params.has('showMenu')) {
+    props['showMenu'] = params.get('showMenu').toLowerCase() === 'true';
+  }
+
+  if (params.has('play')) {
+    props['play'] = params.get('play').toLowerCase() === 'true';
+  }
+
+  const validateArray = (s) => {
+    try {
+      let arr = JSON.parse(s);
+      if (Array.isArray(arr)) {
+        return arr;
+      }
+    } catch(e) {}
+    return null;
+  }
+
+  if (params.has('opacities')) {
+    props['opacities'] = validateArray(params.get('opacities'));
+  }
+
+  if (params.has('opacitiesX')) {
+    props['opacitiesX'] = validateArray(params.get('opacitiesX'));
+  }
+
+  if (params.has('colors')) {
+    props['colors'] = validateArray(params.get('colors'));
+  }
+
+  if (params.has('colorsX')) {
+    props['colorsX'] = validateArray(params.get('colorsX'));
   }
 
   let calculations = selectors.calculations.getCalculationsById(state);

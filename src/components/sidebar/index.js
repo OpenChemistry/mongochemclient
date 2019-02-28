@@ -20,7 +20,7 @@ const style = {
 class SideBar extends Component {
 
   render() {
-    const { pushRoute } = this.props;
+    const { pushRoute, showNotebooks } = this.props;
     return (
       <MenuList>
 
@@ -32,14 +32,14 @@ class SideBar extends Component {
           <Typography color="inherit" variant="subheading">Welcome</Typography>
         </MenuItem>
 
-        <MenuItem
-          style={style.menu}
-          onClick={() => pushRoute('/notebooks') }
-        >
-          <ListIcon color="primary" />&nbsp;
-          <Typography color="inherit" variant="subheading">Notebooks</Typography>
-        </MenuItem>
-
+        { showNotebooks && <MenuItem
+            style={style.menu}
+            onClick={() => pushRoute('/notebooks') }
+          >
+            <ListIcon color="primary" />&nbsp;
+            <Typography color="inherit" variant="subheading">Notebooks</Typography>
+          </MenuItem>
+        }
         <MenuItem
           style={style.menu}
           onClick={() => pushRoute('/calculations') }
@@ -60,5 +60,9 @@ class SideBar extends Component {
     );
   }
 }
+
+SideBar.defaultProps = {
+  showNotebooks: false,
+};
 
 export default SideBar;

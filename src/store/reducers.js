@@ -14,7 +14,8 @@ const createRootReducer = (history) => combineReducers({
   jupyterlab: ocReducers.jupyterlab,
   auth: auth.reducer,
   router: connectRouter(history),
-  form: formReducer
+  form: formReducer,
+  configuration: ocReducers.configuration
 });
 
 const authSelector = (state) => state.auth;

@@ -3,6 +3,11 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router'
 
 import SideBar from '../../components/sidebar';
+import {
+  selectors,
+  configuration
+} from '@openchemistry/redux';
+import _ from 'lodash-es';
 
 class SideBarContainter extends Component {
 
@@ -15,14 +20,23 @@ class SideBarContainter extends Component {
   };
 
   render() {
+    const { showNotebooks } = this.props;
     return (
-      <SideBar pushRoute={this.pushRoute} />
+      <SideBar pushRoute={this.pushRoute} showNotebooks={showNotebooks} />
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {};
+
+  const config = selectors.configuration.getConfiguration(state);
+  const props = {}
+
+  if (!_.isNil(config)) {
+    props.showNotebooks = config.features.notebooks;
+  }
+
+  return props;
 }
 
 SideBarContainter = connect(mapStateToProps)(SideBarContainter);

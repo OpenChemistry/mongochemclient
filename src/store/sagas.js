@@ -14,7 +14,8 @@ import {
   watchRedirectToJupyterHub,
   watchInvalidateSession,
   watchLoadCalculationNotebooks,
-  watchLoadCalculations
+  watchLoadCalculations,
+  watchLoadConfiguration,
 } from '@openchemistry/sagas';
 
 import { auth } from '@openchemistry/girder-redux';
@@ -34,6 +35,7 @@ export default function* root() {
   yield fork(watchInvalidateSession)
   yield fork(watchLoadCalculationNotebooks)
   yield fork(watchLoadCalculations)
+  yield fork(watchLoadConfiguration)
 
   yield fork(auth.sagas.watchAuthenticate);
   yield fork(auth.sagas.watchFetchMe);

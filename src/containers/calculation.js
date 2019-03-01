@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router';
 
-import { selectors } from '@openchemistry/redux'
-import { calculations } from '@openchemistry/redux'
+import {
+  selectors,
+  calculations,
+  configuration
+} from '@openchemistry/redux'
 
 import Calculation from '../components/calculation';
 
@@ -250,6 +253,11 @@ function mapStateToProps(state, ownProps) {
   } else if (!isNil(props.cjson)) {
     // Remove any orbital data
     delete props.cjson.cube;
+  }
+
+  const config = configuration.selectors.getConfiguration();
+  if (isNil(config.features)) {
+    props.showNotebooks = config.features.notebooks;
   }
 
   return props;

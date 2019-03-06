@@ -30,6 +30,7 @@ import Home from './containers/home';
 import Molecules from './containers/molecules';
 import Calculations from './containers/calculations';
 import Header from './containers/header';
+import JupyterIntegration from './containers/jupyterlab-integration/instructions';
 
 import { history } from './store';
 
@@ -132,6 +133,7 @@ class App extends Component {
               <authUI.GirderLogin/>
               <authUI.NerscLogin/>
               <authUI.OauthRedirect/>
+              <JupyterIntegration/>
             </div>
           </div>
         </div>

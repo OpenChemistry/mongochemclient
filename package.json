@@ -11,12 +11,12 @@
     "url": "https://github.com/openchemistry/mongochemclient"
   },
   "dependencies": {
-    "@material-ui/core": "^3.7.0",
-    "@material-ui/icons": "^3.0.1",
-    "@material-ui/lab": "^3.0.0-alpha.26",
+    "@material-ui/core": "^3.9.2",
+    "@material-ui/icons": "^3.0.2",
+    "@material-ui/lab": "^3.0.0-alpha.30",
     "@openchemistry/girder-redux": "^0.0.16",
     "@openchemistry/girder-ui": "^0.0.17",
-    "@openchemistry/molecule": "^0.4.12",
+    "@openchemistry/molecule": "^0.4.13",
     "@openchemistry/redux": "^0.3.13",
     "@openchemistry/rest": "^0.3.14",
     "@openchemistry/sagas": "^0.3.23",

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 
-import { AppBar, Toolbar, Button, IconButton } from '@material-ui/core';
+import { AppBar, Toolbar, Button } from '@material-ui/core';
 import { auth as authUI} from '@openchemistry/girder-ui';
 
+import JupyterMenu from '../../containers/jupyterlab-integration/menu-item';
 import logo from '../../OpenChemistry_Logo.svg';
 import './index.css';
 
@@ -19,7 +20,12 @@ class Header extends Component {
           </Button>
           <div style={{flex: 1}}>
           </div>
-          { loggedIn ? <authUI.UserMenu/> : <authUI.LoginButton />}
+          { loggedIn
+          ? <authUI.UserMenu>
+              <JupyterMenu/>
+            </authUI.UserMenu>
+          : <authUI.LoginButton />
+          }
         </Toolbar>
       </AppBar>
     );

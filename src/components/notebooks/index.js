@@ -1,27 +1,34 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 import PropTypes from 'prop-types';
 
-import Typography from '@material-ui/core/Typography';
-
-import _ from 'lodash';
+import { Paper, Button, Typography, withStyles } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 
 import PageHead from '../page-head';
 import PageBody from '../page-body';
-import { Paper } from '@material-ui/core';
 
 import NotebooksTable from './table';
+
+const styles = theme => ({
+  paper: {
+    marginBottom: 2 * theme.spacing.unit
+  },
+  addButton: {
+    float: 'right'
+  },
+  loading: {
+    cursor: 'progress'
+  }
+});
 
 class Notebooks extends Component {
 
   render = () => {
-    const {notebooks, onOpen} = this.props;
-    if (!_.isNil(this.props.onCellClick)) {
-      this.onCellClick = this.props.onCellClick;
-    }
+    const {notebooks, onOpen, redirecting, classes} = this.props;
 
     return (
-      <div>
+      <div className={`${redirecting ? classes.loading : ''}`}>
         <PageHead>
           <Typography  color="inherit" gutterBottom variant="display1">
             Notebooks
@@ -31,9 +38,15 @@ class Notebooks extends Component {
           </Typography>
         </PageHead>
         <PageBody>
-          <Paper>
-            <NotebooksTable notebooks={notebooks} onOpen={onOpen}/>
+          <Paper className={classes.paper}>
+            <NotebooksTable notebooks={notebooks} onOpen={onOpen} redirecting={redirecting}/>
           </Paper>
+          <Button
+            disabled={redirecting} className={classes.addButton} variant='contained'
+            onClick={() => {onOpen()}}
+          >
+            <AddIcon/> New Notebook
+          </Button>
         </PageBody>
       </div>
     );
@@ -48,4 +61,4 @@ Notebooks.defaultProps = {
   notebooks: [],
 }
 
-export default Notebooks;
+export default withStyles(styles)(Notebooks);

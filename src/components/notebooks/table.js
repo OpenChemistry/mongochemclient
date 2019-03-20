@@ -22,16 +22,8 @@ const style = {
 
 class NotebooksTable extends Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      loading: false
-    };
-  }
-
   render() {
-    const {notebooks, onOpen} = this.props;
+    const {notebooks, onOpen, redirecting} = this.props;
     return (
       <Table>
         <TableHead>
@@ -46,9 +38,13 @@ class NotebooksTable extends Component {
         >
         {notebooks.map((notebook, i) =>
           <TableRow
-            style={{cursor: this.state.loading ? "progress" : "pointer"}}
+            style={{cursor: "pointer"}}
             hover
-            onClick={() => {this.setState({...this.state, loading:true}); onOpen(notebook)}}
+            onClick={() => {
+              if (!redirecting) {
+                onOpen(notebook);
+              }
+            }}
             key={notebook._id}
           >
             <TableCell style={style.iconColumn}>

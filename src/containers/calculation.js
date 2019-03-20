@@ -255,7 +255,7 @@ function mapStateToProps(state, ownProps) {
     delete props.cjson.cube;
   }
 
-  const config = configuration.selectors.getConfiguration();
+  const config = selectors.configuration.getConfiguration(state);
   if (isNil(config.features)) {
     props.showNotebooks = config.features.notebooks;
   }

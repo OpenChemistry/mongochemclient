@@ -256,7 +256,7 @@ function mapStateToProps(state, ownProps) {
   }
 
   const config = selectors.configuration.getConfiguration(state);
-  if (!isNil(config.features) && !isNil(config.features)) {
+  if (!isNil(config) && !isNil(config.features)) {
     props.showNotebooks = config.features.notebooks;
   }
 

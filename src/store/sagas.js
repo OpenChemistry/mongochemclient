@@ -13,6 +13,7 @@ import {
   watchLoadNotebooks,
   watchRedirectToJupyterHub,
   watchInvalidateSession,
+  watchInvalidateToken,
   watchLoadCalculationNotebooks,
   watchLoadCalculations,
   watchLoadConfiguration
@@ -33,6 +34,7 @@ export default function* root() {
   yield fork(watchLoadNotebooks)
   yield fork(watchRedirectToJupyterHub)
   yield fork(watchInvalidateSession)
+  yield fork(watchInvalidateToken)
   yield fork(watchLoadCalculationNotebooks)
   yield fork(watchLoadCalculations)
   yield fork(watchLoadConfiguration)

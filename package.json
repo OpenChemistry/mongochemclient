@@ -19,7 +19,7 @@
     "@openchemistry/molecule": "^0.4.14",
     "@openchemistry/redux": "^0.3.15",
     "@openchemistry/rest": "^0.3.16",
-    "@openchemistry/sagas": "^0.3.25",
+    "@openchemistry/sagas": "^0.3.26",
     "@openchemistry/utils": "^0.6.5",
     "axios": "^0.18.0",
     "connected-react-router": "^5.0.1",

@@ -7,16 +7,11 @@ import Typography from '@material-ui/core/Typography';
 import PageHead from './page-head';
 import PageBody from './page-body';
 import CardComponent from './item-card';
-import { Card, CardContent, CardHeader, CardActionArea, withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import { formatFormula } from '../utils/formulas';
 import { has } from 'lodash-es';
 
-
-const style = (theme) => (
-  {
-
-  }
-);
+const style = (_theme) => ({});
 
 class Molecules extends Component {
 

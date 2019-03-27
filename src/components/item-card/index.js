@@ -29,10 +29,10 @@ const Image = (src) => {
   );
 }
 
-const CardComponent = ({title, image, properties, onOpen, classes}) => {
+const CardComponent = ({title, image, properties, disabled, onOpen, classes}) => {
   return (
     <Card>
-      <CardActionArea onClick={onOpen}>
+      <CardActionArea onClick={onOpen} disabled={disabled}>
         <CardHeader title={title}></CardHeader>
         <div className={classes.cardImage}>
           {Image(image)}

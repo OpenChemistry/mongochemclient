@@ -31,7 +31,7 @@ class Molecules extends Component {
           <Grid container spacing={24}>
             {
               molecules.map(molecule => {
-                const title = molecule.properties.formula ? formatFormula(molecule.properties.formula) : 'Molecule';
+                const title = molecule.name ? molecule.name : 'Molecule';
                 const image = `${window.location.origin}/api/v1/molecules/${molecule._id}/svg`;
                 const properties = [];
                 if (has(molecule, 'properties.atomCount')) {

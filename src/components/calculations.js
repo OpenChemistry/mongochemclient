@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import { has } from 'lodash-es';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 import PageHead from './page-head';
 import PageBody from './page-body';
+import CardComponent from './item-card';
 import { formatFormula } from '../utils/formulas';
-import { Card, CardContent, CardHeader, CardActionArea, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
+import { formatCode, formatBasis, formatTheory, formatTask } from '../utils/calculations';
 
 class Calculations extends Component {
 
@@ -23,7 +25,6 @@ class Calculations extends Component {
   render = () => {
     const {calculations, onOpen} = this.props;
 
-
     return (
       <div>
         <PageHead>
@@ -37,51 +38,33 @@ class Calculations extends Component {
           <Grid container spacing={24}>
             {
               calculations.map(calculation => {
-                return(
+                const title = this.getFormula(calculation);
+                const image = `${window.location.origin}/api/v1/molecules/${calculation.moleculeId}/svg`;
+                const pending = has(calculation, 'properties.pending');
+                const properties = [];
+                if (has(calculation, 'image.repository')) {
+                  properties.push({label: 'Code', value: formatCode(calculation.image.repository)});
+                }
+                if (has(calculation, 'input.parameters.task')) {
+                  properties.push({label: 'Type', value: formatTask(calculation.input.parameters.task)});
+                }
+                if (has(calculation, 'input.parameters.theory')) {
+                  properties.push({label: 'Theory', value: formatTheory(calculation.input.parameters.theory, calculation.input.parameters.functional)});
+                }
+                if (has(calculation, 'input.parameters.basis')) {
+                  properties.push({label: 'Basis', value: formatBasis(calculation.input.parameters.basis)});
+                }
+
+                return (
                   <Grid key={calculation._id} item xs={12} sm={6} md={4} lg={3}>
-                    <Card>
-                      <CardActionArea onClick={() => {onOpen(calculation._id)}} disabled={calculation.properties.pending} style={{width: '100%'}}>
-                        <CardHeader title={this.getFormula(calculation)}></CardHeader>
-                        <CardContent>
-                          { calculation.properties &&
-                          <div>
-                            { calculation.properties.pending &&
-                            <div>
-                              <Typography color='textSecondary'>Completed</Typography>
-                              <Typography gutterBottom>{calculation.properties.pending ? 'No' : 'Yes'}</Typography>
-                            </div>
-                            }
-                            { calculation.properties.calculationTypes &&
-                            <div>
-                              <Typography color='textSecondary'>Type</Typography>
-                              <Typography gutterBottom>{calculation.properties.calculationTypes[0] || calculation.properties.calculationTypes}</Typography>
-                            </div>
-                            }
-                            { calculation.properties.theory &&
-                            <div>
-                              <Typography color='textSecondary'>Theory</Typography>
-                              <Typography gutterBottom>{calculation.properties.theory}</Typography>
-                            </div>
-                            }
-                            { calculation.properties.functional &&
-                            <div>
-                              <Typography color='textSecondary'>Functional</Typography>
-                              <Typography gutterBottom>{calculation.properties.functional}</Typography>
-                            </div>
-                            }
-                            { calculation.properties.basisSet &&
-                            <div>
-                              <Typography color='textSecondary'>Basis set</Typography>
-                              <Typography gutterBottom>{calculation.properties.basisSet.name}</Typography>
-                            </div>
-                            }
-                          </div>
-                          }
-                        </CardContent>
-                      </CardActionArea>
-                    </Card>
+                    <CardComponent
+                      title={title}
+                      properties={properties}
+                      image={image}
+                      disabled={pending}
+                      onOpen={() => {onOpen(calculation._id)}}/>
                   </Grid>
-                );
+                )
               })
             }
           </Grid>

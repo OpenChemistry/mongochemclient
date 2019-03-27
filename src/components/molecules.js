@@ -6,13 +6,17 @@ import Typography from '@material-ui/core/Typography';
 
 import PageHead from './page-head';
 import PageBody from './page-body';
-import { Card, CardContent, CardHeader, CardActionArea } from '@material-ui/core';
+import CardComponent from './item-card';
+import { withStyles } from '@material-ui/core';
 import { formatFormula } from '../utils/formulas';
+import { has } from 'lodash-es';
+
+const style = (_theme) => ({});
 
 class Molecules extends Component {
 
   render = () => {
-    const {molecules, onOpen} = this.props;
+    const {molecules, onOpen, classes} = this.props;
 
     return (
       <div>
@@ -26,35 +30,27 @@ class Molecules extends Component {
         <PageBody>
           <Grid container spacing={24}>
             {
-              molecules.map(molecule =>
-                <Grid key={molecule._id} item xs={12} sm={6} md={4} lg={3}>
-                  <Card>
-                    <CardActionArea onClick={() => {onOpen(molecule.inchikey)}}>
-                      <CardHeader title={molecule.properties.formula ? formatFormula(molecule.properties.formula) : 'Molecule'}></CardHeader>
-                      <CardContent>
-                        { molecule.name &&
-                        <div>
-                          <Typography color='textSecondary'>Name</Typography>
-                          <Typography>{molecule.name}</Typography>
-                        </div>
-                        }
-                        { molecule.properties.atomCount &&
-                        <div>
-                          <Typography color='textSecondary'>Atoms</Typography>
-                          <Typography>{molecule.properties.atomCount}</Typography>
-                        </div>
-                        }
-                        { molecule.properties.mass &&
-                        <div>
-                          <Typography color='textSecondary'>Mass</Typography>
-                          <Typography>{molecule.properties.mass.toFixed(2)} g/mol</Typography>
-                        </div>
-                        }
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
-                </Grid>
-              )
+              molecules.map(molecule => {
+                const title = molecule.properties.formula ? formatFormula(molecule.properties.formula) : 'Molecule';
+                const image = `${window.location.origin}/api/v1/molecules/${molecule._id}/svg`;
+                const properties = [];
+                if (has(molecule, 'properties.atomCount')) {
+                  properties.push({label: 'Atoms', value: molecule.properties.atomCount});
+                }
+                if (has(molecule, 'properties.mass')) {
+                  properties.push({label: 'Mass', value: molecule.properties.mass.toFixed(2)});
+                }
+
+                return (
+                  <Grid key={molecule._id} item xs={12} sm={6} md={4} lg={3}>
+                    <CardComponent
+                      title={title}
+                      properties={properties}
+                      image={image}
+                      onOpen={() => {onOpen(molecule.inchikey)}}/>
+                  </Grid>
+                )
+              })
             }
           </Grid>
         </PageBody>
@@ -73,4 +69,4 @@ Molecules.defaultProps = {
   onOpen: () => null
 }
 
-export default Molecules;
+export default withStyles(style)(Molecules);

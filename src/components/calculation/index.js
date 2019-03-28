@@ -18,7 +18,6 @@ import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
 import CalculationNotebooksContainer from '../../containers/calculationnotebooks'
 import PageHead from '../page-head';
 import PageBody from '../page-body';
-import { formatFormula } from '../../utils/formulas';
 import CalculatedProperties from './calculated-properties';
 
 const styles = theme => ({
@@ -106,7 +105,7 @@ class Calculation extends Component {
       <div>
         <PageHead>
           <Typography  color="inherit" gutterBottom variant="display1">
-            {molecule && molecule.properties.formula ? formatFormula(molecule.properties.formula) : 'Calculation'}
+            {molecule && molecule.name ? molecule.name : 'Calculation'}
           </Typography>
           { (molecule && molecule.properties.atomCount) &&
           <Typography variant="subheading" paragraph color="inherit">

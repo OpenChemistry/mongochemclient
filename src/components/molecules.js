@@ -8,7 +8,6 @@ import PageHead from './page-head';
 import PageBody from './page-body';
 import CardComponent from './item-card';
 import { withStyles } from '@material-ui/core';
-import { formatFormula } from '../utils/formulas';
 import { has } from 'lodash-es';
 
 const style = (_theme) => ({});

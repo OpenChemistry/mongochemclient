@@ -15,6 +15,14 @@ const style = (_theme) => ({});
 
 class Molecules extends Component {
 
+  getName(molecule) {
+    if (molecule.name)
+      return molecule.name;
+    else if (molecule.properties.formula)
+      return formatFormula(molecule.properties.formula);
+    return 'Molecule';
+  }
+
   render = () => {
     const {molecules, onOpen, classes} = this.props;
 
@@ -31,7 +39,7 @@ class Molecules extends Component {
           <Grid container spacing={24}>
             {
               molecules.map(molecule => {
-                const title = molecule.properties.formula ? formatFormula(molecule.properties.formula) : 'Molecule';
+                const title = this.getName(molecule);
                 const image = `${window.location.origin}/api/v1/molecules/${molecule._id}/svg`;
                 const properties = [];
                 if (has(molecule, 'properties.atomCount')) {

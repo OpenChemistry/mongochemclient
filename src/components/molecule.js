@@ -16,6 +16,14 @@ import { wc } from '../utils/webcomponent';
 
 class Molecule extends Component {
 
+  getName(molecule) {
+    if (molecule.name)
+      return molecule.name;
+    else if (molecule.properties.formula)
+      return formatFormula(molecule.properties.formula);
+    return 'Molecule';
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -36,7 +44,7 @@ class Molecule extends Component {
       <div>
         <PageHead>
           <Typography  color="inherit" gutterBottom variant="display1">
-            {molecule.properties.formula ? formatFormula(molecule.properties.formula) : 'Molecule'}
+            {this.getName(molecule)}
           </Typography>
           { molecule.properties.atomCount &&
           <Typography variant="subheading" paragraph color="inherit">
@@ -59,7 +67,7 @@ class Molecule extends Component {
                   //Props
                   {
                     cjson: molecule.cjson,
-                    rotate: this.state.rotate                    
+                    rotate: this.state.rotate
                   }
                 )}
               />

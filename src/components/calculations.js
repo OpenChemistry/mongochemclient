@@ -13,13 +13,15 @@ import { formatCode, formatBasis, formatTheory, formatTask } from '../utils/calc
 
 class Calculations extends Component {
 
-  getFormula(calculation) {
+  getName(calculation) {
     const { molecules } = this.props;
     if (molecules && calculation.moleculeId in molecules) {
-      return formatFormula(molecules[calculation.moleculeId].properties.formula);
-    } else {
-      return 'Calculation';
+      if (molecules[calculation.moleculeId].name)
+        return molecules[calculation.moleculeId].name;
+      else if (molecules[calculation.moleculeId].properties.formula)
+        return formatFormula(molecules[calculation.moleculeId].properties.formula);
     }
+    return 'Calculation';
   }
 
   render = () => {
@@ -38,7 +40,7 @@ class Calculations extends Component {
           <Grid container spacing={24}>
             {
               calculations.map(calculation => {
-                const title = this.getFormula(calculation);
+                const title = this.getName(calculation);
                 const image = `${window.location.origin}/api/v1/molecules/${calculation.moleculeId}/svg`;
                 const pending = has(calculation, 'properties.pending');
                 const properties = [];

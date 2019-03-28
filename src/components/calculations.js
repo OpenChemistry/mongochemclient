@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import PageHead from './page-head';
 import PageBody from './page-body';
 import CardComponent from './item-card';
+import { formatFormula } from '../utils/formulas';
 import { formatCode, formatBasis, formatTheory, formatTask } from '../utils/calculations';
 
 class Calculations extends Component {
@@ -15,10 +16,12 @@ class Calculations extends Component {
   getName(calculation) {
     const { molecules } = this.props;
     if (molecules && calculation.moleculeId in molecules) {
-      return molecules[calculation.moleculeId].name;
-    } else {
-      return 'Calculation';
+      if (molecules[calculation.moleculeId].name)
+        return molecules[calculation.moleculeId].name;
+      else if (molecules[calculation.moleculeId].properties.formula)
+        return formatFormula(molecules[calculation.moleculeId].properties.formula);
     }
+    return 'Calculation';
   }
 
   render = () => {

@@ -10,9 +10,19 @@ import PageHead from './page-head';
 import PageBody from './page-body';
 import { Paper, Card } from '@material-ui/core';
 
+import { formatFormula } from '../utils/formulas';
+
 import { wc } from '../utils/webcomponent';
 
 class Molecule extends Component {
+
+  getName(molecule) {
+    if (molecule.name)
+      return molecule.name;
+    else if (molecule.properties.formula)
+      return formatFormula(molecule.properties.formula);
+    return 'Molecule';
+  }
 
   constructor(props) {
     super(props);
@@ -34,7 +44,7 @@ class Molecule extends Component {
       <div>
         <PageHead>
           <Typography  color="inherit" gutterBottom variant="display1">
-            {molecule.name ? molecule.name : 'Molecule'}
+            {this.getName(molecule)}
           </Typography>
           { molecule.properties.atomCount &&
           <Typography variant="subheading" paragraph color="inherit">

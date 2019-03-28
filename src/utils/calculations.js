@@ -60,6 +60,10 @@ function capitalizeFirst(value) {
   return value.charAt(0).toUpperCase() + value .slice(1);
 }
 
+function toUpperCase(value) {
+  return String.prototype.toUpperCase.call(value);
+}
+
 function knownOr(value, known_values, transform = identity) {
   if (typeof value !== 'string') {
     value = '';
@@ -74,7 +78,7 @@ function knownOr(value, known_values, transform = identity) {
 }
 
 function knownOrUpperCase(value, known_values) {
-  return knownOr(value, known_values, String.toUpperCase);
+  return knownOr(value, known_values, toUpperCase);
 }
 
 function knownOrCapitalizeFirst(value, known_values) {

@@ -2,17 +2,25 @@ import React, { Component } from 'react';
 
 import PropTypes from 'prop-types';
 
-import Typography from '@material-ui/core/Typography';
+import { withStyles, Grid, Card, Typography, Button } from '@material-ui/core';
 
-import _ from 'lodash';
+import { has } from 'lodash-es';
 
 import PageHead from './page-head';
 import PageBody from './page-body';
-import { Paper, Card } from '@material-ui/core';
+import CardComponent from './item-details-card';
 
 import { formatFormula } from '../utils/formulas';
 
 import { wc } from '../utils/webcomponent';
+
+const styles = theme => ({
+  moleculeContainer: {
+    height: 80 * theme.spacing.unit,
+    width: '100%',
+    marginBottom: 2 * theme.spacing.unit
+  }
+});
 
 class Molecule extends Component {
 
@@ -30,7 +38,32 @@ class Molecule extends Component {
   }
 
   render = () => {
-    const {molecule} = this.props;
+    const {molecule, classes} = this.props;
+
+    const sections = [];
+    let moleculeProperties = [];
+    if (has(molecule, 'properties.formula')) {
+      moleculeProperties.push({label: 'Formula', value: formatFormula(molecule.properties.formula)});
+    }
+    if (has(molecule, 'properties.atomCount')) {
+      moleculeProperties.push({label: 'Atoms', value: molecule.properties.atomCount});
+    }
+    if (has(molecule, 'properties.mass')) {
+      moleculeProperties.push({label: 'Mass', value: molecule.properties.mass.toFixed(2)});
+    }
+    if (has(molecule, 'inchi')) {
+      moleculeProperties.push({label: 'Inchi', value: molecule.inchi});
+    }
+    if (has(molecule, 'smiles')) {
+      moleculeProperties.push({label: 'Smiles', value: molecule.smiles});
+    }
+
+    const moleculeSection = {
+      label: 'Molecule Properties',
+      properties: moleculeProperties
+    };
+
+    sections.push(moleculeSection);
 
     return (
       <div>
@@ -38,33 +71,34 @@ class Molecule extends Component {
           <Typography  color="inherit" gutterBottom variant="display1">
             {molecule.properties.formula ? formatFormula(molecule.properties.formula) : 'Molecule'}
           </Typography>
-          { molecule.properties.atomCount &&
-          <Typography variant="subheading" paragraph color="inherit">
-            Atoms: {molecule.properties.atomCount}
-          </Typography>
-          }
-          { molecule.properties.mass &&
-          <Typography variant="subheading" paragraph color="inherit">
-            Mass: {molecule.properties.mass.toFixed(2)} g/mol
-          </Typography>
-          }
         </PageHead>
         <PageBody>
-          <Card>
-            <div style={{height: '40rem', width: '100%'}} onMouseEnter={this.onInteract}>
-              <oc-molecule
-                ref={wc(
-                  // Events
-                  {},
-                  //Props
-                  {
-                    cjson: molecule.cjson,
-                    rotate: this.state.rotate                    
-                  }
-                )}
-              />
-            </div>
-          </Card>
+        <Grid container spacing={24}>
+            <Grid item xs={12} sm={12} md={8}>
+              <Card className={classes.moleculeContainer}>
+                <oc-molecule
+                  ref={wc(
+                    // Events
+                    {},
+                    //Props
+                    {
+                      cjson: molecule.cjson,
+                      rotate: this.state.rotate
+                    }
+                  )}
+                />
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={12} md={4}>
+              {sections.map((section, i) => 
+                <CardComponent
+                  key={i}
+                  title={section.label}
+                  properties={section.properties}
+                />
+              )}
+            </Grid>
+          </Grid>
         </PageBody>
       </div>
     );
@@ -79,4 +113,4 @@ Molecule.defaultProps = {
   molecule: null
 }
 
-export default Molecule;
+export default withStyles(styles)(Molecule);

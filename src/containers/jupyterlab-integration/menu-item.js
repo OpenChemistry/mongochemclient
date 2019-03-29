@@ -27,7 +27,7 @@ class JupyterMenuContainer extends Component {
 function mapStateToProps(state, _ownProps) {
   const apiKey = auth.selectors.getApiKey(state);
   const me = auth.selectors.getMe(state);
-  return {me, apiKey: null};
+  return {me, apiKey};
 }
 
 export default connect(mapStateToProps)(JupyterMenuContainer);

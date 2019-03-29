@@ -4,8 +4,7 @@ import { push } from 'connected-react-router'
 
 import SideBar from '../../components/sidebar';
 import {
-  selectors,
-  configuration
+  selectors
 } from '@openchemistry/redux';
 import _ from 'lodash-es';
 

@@ -5,23 +5,14 @@ import { Route, Switch } from 'react-router'
 import MoleculeContainer from './containers/molecule';
 import CalculationContainer from './containers/calculation';
 import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './containers/charts';
-import './index.css';
-import logo from './OpenChemistry_Logo.svg';
-import { selectors } from '@openchemistry/redux';
 
 import { auth as authUI } from '@openchemistry/girder-ui';
 
 // @material-ui components
 import { withStyles } from '@material-ui/core/styles'; // v1.x
 
-import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 
 import NotebookContainer from './containers/notebook';
 import NotebooksContainer from './containers/notebooks';
@@ -124,10 +115,6 @@ class App extends Component {
                 <Route path='/notebooks/:id' component={NotebookContainer}/>
                 <Route path='/notebooks' component={NotebooksContainer} />
               </Switch>
-
-              <div className="footer-container">
-                {/* <Footer /> */}
-              </div>
 
               <authUI.LoginOptions girder={development} nersc={true}/>
               <authUI.GirderLogin/>

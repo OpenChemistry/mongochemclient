@@ -147,7 +147,7 @@ class Home extends Component {
                   computational chemistry calculations using NWChem, with a
                   JupyterLab frontend, and a number of visualization/analytics
                   capabilites from 3DMol, vtk.js, and D3. Code for the platform
-                  is hosted on <a href="https://github.com/openchemistry" target="_blank">GitHub</a>.
+                  is hosted on <a href="https://github.com/openchemistry" target="_blank" rel="noopener noreferrer">GitHub</a>.
                 </Typography>
               </Grid>
               <Grid item xs={12} md={5}>

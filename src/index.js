@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { Route } from 'react-router'
 import Cookies from 'universal-cookie';
-import { isNil } from 'lodash-es'
 import { girder, configuration } from '@openchemistry/redux';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x
@@ -65,12 +64,11 @@ class PrivateRoute extends Component {
       }
 
       if (providers && providers.Google) {
-        return (//<ReactRedirect location={providers.Google}>
-                <div>
-                  Redirecting...
-                </div>
-               //</ReactRedirect>
-              )
+        return (
+          <div>
+            Redirecting...
+          </div>
+        )
       }
 
       return <div>Authenticating...</div>
@@ -93,22 +91,6 @@ PrivateRoute.defaultProps = {
   isAuthenticated: false,
   providers: null
 }
-
-//function mapStateToProps(state, ownProps) {
-//  const token = selectors.girder.getToken(state);
-//  const isAuthenticating = selectors.girder.isAuthenticating(state);
-//  const isAuthenticated = selectors.girder.isAuthenticated(state);
-//  const providers = selectors.girder.getOauthProviders(state);
-//
-//  return {
-//    token,
-//    isAuthenticating,
-//    isAuthenticated,
-//    providers,
-//  }
-//}
-
-//PrivateRoute = connect(mapStateToProps)(PrivateRoute)
 
 // Check to see if we have a cookie
 const cookies = new Cookies();

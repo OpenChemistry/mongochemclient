@@ -117,7 +117,7 @@ class App extends Component {
                 <Route path='/notebooks' component={NotebooksContainer} />
               </Switch>
 
-              <authUI.LoginOptions girder={development} nersc={true}/>
+              <authUI.LoginOptions girder={development}/>
               <authUI.GirderLogin/>
               <authUI.NerscLogin/>
               <authUI.OauthRedirect/>

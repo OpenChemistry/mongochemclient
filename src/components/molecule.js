@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { withStyles, Grid, Card, Typography, Button } from '@material-ui/core';
+import { withStyles, Grid, Card, Typography } from '@material-ui/core';
 
 import { has } from 'lodash-es';
 

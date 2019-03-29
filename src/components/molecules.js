@@ -24,7 +24,7 @@ class Molecules extends Component {
   }
 
   render = () => {
-    const {molecules, onOpen, classes} = this.props;
+    const {molecules, onOpen} = this.props;
 
     return (
       <div>

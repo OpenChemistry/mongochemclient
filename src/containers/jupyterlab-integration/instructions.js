@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { auth } from '@openchemistry/girder-redux';
 import { selectors, jupyterlab } from '@openchemistry/redux';
-import { isNil } from 'lodash-es';
 import InstructionsComponent from '../../components/jupyterlab-integration/instructions';
 
 class InstructionsContainer extends Component {

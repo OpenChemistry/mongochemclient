@@ -24,7 +24,6 @@ const styles = theme => ({
   },
   button: {
     position: 'absolute',
-    right: 0,
     bottom: 5 * theme.spacing.unit,
     right: 3 * theme.spacing.unit
   },

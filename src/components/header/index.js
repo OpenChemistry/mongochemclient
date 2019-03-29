@@ -9,7 +9,7 @@ import './index.css';
 
 class Header extends Component {
   render() {
-    const { loggedIn, onLogoClick, onSearchClick } = this.props;
+    const { loggedIn, onLogoClick } = this.props;
     return (
       <AppBar color="default" position="static">
         <Toolbar>

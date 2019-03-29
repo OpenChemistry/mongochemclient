@@ -117,7 +117,7 @@ CalculationContainer.defaultProps = {
   inchikey: null,
   showNotebooks: true,
   molecule: null,
-  isoValue: 0.05,
+  isoValue: 0.01,
   mode: null,
   play: null,
   showVolume: false,

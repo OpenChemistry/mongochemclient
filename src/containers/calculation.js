@@ -5,7 +5,8 @@ import { push } from 'connected-react-router';
 
 import {
   selectors,
-  calculations
+  calculations,
+  molecules
 } from '@openchemistry/redux'
 
 import Calculation from '../components/calculation';
@@ -23,11 +24,12 @@ class CalculationContainer extends Component {
   }
 
   componentWillMount() {
-    const { dispatch, id, mo} = this.props;
+    const { dispatch, id, mo } = this.props;
     dispatch(calculations.loadCalculationById(id));
     if (!isNil(mo)) {
       dispatch(calculations.loadOrbital(id, mo));
     }
+    this.fetchMolecule();
   }
 
   componentDidMount() {
@@ -38,6 +40,17 @@ class CalculationContainer extends Component {
 
     if (this.state.id && this.state.orbital) {
         this.props.dispatch(calculations.loadOrbital(this.state.id, this.state.orbital));
+    }
+  }
+
+  componentWillUpdate() {
+    this.fetchMolecule();
+  }
+
+  fetchMolecule() {
+    const { dispatch, calculation, molecule } = this.props;
+    if (!isNil(calculation) && isNil(molecule)) {
+      dispatch(molecules.loadMoleculeById(calculation.moleculeId));
     }
   }
 

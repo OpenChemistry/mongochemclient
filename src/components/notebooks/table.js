@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import { withStyles } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,16 +15,19 @@ import blue from '@material-ui/core/colors/blue';
 import filesize from 'filesize'
 import moment from 'moment'
 
-const style = {
+const style = theme => ({
   iconColumn:  {
-    width: 20
+    width: 2.5 * theme.spacing.unit
+  },
+  redirecting: {
+    backgroundColor: theme.palette.grey[100]
   }
-}
+});
 
 class NotebooksTable extends Component {
 
   render() {
-    const {notebooks, onOpen, redirecting} = this.props;
+    const {notebooks, onOpen, redirecting, classes} = this.props;
     return (
       <Table>
         <TableHead>
@@ -35,11 +39,12 @@ class NotebooksTable extends Component {
           </TableRow>
         </TableHead>
         <TableBody
+          className={redirecting ? classes.redirecting : ''}
         >
         {notebooks.map((notebook, i) =>
           <TableRow
-            style={{cursor: "pointer"}}
-            hover
+            style={{cursor: redirecting ? null : "pointer"}}
+            hover={!redirecting}
             onClick={() => {
               if (!redirecting) {
                 onOpen(notebook);
@@ -47,7 +52,7 @@ class NotebooksTable extends Component {
             }}
             key={notebook._id}
           >
-            <TableCell style={style.iconColumn}>
+            <TableCell className={classes.iconColumn}>
               <Avatar style={{backgroundColor: blue[500]}}>
                 <InsertDriveFile />
               </Avatar>
@@ -63,4 +68,4 @@ class NotebooksTable extends Component {
   }
 }
 
-export default NotebooksTable;
+export default withStyles(style)(NotebooksTable);

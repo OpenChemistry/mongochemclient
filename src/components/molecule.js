@@ -91,7 +91,8 @@ class Molecule extends Component {
                     //Props
                     {
                       cjson: molecule.cjson,
-                      rotate: this.state.rotate
+                      rotate: this.state.rotate,
+                      moleculeRenderer: 'moljs'
                     }
                   )}
                 />

@@ -70,10 +70,11 @@ class App extends Component {
   render() {
     const {classes} = this.props;
     let development = false;
-    if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ||
+        process.env.REACT_APP_DEPLOYMENT === 'development') {
       development = true;
     }
-    
+
     return (
       <ConnectedRouter history={history}>
         <div className={classes.root}>

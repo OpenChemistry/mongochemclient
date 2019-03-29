@@ -5,8 +5,7 @@ import { push } from 'connected-react-router';
 
 import {
   selectors,
-  calculations,
-  configuration
+  calculations
 } from '@openchemistry/redux'
 
 import Calculation from '../components/calculation';
@@ -61,19 +60,18 @@ class CalculationContainer extends Component {
   }
 
   render() {
-    const { id, cjson, showNotebooks, calculationProperties, molecule} = this.props;
-    if (isNil(cjson)) {
+    const { id, calculation, showNotebooks, molecule} = this.props;
+    if (isNil(calculation) || isNil(calculation.cjson)) {
       return null;
     }
     return (
       <div style={{width:'100%', height: '40rem'}}>
         <Calculation
-          cjson={cjson}
+          calculation={calculation}
+          molecule={molecule}
           id={id}
           onIOrbitalChanged={this.onIOrbitalChanged}
           showNotebooks={showNotebooks}
-          calculationProperties={calculationProperties}
-          molecule={molecule}
           {...this.props}
         />
       </div>
@@ -89,12 +87,12 @@ class CalculationContainer extends Component {
 }
 
 CalculationContainer.propTypes = {
-  cjson: PropTypes.object,
+  calculation: PropTypes.object,
+  cube: PropTypes.object,
   id: PropTypes.string,
   mo: PropTypes.any,
   inchikey: PropTypes.string,
   showNotebooks: PropTypes.bool,
-  calculationProperties: PropTypes.object,
   molecule: PropTypes.object,
   isoValue: PropTypes.number,
   mode: PropTypes.number,
@@ -112,12 +110,12 @@ CalculationContainer.propTypes = {
 }
 
 CalculationContainer.defaultProps = {
-  cjson: null,
+  calculation: null,
+  cube: null,
   id: null,
   mo: null,
   inchikey: null,
   showNotebooks: true,
-  calculationProperties: null,
   molecule: null,
   isoValue: 0.05,
   mode: null,
@@ -138,14 +136,14 @@ function mapStateToProps(state, ownProps) {
   let id = ownProps.match.params.id;
   let iOrbital = ownProps.match.params.iOrbital;
   let cjson;
-  let calculationProperties;
+  let calculationInput;
   let molecule;
 
   let props = {
     id,
     mo: iOrbital,
     cjson,
-    calculationProperties,
+    calculationInput,
     molecule
   }
 
@@ -239,8 +237,7 @@ function mapStateToProps(state, ownProps) {
 
   let calculations = selectors.calculations.getCalculationsById(state);
   if (!isNil(id) && id in calculations) {
-    props.calculationProperties = calculations[id].properties;
-    props.cjson = calculations[id].cjson;
+    props.calculation = calculations[id];
     const molecules = selectors.molecules.getMoleculesById(state);
     if (calculations[id].moleculeId in molecules) {
       props.molecule = molecules[calculations[id].moleculeId];
@@ -248,11 +245,11 @@ function mapStateToProps(state, ownProps) {
   }
 
   let orbitals = selectors.calculations.getOrbitals(state, id);
-  if (!isNil(props.cjson) && !isNil(iOrbital) && iOrbital in orbitals) {
-    props.cjson  = {...props.cjson, cube: orbitals[iOrbital].cube};
-  } else if (!isNil(props.cjson)) {
+  if (!isNil(iOrbital) && iOrbital in orbitals) {
+    props.cube  = orbitals[iOrbital].cube;
+  } else {
     // Remove any orbital data
-    delete props.cjson.cube;
+    props.cube = null;
   }
 
   const config = selectors.configuration.getConfiguration(state);

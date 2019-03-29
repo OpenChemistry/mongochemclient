@@ -1,3 +1,5 @@
+import { toUpperCase, capitalizeFirst } from './strings';
+
 export const KNOWN_IMAGES = {
   'openchemistry/psi4': {
     display: 'Psi4'
@@ -54,14 +56,6 @@ export const formatTask = (task) => {
 
 function identity(value) {
   return value;
-}
-
-function capitalizeFirst(value) {
-  return value.charAt(0).toUpperCase() + value .slice(1);
-}
-
-function toUpperCase(value) {
-  return String.prototype.toUpperCase.call(value);
 }
 
 function knownOr(value, known_values, transform = identity) {

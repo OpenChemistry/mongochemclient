@@ -23,6 +23,7 @@ import BlogFeed from './blog';
 import { wc } from '../../utils/webcomponent';
 
 import './index.css';
+import { isNil } from 'lodash-es';
 
 const style = theme => (
   {
@@ -190,22 +191,30 @@ class Home extends Component {
                   <GroupIcon />&nbsp;Structures
                 </Typography>
               </div>
-              {Object.values(molecules).map((cjson, i) =>
-                <Paper className={classes.molecule}
-                  onMouseEnter={(e) => {this.onMoleculeInteract()}}
-                  key={i}
-                >
-                  <oc-molecule
-                    ref={wc(
-                      {},
-                      {
-                        cjson,
-                        rotate
-                      }
-                    )}
-                  />
-                </Paper>
-              )}
+              {Object.values(molecules).map((cjson, i) => {
+                if (isNil(cjson)) {
+                  return null;
+                }
+                return (
+                  <Paper className={classes.molecule}
+                    onMouseEnter={(e) => {this.onMoleculeInteract()}}
+                    key={i}
+                  >
+                    {cjson &&
+                    <oc-molecule
+                      ref={wc(
+                        {},
+                        {
+                          cjson,
+                          rotate,
+                          moleculeRenderer: 'moljs'
+                        }
+                      )}
+                    />
+                    }
+                  </Paper>
+                )
+              })}
             </Grid>
           </Grid>
           </PageBody>

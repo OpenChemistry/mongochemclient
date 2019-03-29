@@ -41,6 +41,16 @@ const styles = theme => ({
 
 class Calculation extends Component {
 
+  getName(molecule) {
+    if (molecule) {
+      if (molecule.name)
+        return molecule.name;
+      else if (molecule.properties.formula)
+        return formatFormula(molecule.properties.formula);
+    }
+    return 'Calculation';
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -166,7 +176,7 @@ class Calculation extends Component {
       <div>
         <PageHead>
           <Typography  color="inherit" gutterBottom variant="display1">
-            {molecule && molecule.properties.formula ? formatFormula(molecule.properties.formula) : 'Calculation'}
+            {this.getName(molecule)}
           </Typography>
         </PageHead>
         <PageBody>

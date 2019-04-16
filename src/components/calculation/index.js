@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { withStyles, Grid, Card, Typography, Button } from '@material-ui/core';
+import { withStyles, Grid, Card, Typography, Fab } from '@material-ui/core';
 
 import { wc } from '../../utils/webcomponent';
 import { isNil, has } from 'lodash-es';
@@ -211,9 +211,9 @@ class Calculation extends Component {
               </Card>
               { showNotebooks &&
               <div className={classes.buttonDiv}>
-                <Button variant="fab" onClick={this.handleTouchTap} className={classes.button}>
+                <Fab onClick={this.handleTouchTap} className={classes.button}>
                   <AssignmentIcon/>
-                </Button>
+                </Fab>
               </div>
               }
             </Grid>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { isNil } from 'lodash-es'
 
 import {
   DialogTitle,
@@ -11,17 +12,25 @@ import InstructionsDialogComponent from '../instructions-dialog';
 class InstructionsComponent extends Component {
   render = () => {
     const {show, handleClose, apiKey} = this.props;
-    
-    const { protocol, hostname, port, origin } = window.location;
 
-    const command = `export GIRDER_API_KEY=${apiKey} && \\
-export GIRDER_SCHEME=${protocol.split(':')[0]} && \\
-export GIRDER_HOST=${hostname} && \\
-export GIRDER_PORT=${port} && \\
-export APP_BASE_URL=${origin} && \\
-pip install openchemistry && \\
-jupyter labextension install @openchemistry/jupyterlab && \\
-jupyter lab`;
+    const { protocol, hostname, origin } = window.location;
+
+    const commands = [
+      `export GIRDER_API_KEY=${apiKey}`,
+      `export GIRDER_SCHEME=${protocol.split(':')[0]}`,
+      `export GIRDER_HOST=${hostname}`
+    ]
+    const port = '';
+    if (!isNil(port) && port.trim() != '') {
+      commands.push(`export GIRDER_PORT=${port}`);
+    }
+
+    commands.push(`export APP_BASE_URL=${origin}`);
+    commands.push('pip install openchemistry');
+    commands.push('jupyter labextension install @openchemistry/jupyterlab')
+    commands.push('jupyter lab');
+
+    const command = `${commands.join(' && \\\\\n')}`;
 
     return (
       <InstructionsDialogComponent

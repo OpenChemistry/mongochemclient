@@ -11,10 +11,10 @@ class InstructionsContainer extends Component {
   }
 
   render() {
-    const { show, apiKey } = this.props;
+    const { show, apiKey, config } = this.props;
 
     return (
-      <InstructionsComponent apiKey={apiKey} show={show} handleClose={this.handleClose}/>
+      <InstructionsComponent apiKey={apiKey} show={show} handleClose={this.handleClose} config={config}/>
     )
   }
 }
@@ -22,7 +22,9 @@ class InstructionsContainer extends Component {
 function mapStateToProps(state, _ownProps) {
   const apiKey = auth.selectors.getApiKey(state);
   const show = selectors.jupyterlab.getShowJupyterlabIntegration(state);
-  return {show, apiKey};
+  const config = selectors.configuration.getConfiguration(state);
+
+  return {show, apiKey, config};
 }
 
 export default connect(mapStateToProps)(InstructionsContainer);

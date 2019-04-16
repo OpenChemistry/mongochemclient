@@ -17,6 +17,7 @@ import Hidden from '@material-ui/core/Hidden';
 import NotebookContainer from './containers/notebook';
 import NotebooksContainer from './containers/notebooks';
 import SideBar from './containers/sidebar';
+import Footer from './containers/footer';
 import Home from './containers/home';
 import Molecules from './containers/molecules';
 import Calculations from './containers/calculations';
@@ -41,8 +42,15 @@ const appStyles = theme => ({
     display: 'flex',
     flexGrow: 1
   },
+  contentContainer: {
+    flexGrow: 1,
+    display: 'flex',
+    flexDirection: 'column'
+  },
   content: {
-    flexGrow: 1
+    flexGrow:1
+  },
+  footer: {
   }
 })
 
@@ -101,27 +109,32 @@ class App extends Component {
                 <SideBar onLinkClick={this.toggleSideBar} />
               </Drawer>
             </Hidden>
-            <div className={classes.content}>
+            <div className={classes.contentContainer}>
+              <div className={classes.content}>
 
-              <Switch>
-                <Route exact path='/' component={Home}/>
-                <Route exact path='/molecules/:id' component={MoleculeContainer}/>
-                <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
-                <Route exact path='/molecules' component={Molecules}/>
-                <Route exact path='/chart' component={VibrationalModesChartContainer}/>
-                <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
-                <Route path='/calculations/:id/orbital/:iOrbital' component={CalculationContainer}/>
-                <Route path='/calculations/:id' component={CalculationContainer}/>
-                <Route path='/calculations' component={Calculations}/>
-                <Route path='/notebooks/:id' component={NotebookContainer}/>
-                <Route path='/notebooks' component={NotebooksContainer} />
-              </Switch>
+                <Switch>
+                  <Route exact path='/' component={Home}/>
+                  <Route exact path='/molecules/:id' component={MoleculeContainer}/>
+                  <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
+                  <Route exact path='/molecules' component={Molecules}/>
+                  <Route exact path='/chart' component={VibrationalModesChartContainer}/>
+                  <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
+                  <Route path='/calculations/:id/orbital/:iOrbital' component={CalculationContainer}/>
+                  <Route path='/calculations/:id' component={CalculationContainer}/>
+                  <Route path='/calculations' component={Calculations}/>
+                  <Route path='/notebooks/:id' component={NotebookContainer}/>
+                  <Route path='/notebooks' component={NotebooksContainer} />
+                </Switch>
 
-              <authUI.LoginOptions girder={development}/>
-              <authUI.GirderLogin/>
-              <authUI.NerscLogin/>
-              <authUI.OauthRedirect/>
-              <JupyterIntegration/>
+                <authUI.LoginOptions girder={development}/>
+                <authUI.GirderLogin/>
+                <authUI.NerscLogin/>
+                <authUI.OauthRedirect/>
+                <JupyterIntegration/>
+              </div>
+              <div className={classes.footer}>
+                <Footer />
+              </div>
             </div>
           </div>
         </div>

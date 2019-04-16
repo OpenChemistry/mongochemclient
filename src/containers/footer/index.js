@@ -16,11 +16,11 @@ class FooterContainer extends Component {
 }
 
 function mapStateToProps(state, _ownProps) {
-  const { configuration } = selectors.configuration.getConfiguration(state) || {};
+  const { branding } = selectors.configuration.getConfiguration(state) || {};
   let props = {};
 
-  if (!isNil(configuration)) {
-    const { privacy, license, footerLogoFileId, footerLogoUrl } = configuration;
+  if (!isNil(branding)) {
+    const { privacy, license, footerLogoFileId, footerLogoUrl } = branding;
     let footerLogoImageUrl = null;
     if (!isNil(footerLogoFileId)) {
       const baseUrl = girderClient().getBaseURL();

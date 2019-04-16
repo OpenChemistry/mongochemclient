@@ -16,6 +16,7 @@ class HeaderContainer extends Component {
   render() {
     return (
       <Header
+        {...this.props}
         onLogoClick={this.onLogoClick}
         loggedIn={this.props.loggedIn}
       />

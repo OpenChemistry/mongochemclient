@@ -72,6 +72,11 @@ class CalculationContainer extends Component {
     dispatch(push(`/calculations/${id}?${params.toString()}`));
   }
 
+  onMoleculeClick = (molecule) => {
+    const {dispatch} = this.props;
+    dispatch(push(`/molecules/${molecule._id}`));
+  }
+
   render() {
     const { id, calculation, showNotebooks, molecule} = this.props;
     if (isNil(calculation) || isNil(calculation.cjson)) {
@@ -84,6 +89,7 @@ class CalculationContainer extends Component {
           molecule={molecule}
           id={id}
           onIOrbitalChanged={this.onIOrbitalChanged}
+          onMoleculeClick={this.onMoleculeClick}
           showNotebooks={showNotebooks}
           {...this.props}
         />

@@ -15,7 +15,7 @@ import PageBody from '../page-body';
 import CardComponent from '../item-details-card';
 import { formatFormula } from '../../utils/formulas';
 import { camelToSpace } from '../../utils/strings';
-import { formatBasis, formatCode, formatTask, formatTheory } from '../../utils/calculations';
+import { getCalculationProperties } from '../../utils/calculations';
 
 const styles = theme => ({
   buttonDiv: {
@@ -77,6 +77,7 @@ class Calculation extends Component {
       calculation,
       cube,
       onIOrbitalChanged,
+      onMoleculeClick,
       id,
       showNotebooks,
       molecule,
@@ -125,28 +126,23 @@ class Calculation extends Component {
 
     const moleculeSection = {
       label: 'Molecule',
-      properties: moleculeProperties
+      items: [
+        {
+          properties: moleculeProperties,
+          onClick: () => {onMoleculeClick(molecule)}
+        }
+      ]
     };
 
     sections.push(moleculeSection);
 
-    let calculationProperties = [];
-    if (has(calculation, 'image.repository')) {
-      calculationProperties.push({label: 'Code', value: formatCode(calculation.image.repository)});
-    }
-    if (has(calculation, 'input.parameters.task')) {
-      calculationProperties.push({label: 'Type', value: formatTask(calculation.input.parameters.task)});
-    }
-    if (has(calculation, 'input.parameters.theory')) {
-      calculationProperties.push({label: 'Theory', value: formatTheory(calculation.input.parameters.theory, calculation.input.parameters.functional)});
-    }
-    if (has(calculation, 'input.parameters.basis')) {
-      calculationProperties.push({label: 'Basis', value: formatBasis(calculation.input.parameters.basis)});
-    }
+    let calculationProperties = getCalculationProperties(calculation);
 
     const calculationSection = {
       label: 'Input',
-      properties: calculationProperties
+      items: [
+        {properties: calculationProperties}
+      ]
     };
 
     sections.push(calculationSection);
@@ -166,7 +162,9 @@ class Calculation extends Component {
 
     const outputSection = {
       label: 'Output',
-      properties: outputProperties
+      items: [
+        {properties: outputProperties}
+      ]
     };
 
     sections.push(outputSection);
@@ -222,7 +220,7 @@ class Calculation extends Component {
                 <CardComponent
                   key={i}
                   title={section.label}
-                  properties={section.properties}
+                  items={section.items}
                 />
               )}
             </Grid>

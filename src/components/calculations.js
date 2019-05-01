@@ -9,7 +9,7 @@ import PageHead from './page-head';
 import PageBody from './page-body';
 import CardComponent from './item-card';
 import { formatFormula } from '../utils/formulas';
-import { formatCode, formatBasis, formatTheory, formatTask } from '../utils/calculations';
+import { getCalculationProperties } from '../utils/calculations';
 
 class Calculations extends Component {
 
@@ -43,19 +43,7 @@ class Calculations extends Component {
                 const title = this.getName(calculation);
                 const image = `${window.location.origin}/api/v1/molecules/${calculation.moleculeId}/svg`;
                 const pending = has(calculation, 'properties.pending');
-                const properties = [];
-                if (has(calculation, 'image.repository')) {
-                  properties.push({label: 'Code', value: formatCode(calculation.image.repository)});
-                }
-                if (has(calculation, 'input.parameters.task')) {
-                  properties.push({label: 'Type', value: formatTask(calculation.input.parameters.task)});
-                }
-                if (has(calculation, 'input.parameters.theory')) {
-                  properties.push({label: 'Theory', value: formatTheory(calculation.input.parameters.theory, calculation.input.parameters.functional)});
-                }
-                if (has(calculation, 'input.parameters.basis')) {
-                  properties.push({label: 'Basis', value: formatBasis(calculation.input.parameters.basis)});
-                }
+                const properties = getCalculationProperties(calculation);
 
                 return (
                   <Grid key={calculation._id} item xs={12} sm={6} md={4} lg={3}>

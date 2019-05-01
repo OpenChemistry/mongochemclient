@@ -10,6 +10,9 @@ export const KNOWN_IMAGES = {
   },
   'openchemistry/chemml': {
     display: 'ChemML'
+  },
+  'openchemistry/torchani': {
+    display: 'TorchANI'
   }
 }
 
@@ -65,7 +68,7 @@ export const formatBasis = (basis) => {
 }
 
 export const formatCode = (image) => {
-  return knownOrUpperCase(image, KNOWN_IMAGES);
+  return knownOr(image, KNOWN_IMAGES);
 }
 
 export const formatTask = (task) => {

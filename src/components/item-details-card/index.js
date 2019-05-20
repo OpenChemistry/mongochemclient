@@ -4,7 +4,8 @@ import {
   IconButton,
   Collapse,
   Typography,
-  withStyles
+  withStyles,
+  CardActionArea
 } from '@material-ui/core';
 
 import KeyBoardArrowDown from '@material-ui/icons/KeyboardArrowDown';
@@ -21,7 +22,16 @@ const style = (theme) => (
       marginBottom: theme.spacing.unit
     },
     cardActionArea: {
-      width: '100%'
+      width: '100%',
+      paddingTop: theme.spacing.unit,
+      paddingLeft: theme.spacing.unit * 2,
+      paddingRight: theme.spacing.unit * 2,
+      marginBottom: theme.spacing.unit * 2,
+    },
+    cardContent: {
+      padding: 0,
+      maxHeight: 40 * theme.spacing.unit,
+      overflowY: 'scroll'
     }
   }
 );
@@ -36,7 +46,7 @@ class CardComponent extends Component {
   }
 
   render() {
-    const {title, properties, classes} = this.props;
+    const {title, items, classes} = this.props;
     const {collapsed} = this.state;
 
     return (
@@ -53,13 +63,21 @@ class CardComponent extends Component {
           }
         />
         <Collapse in={!collapsed}>
-          <CardContent>
-            {properties.map(({label, value}, j) => (
-              <div className={classes.row} key={j}>
-                <Typography component='div' color='textSecondary'>{label}</Typography>
-                <Typography component='div'>{value}</Typography>
-              </div>
-            ))}
+          <CardContent className={classes.cardContent}>
+              {(items||[]).map((item, i) => {
+                const properties = item.properties || [];
+                const onClick = item.onClick;
+                return (
+                  <CardActionArea key={i} onClick={onClick} className={classes.cardActionArea} disabled={!onClick}>
+                    {properties.map(({label, value}, j) => (
+                      <div className={classes.row} key={j}>
+                        <Typography component='div' color='textSecondary'>{label}</Typography>
+                        <Typography component='div'>{value}</Typography>
+                      </div>
+                    ))}
+                  </CardActionArea>
+                )
+              })}
           </CardContent>
         </Collapse>
       </Card>

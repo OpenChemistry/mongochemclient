@@ -13,6 +13,7 @@ import CardComponent from './item-details-card';
 import { formatFormula } from '../utils/formulas';
 
 import { wc } from '../utils/webcomponent';
+import { getCalculationProperties } from '../utils/calculations';
 
 const styles = theme => ({
   moleculeContainer: {
@@ -46,7 +47,7 @@ class Molecule extends Component {
   }
 
   render = () => {
-    const {molecule, classes} = this.props;
+    const {molecule, calculations, onCalculationClick, classes} = this.props;
 
     const sections = [];
     let moleculeProperties = [];
@@ -68,10 +69,23 @@ class Molecule extends Component {
 
     const moleculeSection = {
       label: 'Molecule Properties',
-      properties: moleculeProperties
+      items: [
+        {properties: moleculeProperties}
+      ]
     };
 
     sections.push(moleculeSection);
+
+    const calculationsSection = {
+      label: 'Calculations',
+      properties: [],
+      items: calculations.map(calculation => ({
+        properties: getCalculationProperties(calculation),
+        onClick: () => {onCalculationClick(calculation)}
+      }))
+    }
+
+    sections.push(calculationsSection);
 
     return (
       <div>
@@ -103,7 +117,7 @@ class Molecule extends Component {
                 <CardComponent
                   key={i}
                   title={section.label}
-                  properties={section.properties}
+                  items={section.items}
                 />
               )}
             </Grid>

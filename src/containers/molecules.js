@@ -12,7 +12,7 @@ import Molecules from '../components/molecules';
 class MoleculesContainer extends Component {
 
   componentDidMount() {
-    var options = { limit: 25, offset: 0, sort: '_id', sortdir: -1 }
+    const options = { limit: 25, offset: 0, sort: '_id', sortdir: -1 }
     this.props.dispatch(molecules.loadMolecules(options));
   }
 

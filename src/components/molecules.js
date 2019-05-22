@@ -11,8 +11,6 @@ import { withStyles } from '@material-ui/core';
 import { formatFormula } from '../utils/formulas';
 import { has } from 'lodash-es';
 
-import { molecules } from '@openchemistry/redux';
-
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';

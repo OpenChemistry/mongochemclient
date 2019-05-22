@@ -56,13 +56,13 @@ class Molecules extends Component {
     sortBy: ''
   }
 
-  handleChange = event => {
+  handleOptionsChange = event => {
     this.setState({ [event.target.name]: event.target.value });
     const val = event.target.value;
     const sort = this.sortOptions[val].sort;
     const sortdir = this.sortOptions[val].sortdir;
     const options = { limit: 25, offset: 0, sort: sort, sortdir: sortdir }
-    this.props.onSortChange(options);
+    this.props.onOptionsChange(options);
   }
 
   getName(molecule) {
@@ -74,7 +74,7 @@ class Molecules extends Component {
   }
 
   render = () => {
-    const {classes, molecules, onOpen, onSortChange} = this.props;
+    const {classes, molecules, onOpen, onOptionsChange} = this.props;
 
     return (
       <div>
@@ -91,7 +91,7 @@ class Molecules extends Component {
               <InputLabel htmlFor="sort-by">Sort By</InputLabel>
               <Select
                 value={this.state.sortBy}
-                onChange={this.handleChange}
+                onChange={this.handleOptionsChange}
                 inputProps={{
                   name: 'sortBy',
                   id: 'sort-by',

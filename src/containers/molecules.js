@@ -20,7 +20,7 @@ class MoleculesContainer extends Component {
     this.props.dispatch(push(`/molecules/inchikey/${inchikey}`));
   }
 
-  onSortChange = (options) => {
+  onOptionsChange = (options) => {
     this.props.dispatch(molecules.loadMolecules(options));
   }
 
@@ -30,7 +30,7 @@ class MoleculesContainer extends Component {
       return null;
     }
     return (
-      <Molecules molecules={molecules} onOpen={this.onOpen} onSortChange={this.onSortChange}/>
+      <Molecules molecules={molecules} onOpen={this.onOpen} onOptionsChange={this.onOptionsChange}/>
     );
   }
 }

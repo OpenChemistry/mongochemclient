@@ -12,7 +12,8 @@ import Molecules from '../components/molecules';
 class MoleculesContainer extends Component {
 
   componentDidMount() {
-    this.props.dispatch(molecules.loadMolecules());
+    const options = { limit: 25, offset: 0, sort: '_id', sortdir: -1 }
+    this.props.dispatch(molecules.loadMolecules(options));
   }
 
   onOpen = (inchikey) => {

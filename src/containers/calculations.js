@@ -12,8 +12,9 @@ import Calculations from '../components/calculations';
 class CalculationsContainer extends Component {
 
   componentDidMount() {
-    this.props.dispatch(molecules.loadMolecules());
-    this.props.dispatch(calculations.loadCalculations());
+    const options = { limit: 25, offset: 0, sort: '_id', sortdir: -1 }
+    this.props.dispatch(molecules.loadMolecules(options));
+    this.props.dispatch(calculations.loadCalculations(options));
   }
 
   onOpen = (id) => {

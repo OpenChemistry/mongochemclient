@@ -36,6 +36,14 @@ const sortOptions = [
   }
 ];
 
+const limitOptions = [
+  4,
+  8,
+  16,
+  32,
+  64
+];
+
 const searchFields = [
   {name: 'formula', type: 'text', label: 'Formula', initialValue: ''},
   {name: 'name', type: 'text', label: 'Name', initialValue: ''},
@@ -50,7 +58,7 @@ class MoleculesContainer extends Component {
     super(props);
     this.state = {
       sortIndex: 0,
-      paginationOptions: { limit: 8, offset: 0, sort: '_id', sortdir: -1 }
+      paginationOptions: { limit: 16, offset: 0, sort: '_id', sortdir: -1 }
     }
     this.onSearch = debounce(this.onSearch, 500);
   }
@@ -72,8 +80,13 @@ class MoleculesContainer extends Component {
         this.onOptionsChange({sort, sortdir});
         return;
       }
+      case 'limit': {
+        this.onOptionsChange({limit: value, offset: 0});
+        return;
+      }
       case 'offset': {
         this.onOptionsChange({offset: value});
+        return;
       }
       default: {
       }
@@ -124,6 +137,7 @@ class MoleculesContainer extends Component {
             sortIndex={sortIndex} sortOptions={sortOptions} onChange={this.onChange}
             offset={offset}
             limit={limit}
+            limitOptions={limitOptions}
             matches={matches}
           />
         }

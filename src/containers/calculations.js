@@ -23,6 +23,14 @@ const sortOptions = [
   }
 ];
 
+const limitOptions = [
+  4,
+  8,
+  16,
+  32,
+  64
+];
+
 class CalculationsContainer extends Component {
 
   constructor(props) {
@@ -50,8 +58,13 @@ class CalculationsContainer extends Component {
         this.onOptionsChange({sort, sortdir});
         return;
       }
+      case 'limit': {
+        this.onOptionsChange({limit: value, offset: 0});
+        return;
+      }
       case 'offset': {
         this.onOptionsChange({offset: value});
+        return;
       }
       default: {
       }
@@ -81,6 +94,7 @@ class CalculationsContainer extends Component {
             sortIndex={sortIndex} sortOptions={sortOptions} onChange={this.onChange}
             offset={offset}
             limit={limit}
+            limitOptions={limitOptions}
             matches={matches}
           />
         }

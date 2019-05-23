@@ -37,7 +37,7 @@ class CalculationsContainer extends Component {
     super(props);
     this.state = {
       sortIndex: 0,
-      paginationOptions: { limit: 4, offset: 0, sort: '_id', sortdir: -1 }
+      paginationOptions: { limit: 16, offset: 0, sort: '_id', sortdir: -1 }
     }
   }
 

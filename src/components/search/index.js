@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
 
-import { TextField, FormControl, withStyles, Select, MenuItem } from '@material-ui/core';
+import { InputBase, withStyles, Select, MenuItem, InputAdornment, IconButton, Paper } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 
 const styles = theme => ({
+  root: {
+  },
   fieldContainer: {
-    display: 'flex'
+    display: 'flex',
+    width: '100%'
   },
   fieldSelect: {
+    backgroundColor: theme.palette.grey[200],
+    borderBottomLeftRadius: theme.spacing.unit,
+    borderTopLeftRadius: theme.spacing.unit,
+    padding: theme.spacing.unit,
+    paddingLeft: 2 * theme.spacing.unit
 
   },
   fieldText: {
     flexGrow: 1,
-    marginLeft: theme.spacing.unit
+    marginLeft: 2 * theme.spacing.unit
   }
 });
 
@@ -26,7 +35,23 @@ const SearchForm = ({fields, onSubmit, classes}) => {
 
   const onFieldValueChange = (index, value) => {
     setFieldValue(value);
-    onSubmit({[fields[index].name]: value});
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const fieldName = fields[currentField].name;
+
+    const values = fields.reduce((total, {name}) => {
+      total[name] = undefined;
+      return total;
+    }, {});
+
+    if (fieldValue.trim().length > 0) {
+      values[fieldName] = fieldValue;
+    }
+
+    onSubmit(values);
   }
 
   const fieldOptions = fields.map(({label}, i) => (
@@ -34,14 +59,30 @@ const SearchForm = ({fields, onSubmit, classes}) => {
   ));
 
   return (
-    <FormControl fullWidth>
-      <div className={classes.fieldContainer}>
-      <Select value={currentField} onChange={e => {onCurrentFieldChange(e.target.value)}}>
-        {fieldOptions}
-      </Select>
-      <TextField value={fieldValue} onChange={e => {onFieldValueChange(currentField, e.target.value)}} className={classes.fieldText}/>
-      </div>
-    </FormControl>
+    <Paper className={classes.root}>
+    <form onSubmit={handleSubmit}>
+        <div className={classes.fieldContainer}>
+          <Select
+            value={currentField} onChange={e => {onCurrentFieldChange(e.target.value)}}
+            className={classes.fieldSelect}
+          >
+            {fieldOptions}
+          </Select>
+          <InputBase
+            placeholder='Search'
+            value={fieldValue} onChange={e => {onFieldValueChange(currentField, e.target.value)}}
+            className={classes.fieldText}
+            endAdornment={
+              <InputAdornment position='end'>
+                <IconButton type='submit'>
+                  <SearchIcon/>
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+        </div>
+    </form>
+    </Paper>
   );
 };
 

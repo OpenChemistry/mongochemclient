@@ -11,7 +11,7 @@ const styles = theme => ({
   },
   formControl: {
     margin: theme.spacing.unit,
-    minWidth: 120
+    minWidth: 16 * theme.spacing.unit
   }
 });
 
@@ -30,7 +30,7 @@ const PaginationSortComponent = ({sortIndex, sortOptions, offset, matches, limit
       />
       <div>
         <FormControl className={classes.formControl}>
-          <InputLabel>Limit</InputLabel>
+          <InputLabel>Results Per Page</InputLabel>
           <Select
             value={limit}
             onChange={e => {onChange('limit', e.target.value)}}

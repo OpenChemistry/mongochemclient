@@ -15,12 +15,20 @@ const styles = theme => ({
     borderBottomLeftRadius: theme.spacing.unit,
     borderTopLeftRadius: theme.spacing.unit,
     padding: theme.spacing.unit,
-    paddingLeft: 2 * theme.spacing.unit
-
+    paddingLeft: 2 * theme.spacing.unit,
+    '&:before': {
+      display: 'none'
+    },
+    '&:after': {
+      display: 'none'
+    },
+    borderRightStyle: 'solid',
+    borderRightColor: theme.palette.grey[400],
+    borderRightWidth: 1
   },
   fieldText: {
     flexGrow: 1,
-    marginLeft: 2 * theme.spacing.unit
+    marginLeft: 2 * theme.spacing.unit,
   }
 });
 

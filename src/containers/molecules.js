@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router';
+import { debounce } from 'lodash-es';
 
 import { selectors } from '@openchemistry/redux'
 import { molecules } from '@openchemistry/redux'
@@ -36,8 +37,8 @@ const sortOptions = [
 ];
 
 const searchFields = [
-  {name: 'name', type: 'text', label: 'Name', initialValue: ''},
   {name: 'formula', type: 'text', label: 'Formula', initialValue: ''},
+  {name: 'name', type: 'text', label: 'Name', initialValue: ''},
   {name: 'inchi', type: 'text', label: 'Inchi', initialValue: ''},
   {name: 'inchikey', type: 'text', label: 'Inchi Key', initialValue: ''},
   {name: 'smiles', type: 'text', label: 'Smiles', initialValue: ''}
@@ -49,8 +50,9 @@ class MoleculesContainer extends Component {
     super(props);
     this.state = {
       sortIndex: 0,
-      paginationOptions: { limit: 4, offset: 0, sort: '_id', sortdir: -1 }
+      paginationOptions: { limit: 8, offset: 0, sort: '_id', sortdir: -1 }
     }
+    this.onSearch = debounce(this.onSearch, 500);
   }
 
   componentDidMount() {
@@ -110,7 +112,7 @@ class MoleculesContainer extends Component {
     return (
       <Molecules molecules={molecules} matches={matches} onOpen={this.onOpen} onOptionsChange={this.onOptionsChange}
         before={
-          <CollapsibleCard title='Filters'>
+          <CollapsibleCard>
             <SearchForm
               fields={searchFields}
               onSubmit={this.onSearch}

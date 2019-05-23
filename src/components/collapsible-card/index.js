@@ -9,11 +9,12 @@ import {
 import KeyBoardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
 
-export default ({title, children}) => {
-  const [collapsed, setCollapsed] = useState(true);
+export default ({title, collapsible, children}) => {
+  const [collapsed, setCollapsed] = useState(collapsible);
 
   return (
     <Card>
+      {(title || collapsible) &&
       <CardHeader
         title={title}
         titleTypographyProps={{variant: 'h6'}}
@@ -25,6 +26,7 @@ export default ({title, children}) => {
           </IconButton>
         }
       />
+      }
       <Collapse in={!collapsed}>
         <CardContent>
           {children}

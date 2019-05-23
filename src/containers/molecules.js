@@ -9,6 +9,8 @@ import { isNil } from 'lodash-es';
 
 import PaginationSort from '../components/pagination-sort';
 import Molecules from '../components/molecules';
+import SearchForm from '../components/search';
+import CollapsibleCard from '../components/collapsible-card';
 
 const sortOptions = [
   {
@@ -32,6 +34,14 @@ const sortOptions = [
     sortdir: 1
   }
 ];
+
+const searchFields = [
+  {name: 'name', type: 'text', label: 'Name', initialValue: ''},
+  {name: 'formula', type: 'text', label: 'Formula', initialValue: ''},
+  {name: 'inchi', type: 'text', label: 'Inchi', initialValue: ''},
+  {name: 'inchikey', type: 'text', label: 'Inchi Key', initialValue: ''},
+  {name: 'smiles', type: 'text', label: 'Smiles', initialValue: ''}
+]
 
 class MoleculesContainer extends Component {
 
@@ -77,6 +87,19 @@ class MoleculesContainer extends Component {
     });
   }
 
+  onSearch = (values) => {
+    values = Object.entries(values).reduce((filtered, [key, value]) => {
+      if (value.trim().length > 0) {
+        filtered[key] = value.trim();
+      } else {
+        filtered[key] = undefined;
+      }
+      return filtered;
+    }, {});
+    const options = {...values, offset: 0};
+    this.onOptionsChange(options);
+  }
+
   render() {
     const { molecules, matches } = this.props;
     if (isNil(molecules)) {
@@ -85,14 +108,24 @@ class MoleculesContainer extends Component {
     const { paginationOptions, sortIndex } = this.state;
     const { limit, offset } = paginationOptions;
     return (
-      <Molecules molecules={molecules} matches={matches} onOpen={this.onOpen} onOptionsChange={this.onOptionsChange}>
-        <br/>
-        <PaginationSort
-          sortIndex={sortIndex} sortOptions={sortOptions} onChange={this.onChange}
-          offset={offset}
-          limit={limit}
-          matches={matches}
-        />
+      <Molecules molecules={molecules} matches={matches} onOpen={this.onOpen} onOptionsChange={this.onOptionsChange}
+        before={
+          <CollapsibleCard title='Filters'>
+            <SearchForm
+              fields={searchFields}
+              onSubmit={this.onSearch}
+            />
+          </CollapsibleCard>
+        }
+        after={
+          <PaginationSort
+            sortIndex={sortIndex} sortOptions={sortOptions} onChange={this.onChange}
+            offset={offset}
+            limit={limit}
+            matches={matches}
+          />
+        }
+      >
       </Molecules>
     );
   }

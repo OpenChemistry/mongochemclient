@@ -75,15 +75,16 @@ class CalculationsContainer extends Component {
     const { paginationOptions, sortIndex } = this.state;
     const { limit, offset } = paginationOptions;
     return (
-      <Calculations calculations={calculations} molecules={molecules} onOpen={this.onOpen}>
-        <br/>
-        <PaginationSort
-          sortIndex={sortIndex} sortOptions={sortOptions} onChange={this.onChange}
-          offset={offset}
-          limit={limit}
-          matches={matches}
-        />
-      </Calculations>
+      <Calculations calculations={calculations} molecules={molecules} onOpen={this.onOpen}
+        after={
+          <PaginationSort
+            sortIndex={sortIndex} sortOptions={sortOptions} onChange={this.onChange}
+            offset={offset}
+            limit={limit}
+            matches={matches}
+          />
+        }
+      />
     );
   }
 }

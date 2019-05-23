@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { has } from 'lodash-es';
+import { withStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
@@ -10,6 +11,13 @@ import PageBody from './page-body';
 import CardComponent from './item-card';
 import { formatFormula } from '../utils/formulas';
 import { getCalculationProperties } from '../utils/calculations';
+
+const styles = theme => ({
+  grid: {
+    marginTop: 1.5 * theme.spacing.unit,
+    marginBottom: 1.5 * theme.spacing.unit
+  }
+});
 
 class Calculations extends Component {
 
@@ -25,7 +33,7 @@ class Calculations extends Component {
   }
 
   render = () => {
-    const {calculations, onOpen, children} = this.props;
+    const {calculations, onOpen, before, after, classes} = this.props;
 
     return (
       <div>
@@ -37,7 +45,8 @@ class Calculations extends Component {
           </Typography>
         </PageHead>
         <PageBody>
-          <Grid container spacing={24}>
+          {before}
+          <Grid container spacing={24} className={classes.grid}>
             {
               calculations.map(calculation => {
                 const title = this.getName(calculation);
@@ -58,7 +67,7 @@ class Calculations extends Component {
               })
             }
           </Grid>
-          {children}
+          {after}
         </PageBody>
       </div>
     );
@@ -75,4 +84,4 @@ Calculations.defaultProps = {
   onOpen: () => null
 }
 
-export default Calculations;
+export default withStyles(styles)(Calculations);

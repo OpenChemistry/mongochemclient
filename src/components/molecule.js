@@ -14,6 +14,9 @@ import { formatFormula } from '../utils/formulas';
 
 import { wc } from '../utils/webcomponent';
 import { getCalculationProperties } from '../utils/calculations';
+import { toUpperCase } from '../utils/strings';
+import DownloadSelector from './download-selector';
+import CollapsibleCard from './collapsible-card';
 
 const styles = theme => ({
   moleculeContainer: {
@@ -78,7 +81,6 @@ class Molecule extends Component {
 
     const calculationsSection = {
       label: 'Calculations',
-      properties: [],
       items: calculations.map(calculation => ({
         properties: getCalculationProperties(calculation),
         onClick: () => {onCalculationClick(calculation)}
@@ -86,6 +88,13 @@ class Molecule extends Component {
     }
 
     sections.push(calculationsSection);
+
+    const fileFormats = ['cjson', 'xyz', 'sdf', 'cml'];
+    const fileOptions = fileFormats.map(format => ({
+      label: toUpperCase(format),
+      downloadUrl: `/api/v1/molecules/${molecule._id}/${format}`,
+      fileName: `molecule.${format}`
+    }));
 
     return (
       <div>
@@ -118,8 +127,12 @@ class Molecule extends Component {
                   key={i}
                   title={section.label}
                   items={section.items}
+                  collapsed={section.collapsed}
                 />
               )}
+              <CollapsibleCard title='Download Data'>
+                <DownloadSelector options={fileOptions}/>
+              </CollapsibleCard>
             </Grid>
           </Grid>
         </PageBody>

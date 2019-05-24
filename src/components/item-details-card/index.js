@@ -19,7 +19,8 @@ const style = (theme) => (
     row: {
       display: 'flex',
       justifyContent: 'space-between',
-      marginBottom: theme.spacing.unit
+      marginBottom: theme.spacing.unit,
+      alignItems: 'center'
     },
     cardActionArea: {
       width: '100%',
@@ -41,12 +42,12 @@ class CardComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      collapsed: false
+      collapsed: props.collapsed
     }
   }
 
   render() {
-    const {title, items, classes} = this.props;
+    const {title, items, expand, classes} = this.props;
     const {collapsed} = this.state;
 
     return (
@@ -67,15 +68,16 @@ class CardComponent extends Component {
               {(items||[]).map((item, i) => {
                 const properties = item.properties || [];
                 const onClick = item.onClick;
+                const Wrapper = onClick ? CardActionArea : 'div';
                 return (
-                  <CardActionArea key={i} onClick={onClick} className={classes.cardActionArea} disabled={!onClick}>
+                  <Wrapper key={i} onClick={onClick} className={classes.cardActionArea} disabled={!onClick}>
                     {properties.map(({label, value}, j) => (
                       <div className={classes.row} key={j}>
                         <Typography component='div' color='textSecondary'>{label}</Typography>
                         <Typography component='div'>{value}</Typography>
                       </div>
                     ))}
-                  </CardActionArea>
+                  </Wrapper>
                 )
               })}
           </CardContent>

@@ -25,7 +25,7 @@ class Calculations extends Component {
   }
 
   render = () => {
-    const {calculations, onOpen} = this.props;
+    const {calculations, onOpen, children} = this.props;
 
     return (
       <div>
@@ -58,6 +58,7 @@ class Calculations extends Component {
               })
             }
           </Grid>
+          {children}
         </PageBody>
       </div>
     );

@@ -7,63 +7,10 @@ import Typography from '@material-ui/core/Typography';
 import PageHead from './page-head';
 import PageBody from './page-body';
 import CardComponent from './item-card';
-import { withStyles } from '@material-ui/core';
 import { formatFormula } from '../utils/formulas';
 import { has } from 'lodash-es';
 
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-
-const styles = theme => ({
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  formControl: {
-    margin: theme.spacing.unit,
-    minWidth: 120,
-  }
-});
-
 class Molecules extends Component {
-
-  sortOptions = [
-    {
-      label: 'Newest',
-      sort: '_id',
-      sortdir: -1
-    },
-    {
-      label: 'Oldest',
-      sort: '_id',
-      sortdir: 1
-    },
-    {
-      label: 'Formula (Descending)',
-      sort: 'properties.formula',
-      sortdir: -1
-    },
-    {
-      label: 'Formula (Ascending)',
-      sort: 'properties.formula',
-      sortdir: 1
-    }
-  ]
-
-  state = {
-    sortBy: ''
-  }
-
-  handleOptionsChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-    const val = event.target.value;
-    const sort = this.sortOptions[val].sort;
-    const sortdir = this.sortOptions[val].sortdir;
-    const options = { limit: 25, offset: 0, sort: sort, sortdir: sortdir }
-    this.props.onOptionsChange(options);
-  }
 
   getName(molecule) {
     if (molecule.name)
@@ -74,7 +21,7 @@ class Molecules extends Component {
   }
 
   render = () => {
-    const {classes, molecules, onOpen, onOptionsChange} = this.props;
+    const {molecules, onOpen, children} = this.props;
 
     return (
       <div>
@@ -86,27 +33,6 @@ class Molecules extends Component {
           </Typography>
         </PageHead>
         <PageBody>
-          <form className={classes.root} autoComplete="off">
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="sort-by">Sort By</InputLabel>
-              <Select
-                value={this.state.sortBy}
-                onChange={this.handleOptionsChange}
-                inputProps={{
-                  name: 'sortBy',
-                  id: 'sort-by',
-                }}
-              >
-              {
-                this.sortOptions.map((option, index) => {
-                  return (
-                    <MenuItem value={index}>{option.label}</MenuItem>
-                  )
-                })
-              }
-              </Select>
-            </FormControl>
-          </form>
           <Grid container spacing={24}>
             {
               molecules.map(molecule => {
@@ -132,6 +58,7 @@ class Molecules extends Component {
               })
             }
           </Grid>
+          {children}
         </PageBody>
       </div>
     );
@@ -148,4 +75,4 @@ Molecules.defaultProps = {
   onOpen: () => null
 }
 
-export default withStyles(styles)(Molecules);
+export default Molecules;

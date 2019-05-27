@@ -23,13 +23,21 @@ const sortOptions = [
   }
 ];
 
+const limitOptions = [
+  4,
+  8,
+  16,
+  32,
+  64
+];
+
 class CalculationsContainer extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       sortIndex: 0,
-      paginationOptions: { limit: 4, offset: 0, sort: '_id', sortdir: -1 }
+      paginationOptions: { limit: 16, offset: 0, sort: '_id', sortdir: -1 }
     }
   }
 
@@ -50,8 +58,13 @@ class CalculationsContainer extends Component {
         this.onOptionsChange({sort, sortdir});
         return;
       }
+      case 'limit': {
+        this.onOptionsChange({limit: value, offset: 0});
+        return;
+      }
       case 'offset': {
         this.onOptionsChange({offset: value});
+        return;
       }
       default: {
       }
@@ -75,15 +88,17 @@ class CalculationsContainer extends Component {
     const { paginationOptions, sortIndex } = this.state;
     const { limit, offset } = paginationOptions;
     return (
-      <Calculations calculations={calculations} molecules={molecules} onOpen={this.onOpen}>
-        <br/>
-        <PaginationSort
-          sortIndex={sortIndex} sortOptions={sortOptions} onChange={this.onChange}
-          offset={offset}
-          limit={limit}
-          matches={matches}
-        />
-      </Calculations>
+      <Calculations calculations={calculations} molecules={molecules} onOpen={this.onOpen}
+        after={
+          <PaginationSort
+            sortIndex={sortIndex} sortOptions={sortOptions} onChange={this.onChange}
+            offset={offset}
+            limit={limit}
+            limitOptions={limitOptions}
+            matches={matches}
+          />
+        }
+      />
     );
   }
 }

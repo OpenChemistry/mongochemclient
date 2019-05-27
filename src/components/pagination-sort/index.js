@@ -11,11 +11,11 @@ const styles = theme => ({
   },
   formControl: {
     margin: theme.spacing.unit,
-    minWidth: 120
+    minWidth: 16 * theme.spacing.unit
   }
 });
 
-const PaginationSortComponent = ({sortIndex, sortOptions, offset, matches, limit, onChange, classes}) => {
+const PaginationSortComponent = ({sortIndex, sortOptions, offset, matches, limit, limitOptions, onChange, classes}) => {
 
   const handleSortChange = (event) => {
     const value = event.target.value;
@@ -28,21 +28,38 @@ const PaginationSortComponent = ({sortIndex, sortOptions, offset, matches, limit
         currentPageColor='secondary' otherPageColor='inherit'
         onClick={(e, offset) => { onChange('offset', offset); }}
       />
-      <FormControl className={classes.formControl}>
-        <InputLabel>Sort By</InputLabel>
-        <Select
-          value={sortIndex}
-          onChange={handleSortChange}
-        >
-        {
-          sortOptions.map((option, index) => {
-            return (
-              <MenuItem value={index} key={index}>{option.label}</MenuItem>
-            )
-          })
-        }
-        </Select>
-      </FormControl>
+      <div>
+        <FormControl className={classes.formControl}>
+          <InputLabel>Results Per Page</InputLabel>
+          <Select
+            value={limit}
+            onChange={e => {onChange('limit', e.target.value)}}
+          >
+          {
+            limitOptions.map((option) => {
+              return (
+                <MenuItem value={option} key={option}>{option}</MenuItem>
+              )
+            })
+          }
+          </Select>
+        </FormControl>
+        <FormControl className={classes.formControl}>
+          <InputLabel>Sort By</InputLabel>
+          <Select
+            value={sortIndex}
+            onChange={handleSortChange}
+          >
+          {
+            sortOptions.map((option, index) => {
+              return (
+                <MenuItem value={index} key={index}>{option.label}</MenuItem>
+              )
+            })
+          }
+          </Select>
+        </FormControl>
+      </div>
     </div>
   );
 }

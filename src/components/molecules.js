@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import { withStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
@@ -9,6 +10,13 @@ import PageBody from './page-body';
 import CardComponent from './item-card';
 import { formatFormula } from '../utils/formulas';
 import { has } from 'lodash-es';
+
+const styles = theme => ({
+  grid: {
+    marginTop: 1.5 * theme.spacing.unit,
+    marginBottom: 1.5 * theme.spacing.unit
+  }
+});
 
 class Molecules extends Component {
 
@@ -21,7 +29,7 @@ class Molecules extends Component {
   }
 
   render = () => {
-    const {molecules, onOpen, children} = this.props;
+    const {molecules, onOpen, before, after, classes} = this.props;
 
     return (
       <div>
@@ -33,7 +41,8 @@ class Molecules extends Component {
           </Typography>
         </PageHead>
         <PageBody>
-          <Grid container spacing={24}>
+          {before}
+          <Grid container spacing={24} className={classes.grid}>
             {
               molecules.map(molecule => {
                 const title = this.getName(molecule);
@@ -58,7 +67,7 @@ class Molecules extends Component {
               })
             }
           </Grid>
-          {children}
+          {after}
         </PageBody>
       </div>
     );
@@ -75,4 +84,4 @@ Molecules.defaultProps = {
   onOpen: () => null
 }
 
-export default Molecules;
+export default withStyles(styles)(Molecules);

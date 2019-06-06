@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { withStyles, Grid, Card, CardMedia, Typography } from '@material-ui/core';
+import { withStyles, Grid, Card, Typography } from '@material-ui/core';
 
 import { has } from 'lodash-es';
 
@@ -55,12 +55,9 @@ class Molecule extends Component {
       )
     }
     else {
-      const image = `${window.location.origin}/api/v1/molecules/${molecule._id}/svg`
+      const src = `${window.location.origin}/api/v1/molecules/${molecule._id}/svg`
       return (
-        <CardMedia
-          className={classes.moleculeContainer}
-          image={image}
-        />
+        <img src={src} class={classes.moleculeContainer}/>
       )
     }
   }

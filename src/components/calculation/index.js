@@ -14,6 +14,7 @@ import PageHead from '../page-head';
 import PageBody from '../page-body';
 import CardComponent from '../item-details-card';
 import { formatFormula } from '../../utils/formulas';
+import { has3dCoords } from '../../utils/molecules';
 import { camelToSpace, toUpperCase } from '../../utils/strings';
 import { getCalculationProperties } from '../../utils/calculations';
 import DownloadSelector from '../download-selector';
@@ -187,6 +188,50 @@ class Calculation extends Component {
       })
     }
 
+    function getMoleculeView() {
+      // For some reason, the molecule is sometimes null
+      // Do a check here to prevent a javascript error
+      if (molecule === null)
+        return;
+
+      if (has3dCoords(molecule)) {
+        return (
+          <oc-molecule
+            ref={wc(
+              // Events
+              {
+                iOrbitalChanged: onIOrbitalChanged
+              },
+              //Props
+              {
+                cjson: {...cjson, cube},
+                orbitalSelect: true,
+                moleculeRenderer,
+                showIsoSurface,
+                showVolume,
+                showSpectrum,
+                showMenu,
+                isoValue,
+                iOrbital,
+                iMode: mode,
+                play,
+                colors,
+                colorsX,
+                opacities,
+                opacitiesX
+              }
+            )}
+          />
+        )
+      }
+      else {
+        const src = `${window.location.origin}/api/v1/molecules/${molecule._id}/svg`
+        return (
+          <img src={src} class={classes.moleculeContainer}/>
+        )
+      }
+    }
+
     return(
       <div>
         <PageHead>
@@ -198,32 +243,7 @@ class Calculation extends Component {
           <Grid container spacing={24}>
             <Grid item xs={12} sm={12} md={8}>
               <Card className={classes.moleculeContainer}>
-                <oc-molecule
-                  ref={wc(
-                    // Events
-                    {
-                      iOrbitalChanged: onIOrbitalChanged
-                    },
-                    //Props
-                    {
-                      cjson: {...cjson, cube},
-                      orbitalSelect: true,
-                      moleculeRenderer,
-                      showIsoSurface,
-                      showVolume,
-                      showSpectrum,
-                      showMenu,
-                      isoValue,
-                      iOrbital,
-                      iMode: mode,
-                      play,
-                      colors,
-                      colorsX,
-                      opacities,
-                      opacitiesX
-                    }
-                  )}
-                />
+                {getMoleculeView()}
               </Card>
               { showNotebooks &&
               <div className={classes.buttonDiv}>
@@ -234,7 +254,7 @@ class Calculation extends Component {
               }
             </Grid>
             <Grid item xs={12} sm={12} md={4}>
-              {sections.map((section, i) => 
+              {sections.map((section, i) =>
                 <CardComponent
                   key={i}
                   title={section.label}

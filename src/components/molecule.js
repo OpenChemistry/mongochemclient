@@ -11,6 +11,7 @@ import PageBody from './page-body';
 import CardComponent from './item-details-card';
 
 import { formatFormula } from '../utils/formulas';
+import { has3dCoords } from '../utils/molecules';
 
 import { wc } from '../utils/webcomponent';
 import { getCalculationProperties } from '../utils/calculations';
@@ -34,6 +35,31 @@ class Molecule extends Component {
     else if (molecule.properties.formula)
       return formatFormula(molecule.properties.formula);
     return 'Molecule';
+  }
+
+  getMoleculeView(molecule, classes) {
+    if (has3dCoords(molecule)) {
+      return (
+        <oc-molecule
+          ref={wc(
+            // Events
+            {},
+            //Props
+            {
+              cjson: molecule.cjson,
+              rotate: this.state.rotate,
+              moleculeRenderer: 'moljs'
+            }
+          )}
+        />
+      )
+    }
+    else {
+      const src = `${window.location.origin}/api/v1/molecules/${molecule._id}/svg`
+      return (
+        <img src={src} class={classes.moleculeContainer}/>
+      )
+    }
   }
 
   constructor(props) {
@@ -107,22 +133,11 @@ class Molecule extends Component {
         <Grid container spacing={24}>
             <Grid item xs={12} sm={12} md={8}>
               <Card className={classes.moleculeContainer}>
-                <oc-molecule
-                  ref={wc(
-                    // Events
-                    {},
-                    //Props
-                    {
-                      cjson: molecule.cjson,
-                      rotate: this.state.rotate,
-                      moleculeRenderer: 'moljs'
-                    }
-                  )}
-                />
+                {this.getMoleculeView(molecule, classes)}
               </Card>
             </Grid>
             <Grid item xs={12} sm={12} md={4}>
-              {sections.map((section, i) => 
+              {sections.map((section, i) =>
                 <CardComponent
                   key={i}
                   title={section.label}

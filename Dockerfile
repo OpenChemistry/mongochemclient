@@ -1,4 +1,4 @@
-FROM node:8.0 AS build
+FROM node:12.0 AS build
 
 COPY ./ /mongochemclient
 

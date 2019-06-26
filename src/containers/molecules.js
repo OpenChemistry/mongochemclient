@@ -5,11 +5,12 @@ import { push } from 'connected-react-router';
 import { selectors } from '@openchemistry/redux'
 import { molecules } from '@openchemistry/redux'
 
-import { isNil } from 'lodash-es';
+import { isNil, has } from 'lodash-es';
 
 import PaginationSort from '../components/pagination-sort';
 import Molecules from '../components/molecules';
 import SearchForm from '../components/search';
+import { advancedSearchToMolQuery } from '../utils/search';
 
 const sortOptions = [
   {
@@ -47,7 +48,8 @@ const searchFields = [
   {name: 'name', type: 'text', label: 'Name', initialValue: ''},
   {name: 'inchi', type: 'text', label: 'Inchi', initialValue: ''},
   {name: 'inchikey', type: 'text', label: 'Inchi Key', initialValue: ''},
-  {name: 'smiles', type: 'text', label: 'Smiles', initialValue: ''}
+  {name: 'smiles', type: 'text', label: 'Smiles', initialValue: ''},
+  {name: 'advanced', type: 'text', label: 'Advanced', initialValue: ''}
 ]
 
 class MoleculesContainer extends Component {
@@ -114,6 +116,11 @@ class MoleculesContainer extends Component {
   }
 
   onOptionsChange = (pagination, search) => {
+    if (has(search, 'advanced') && search.advanced !== undefined) {
+      // advanced gets special treatment
+      search.queryString = advancedSearchToMolQuery(search.advanced);
+      delete search.advanced
+    }
     const options = {...pagination, ...search};
     this.props.dispatch(molecules.loadMolecules(options));
   }

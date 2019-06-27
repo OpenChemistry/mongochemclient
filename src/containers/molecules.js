@@ -5,7 +5,7 @@ import { push } from 'connected-react-router';
 import { selectors } from '@openchemistry/redux'
 import { molecules } from '@openchemistry/redux'
 
-import { isNil, has } from 'lodash-es';
+import { has, isNil } from 'lodash-es';
 
 import PaginationSort from '../components/pagination-sort';
 import Molecules from '../components/molecules';
@@ -51,6 +51,51 @@ const searchFields = [
   {name: 'smiles', type: 'text', label: 'Smiles', initialValue: ''},
   {name: 'advanced', type: 'text', label: 'Advanced', initialValue: ''}
 ]
+
+const advancedFields = [
+  'mass',
+  'atomCount',
+  'heavyAtomCount',
+  'inchi',
+  'inchikey',
+  'name',
+  'formula',
+  'smiles'
+]
+
+const advancedComparisonOperators = [
+  '==',
+  '!=',
+  '>=',
+  '<=',
+  '>',
+  '<'
+]
+
+const advancedLogicalOperators = [
+  'and',
+  'or'
+]
+
+const advancedTooltip = (
+  // Needed for newlines in tooltips
+  <div style={{whiteSpace: 'pre-line'}}>
+  {
+    'Fields: ' + advancedFields.join(', ') + '\n' +
+    'Comparison Operators: ' + advancedComparisonOperators.join(', ') + '\n' +
+    'Logical Operators: ' + advancedLogicalOperators.join(', ')
+  }
+  </div>
+);
+
+const tooltips = {
+  'formula': '',
+  'name': '',
+  'inchi': '',
+  'inchikey': '',
+  'smiles': '',
+  'advanced': advancedTooltip
+}
 
 class MoleculesContainer extends Component {
 
@@ -138,6 +183,7 @@ class MoleculesContainer extends Component {
           <SearchForm
             fields={searchFields}
             onSubmit={this.onSearchChange}
+            tooltips={tooltips}
           />
         }
         after={

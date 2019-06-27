@@ -78,14 +78,13 @@ const advancedLogicalOperators = [
 ]
 
 const advancedTooltip = (
-  // Needed for newlines in tooltips
-  <div style={{whiteSpace: 'pre-line'}}>
-  {
-    'Fields: ' + advancedFields.join(', ') + '\n' +
-    'Comparison Operators: ' + advancedComparisonOperators.join(', ') + '\n' +
-    'Logical Operators: ' + advancedLogicalOperators.join(', ')
-  }
-  </div>
+  <React.Fragment>
+    <b>{'Fields: '}</b> {advancedFields.join(', ')} <br/>
+    <b>{'Comparison Operators: '}</b>
+    {advancedComparisonOperators.join(', ')} <br/>
+    <b>{'Logical Operators: '}</b> {advancedLogicalOperators.join(', ')} <br/>
+    <b>{'Example: '}</b> {'mass >= 200 and atomCount < 40'}
+  </React.Fragment>
 );
 
 const tooltips = {

@@ -6,6 +6,16 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import { defaultTo } from 'lodash-es';
 
+const SearchTooltip = withStyles(theme => ({
+  tooltip: {
+    backgroundColor: '#f5f5f9',
+    color: 'rgba(0, 0, 0, 1.0)',
+    maxWidth: 800,
+    fontSize: theme.typography.pxToRem(16),
+    border: '1px solid #dadde9',
+  },
+}))(Tooltip);
+
 const styles = theme => ({
   root: {
   },
@@ -75,7 +85,7 @@ const SearchForm = ({fields, onSubmit, tooltips, classes}) => {
   return (
     <Paper className={classes.root}>
     <form onSubmit={handleSubmit}>
-      <Tooltip title={tooltip}>
+      <SearchTooltip title={tooltip}>
         <div className={classes.fieldContainer}>
           <Select
             value={currentField} onChange={e => {onCurrentFieldChange(e.target.value)}}
@@ -96,7 +106,7 @@ const SearchForm = ({fields, onSubmit, tooltips, classes}) => {
             }
           />
         </div>
-      </Tooltip>
+      </SearchTooltip>
     </form>
     </Paper>
   );

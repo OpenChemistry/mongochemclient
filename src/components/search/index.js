@@ -7,6 +7,9 @@ import SearchIcon from '@material-ui/icons/Search';
 import { defaultTo } from 'lodash-es';
 
 const SearchTooltip = withStyles(theme => ({
+  popper: {
+    opacity: 1.0,
+  },
   tooltip: {
     backgroundColor: '#f5f5f9',
     color: 'rgba(0, 0, 0, 1.0)',

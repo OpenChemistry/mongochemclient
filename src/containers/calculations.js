@@ -121,6 +121,7 @@ class CalculationsContainer extends Component {
           <SearchForm
             fields={searchFields}
             onSubmit={this.onSearchChange}
+            tooltips={{}}
           />
         }
         after={

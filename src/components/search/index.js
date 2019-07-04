@@ -1,7 +1,23 @@
 import React, { useState } from 'react';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { InputBase, withStyles, Select, MenuItem, InputAdornment, IconButton, Paper } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+
+import { defaultTo } from 'lodash-es';
+
+const SearchTooltip = withStyles(theme => ({
+  popper: {
+    opacity: 1.0,
+  },
+  tooltip: {
+    backgroundColor: '#f5f5f9',
+    color: 'rgba(0, 0, 0, 1.0)',
+    maxWidth: 800,
+    fontSize: theme.typography.pxToRem(16),
+    border: '1px solid #dadde9',
+  },
+}))(Tooltip);
 
 const styles = theme => ({
   root: {
@@ -32,7 +48,7 @@ const styles = theme => ({
   }
 });
 
-const SearchForm = ({fields, onSubmit, classes}) => {
+const SearchForm = ({fields, onSubmit, tooltips, classes}) => {
   const [currentField, setCurrentField] = useState(0);
   const [fieldValue, setFieldValue] = useState(fields[0].initialValue);
 
@@ -66,9 +82,13 @@ const SearchForm = ({fields, onSubmit, classes}) => {
     <MenuItem key={i} value={i}>{label}</MenuItem>
   ));
 
+  const curFieldName = fields[currentField].name;
+  const tooltip = defaultTo(tooltips[curFieldName], '');
+
   return (
     <Paper className={classes.root}>
     <form onSubmit={handleSubmit}>
+      <SearchTooltip title={tooltip}>
         <div className={classes.fieldContainer}>
           <Select
             value={currentField} onChange={e => {onCurrentFieldChange(e.target.value)}}
@@ -89,6 +109,7 @@ const SearchForm = ({fields, onSubmit, classes}) => {
             }
           />
         </div>
+      </SearchTooltip>
     </form>
     </Paper>
   );

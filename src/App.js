@@ -23,6 +23,7 @@ import Molecules from './containers/molecules';
 import Calculations from './containers/calculations';
 import Header from './containers/header';
 import JupyterIntegration from './containers/jupyterlab-integration/instructions';
+import Admin from './containers/administrator/group-manager';
 
 import { history } from './store';
 
@@ -124,6 +125,7 @@ class App extends Component {
                   <Route path='/calculations' component={Calculations}/>
                   <Route path='/notebooks/:id' component={NotebookContainer}/>
                   <Route path='/notebooks' component={NotebooksContainer} />
+                  <Route path='/administrator' component={Admin} />
                 </Switch>
 
                 <authUI.LoginOptions girder={development}/>

@@ -18,7 +18,7 @@ import App from './App';
 import store from './store'
 
 // Webcomponents
-import { defineCustomElements as defineMolecule } from '@openchemistry/molecule';
+import { defineCustomElements as defineMolecule } from '@openchemistry/molecule/loader';
 
 defineMolecule(window);
 

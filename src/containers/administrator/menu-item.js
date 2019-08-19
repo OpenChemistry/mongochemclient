@@ -6,7 +6,7 @@ import AdminMenuComponent from '../../components/administrator/menu-item';
 
 class AdminMenuContainer extends Component {
   onClick = () => {
-    this.props.dispatch(push('/administrator'));
+    this.props.dispatch(push('/groups'));
   }
 
   render() {

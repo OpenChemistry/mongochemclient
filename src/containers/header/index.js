@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router'
 
@@ -19,6 +18,7 @@ class HeaderContainer extends Component {
         {...this.props}
         onLogoClick={this.onLogoClick}
         loggedIn={this.props.loggedIn}
+        user={this.props.user}
       />
     );
   }
@@ -26,6 +26,7 @@ class HeaderContainer extends Component {
 
 function mapStateToProps(state) {
   const loggedIn = auth.selectors.isAuthenticated(state);
+
   return {
     loggedIn
   }

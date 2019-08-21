@@ -6,6 +6,7 @@ import { auth as authUI} from '@openchemistry/girder-ui';
 
 import JupyterMenu from '../../containers/jupyterlab-integration/menu-item';
 import logo from '../../OpenChemistry_Logo.svg';
+import UserMenu from '../../containers/user/menu-item'
 
 const styles = theme => ({
   appBar: {
@@ -45,6 +46,7 @@ class Header extends Component {
           { loggedIn
           ? <authUI.UserMenu>
               <JupyterMenu/>
+              <UserMenu/>
             </authUI.UserMenu>
           : <authUI.LoginButton />
           }

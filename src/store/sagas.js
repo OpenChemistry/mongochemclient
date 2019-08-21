@@ -19,7 +19,7 @@ import {
   watchLoadConfiguration
 } from '@openchemistry/sagas';
 
-import { auth } from '@openchemistry/girder-redux';
+import { auth, user } from '@openchemistry/girder-redux';
 
 export default function* root() {
   yield fork(watchFetchMolecules)
@@ -48,4 +48,9 @@ export default function* root() {
   yield fork(auth.sagas.watchUsernameLogin);
   yield fork(auth.sagas.watchNerscLogin);
   yield fork(auth.sagas.watchFetchApiKey);
+
+  yield fork(user.sagas.watchFetchUserInformation);
+  yield fork(user.sagas.watchUpdateUserInformation);
+  yield fork(user.sagas.watchTwitterLogin);
+  yield fork(user.sagas.watchOrcidLogin);
 }

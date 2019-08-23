@@ -4,6 +4,7 @@ import { AppBar, Toolbar, Button, withStyles, IconButton } from '@material-ui/co
 import MenuIcon from '@material-ui/icons/Menu'
 import { auth as authUI} from '@openchemistry/girder-ui';
 
+import AdminMenu from '../../containers/administrator/menu-item';
 import JupyterMenu from '../../containers/jupyterlab-integration/menu-item';
 import logo from '../../OpenChemistry_Logo.svg';
 import UserMenu from '../../containers/user/menu-item'
@@ -24,7 +25,7 @@ const styles = theme => ({
 
 class Header extends Component {
   render() {
-    const { loggedIn, onLogoClick, onToggleMenu, classes } = this.props;
+    const { loggedIn, onLogoClick, onToggleMenu, classes, user } = this.props;
     return (
       <AppBar color="default" position="static" className={classes.appBar}>
         <Toolbar>
@@ -47,7 +48,11 @@ class Header extends Component {
           ? <authUI.UserMenu>
               <JupyterMenu/>
               <UserMenu/>
-            </authUI.UserMenu>
+              { user.admin
+              ? <AdminMenu/>
+              : null 
+              }
+            </authUI.UserMenu>              
           : <authUI.LoginButton />
           }
         </Toolbar>

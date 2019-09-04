@@ -8,6 +8,8 @@ import AdminMenu from '../../containers/administrator/menu-item';
 import JupyterMenu from '../../containers/jupyterlab-integration/menu-item';
 import logo from '../../OpenChemistry_Logo.svg';
 
+import { isNil, has } from 'lodash-es';
+
 const styles = theme => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -46,11 +48,11 @@ class Header extends Component {
           { loggedIn
           ? <authUI.UserMenu>
               <JupyterMenu/>
-              { user.admin
+              { !isNil(user) && user.admin
               ? <AdminMenu/>
-              : null 
+              : null
               }
-            </authUI.UserMenu>              
+            </authUI.UserMenu>
           : <authUI.LoginButton />
           }
         </Toolbar>

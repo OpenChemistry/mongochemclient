@@ -7,6 +7,7 @@ import { auth as authUI} from '@openchemistry/girder-ui';
 import AdminMenu from '../../containers/administrator/menu-item';
 import JupyterMenu from '../../containers/jupyterlab-integration/menu-item';
 import logo from '../../OpenChemistry_Logo.svg';
+import UserMenu from '../../containers/user/menu-item'
 
 import { isNil, has } from 'lodash-es';
 
@@ -48,6 +49,7 @@ class Header extends Component {
           { loggedIn
           ? <authUI.UserMenu>
               <JupyterMenu/>
+              <UserMenu/>
               { !isNil(user) && user.admin
               ? <AdminMenu/>
               : null

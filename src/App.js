@@ -25,6 +25,7 @@ import Header from './containers/header';
 import JupyterIntegration from './containers/jupyterlab-integration/instructions';
 import Groups from './containers/administrator/group-manager';
 import Members from './containers/administrator/member-manager';
+import User from './containers/user/user-profile';
 
 import { history } from './store';
 
@@ -128,6 +129,7 @@ class App extends Component {
                   <route.Public path='/notebooks' component={NotebooksContainer} />
                   <route.Private path='/groups/:id/members' component={Members} />
                   <route.Private path='/groups' component={Groups} />
+                  <route.Private path='/user' component={User} />
                 </Switch>
 
                 <authUI.LoginOptions girder={development}/>

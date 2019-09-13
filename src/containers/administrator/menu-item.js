@@ -18,6 +18,7 @@ class AdminMenuContainer extends Component {
 }
 
 function mapStateToProps(state, _ownProps) {
+  return {};
 }
 
 export default connect(mapStateToProps)(AdminMenuContainer);

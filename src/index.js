@@ -47,51 +47,6 @@ const theme = createMuiTheme({
   }
 });
 
-class PrivateRoute extends Component {
-
-  render() {
-
-    const { component, token, isAuthenticating, isAuthenticated,
-            providers,  ...rest } = this.props;
-
-    if (!isAuthenticated && !isAuthenticating) {
-      store.dispatch(girder.authenticate(token));
-    }
-
-    const render = (props) => {
-      if (isAuthenticated) {
-        return React.createElement(component, props)
-      }
-
-      if (providers && providers.Google) {
-        return (
-          <div>
-            Redirecting...
-          </div>
-        )
-      }
-
-      return <div>Authenticating...</div>
-    }
-
-    return <Route {...rest} render={render}/>
-  }
-}
-
-PrivateRoute.propTypes = {
-    token: PropTypes.string,
-    isAuthenticating: PropTypes.bool,
-    isAuthenticated: PropTypes.bool,
-    providers: PropTypes.object
-  }
-
-PrivateRoute.defaultProps = {
-  token: null,
-  isAuthenticating: false,
-  isAuthenticated: false,
-  providers: null
-}
-
 // Check to see if we have a cookie
 const cookies = new Cookies();
 const cookieToken = cookies.get('girderToken');

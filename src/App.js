@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import { ConnectedRouter } from 'connected-react-router';
-import { Route, Switch } from 'react-router'
+import { Switch } from 'react-router'
 
 import MoleculeContainer from './containers/molecule';
 import CalculationContainer from './containers/calculation';
 import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './containers/charts';
 
-import { auth as authUI } from '@openchemistry/girder-ui';
+import { auth as authUI, route } from '@openchemistry/girder-ui';
 
 // @material-ui components
 import { withStyles } from '@material-ui/core/styles'; // v1.x
@@ -115,19 +115,19 @@ class App extends Component {
               <div className={classes.content}>
 
                 <Switch>
-                  <Route exact path='/' component={Home}/>
-                  <Route exact path='/molecules/:id' component={MoleculeContainer}/>
-                  <Route exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
-                  <Route exact path='/molecules' component={Molecules}/>
-                  <Route exact path='/chart' component={VibrationalModesChartContainer}/>
-                  <Route exact path='/freechart' component={FreeEnergyChartContainer}/>
-                  <Route path='/calculations/:id/orbital/:iOrbital' component={CalculationContainer}/>
-                  <Route path='/calculations/:id' component={CalculationContainer}/>
-                  <Route path='/calculations' component={Calculations}/>
-                  <Route path='/notebooks/:id' component={NotebookContainer}/>
-                  <Route path='/notebooks' component={NotebooksContainer} />
-                  <Route path='/groups/:id/members' component={Members} />
-                  <Route path='/groups' component={Groups} />
+                  <route.Public exact path='/' component={Home}/>
+                  <route.Public exact path='/molecules/:id' component={MoleculeContainer}/>
+                  <route.Public exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
+                  <route.Public exact path='/molecules' component={Molecules}/>
+                  <route.Public exact path='/chart' component={VibrationalModesChartContainer}/>
+                  <route.Public exact path='/freechart' component={FreeEnergyChartContainer}/>
+                  <route.Public path='/calculations/:id/orbital/:iOrbital' component={CalculationContainer}/>
+                  <route.Public path='/calculations/:id' component={CalculationContainer}/>
+                  <route.Public path='/calculations' component={Calculations}/>
+                  <route.Public path='/notebooks/:id' component={NotebookContainer}/>
+                  <route.Public path='/notebooks' component={NotebooksContainer} />
+                  <route.Private path='/groups/:id/members' component={Members} />
+                  <route.Private path='/groups' component={Groups} />
                 </Switch>
 
                 <authUI.LoginOptions girder={development}/>

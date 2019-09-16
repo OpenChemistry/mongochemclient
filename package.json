@@ -14,6 +14,7 @@
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
     "@material-ui/lab": "^3.0.0-alpha.30",
+    "@openchemistry/girder-client": "^0.0.17",
     "@openchemistry/girder-redux": "^0.0.26",
     "@openchemistry/girder-ui": "^0.0.33",
     "@openchemistry/molecule": "^0.4.24",

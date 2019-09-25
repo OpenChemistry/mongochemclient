@@ -60,4 +60,8 @@ export default function* root() {
   yield fork(user.sagas.watchUpdateUserInformation);
   yield fork(user.sagas.watchTwitterLogin);
   yield fork(user.sagas.watchOrcidLogin);
+  yield fork(user.sagas.watchApiKeyEdited);
+  yield fork(user.sagas.watchApiKeyCreated);
+  yield fork(user.sagas.watchApiKeyDeleted);
+  yield fork(user.sagas.watchApiKeyRequested);
 }

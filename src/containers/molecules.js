@@ -109,7 +109,11 @@ class MoleculesContainer extends Component {
 
   componentDidMount() {
     const { paginationOptions } = this.state;
-    this.props.dispatch(molecules.loadMolecules(paginationOptions));
+    var creatorId = ''
+    if (this.props.match.params.id) {
+      creatorId = this.props.match.params.id;
+    }
+    this.props.dispatch(molecules.loadMolecules({paginationOptions, creatorId}));
   }
 
   onOpen = (inchikey) => {
@@ -166,7 +170,11 @@ class MoleculesContainer extends Component {
       delete search.advanced
     }
     const options = {...pagination, ...search};
-    this.props.dispatch(molecules.loadMolecules(options));
+    var creatorId = ''
+    if (this.props.match.params.id) {
+      creatorId = this.props.match.params.id;
+    }
+    this.props.dispatch(molecules.loadMolecules({options, creatorId}));
   }
 
   render() {

@@ -19,6 +19,7 @@ const StyledTabs = withStyles({
 
 export default function UserProfile() {
   const [value, setValue] = React.useState(0);
+  let scopeOptions = ['read', 'write'];
 
   function handleChange(event, newValue) {
     setValue(newValue);
@@ -36,7 +37,7 @@ export default function UserProfile() {
         <user.BasicInfo />
       </div>
       <div hidden={value !== 1}>
-        <user.ApiKeys />
+        <user.ApiKeys scopeOptions={scopeOptions}/>
       </div>
     </Paper>
   );

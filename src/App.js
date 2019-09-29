@@ -27,6 +27,7 @@ import Molecules from './containers/molecules';
 import Calculations from './containers/calculations';
 import Header from './containers/header';
 import JupyterIntegration from './containers/jupyterlab-integration/instructions';
+import ContainerManager from './containers/container-manager/container-manager';
 import Groups from './containers/administrator/group-manager';
 import Members from './containers/administrator/member-manager';
 import User from './containers/user/user-profile';
@@ -137,6 +138,7 @@ class App extends Component {
                   <route.Public path='/notebooks/:id' component={NotebookContainer}/>
                   <route.Public path='/notebooks' component={NotebooksContainer} />
                   <route.Private path='/groups/:id/members' component={Members} />
+                  <route.Private path='/containers' component={ContainerManager} />
                   <route.Private path='/groups' component={Groups} />
                   <route.Private exact path='/user' component={User} />
                   <route.Private path='/user/:id/calculations' component={Calculations} />

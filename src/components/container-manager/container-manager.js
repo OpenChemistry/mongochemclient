@@ -34,6 +34,10 @@ const containerFields = [
 class ContainerManager extends Component {
   constructor(props) {
     super(props);
+
+    const { onPull } = props;
+    this.onPull = onPull;
+
     this.state = {
       imageName: defaultImageName,
       containerIndex: defaultContainerIndex
@@ -54,8 +58,9 @@ class ContainerManager extends Component {
   };
 
   pullImage = () => {
-    console.log('Container type is:', this.containerName());
-    console.log('image name is:', this.state.imageName);
+    const imageName = this.state.imageName;
+    const container = this.containerName().toLowerCase();
+    this.onPull(imageName, container);
   };
 
   render() {

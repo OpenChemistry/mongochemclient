@@ -1,9 +1,11 @@
 import React from 'react';
-import { Paper, AppBar, Tabs, Tab } from '@material-ui/core';
+import { Paper, AppBar, Tabs, Tab, Typography } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
-import { user } from '@openchemistry/girder-ui';
+import PageHead from '../page-head';
+import PageBody from '../page-body';
 
+import { user } from '@openchemistry/girder-ui';
 
 const StyledTabs = withStyles({
   indicator: {
@@ -26,19 +28,30 @@ export default function UserProfile() {
   }
 
   return (
-    <Paper style={{margin:'10px'}}>
-      <AppBar position="static">
-        <StyledTabs value={value} onChange={handleChange}>
-          <Tab label='Profile' />
-          <Tab label='API Keys' />
-        </StyledTabs>
-      </AppBar>
-      <div hidden={value !== 0}>
-        <user.BasicInfo />
-      </div>
-      <div hidden={value !== 1}>
-        <user.ApiKeys scopeOptions={scopeOptions}/>
-      </div>
-    </Paper>
+    <div>
+      <PageHead>
+        <Typography  color="inherit" gutterBottom variant="display1">
+          User Settings
+        </Typography>
+        <Typography variant="subheading" paragraph color="inherit">
+        </Typography>
+      </PageHead>
+      <PageBody>
+        <Paper>
+          <AppBar style={{backgroundColor:"#37474F"}} position="static">
+            <StyledTabs value={value} onChange={handleChange}>
+              <Tab label='Profile' />
+              <Tab label='API Keys' />
+            </StyledTabs>
+          </AppBar>
+          <div hidden={value !== 0}>
+            <user.BasicInfo />
+          </div>
+          <div hidden={value !== 1}>
+            <user.ApiKeys scopeOptions={scopeOptions}/>
+          </div>
+        </Paper>
+      </PageBody>
+    </div>
   );
 }

@@ -7,8 +7,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
-import AddIcon from '@material-ui/icons/Add';
-
 const styles = theme => {
   const ret = {
     root: {

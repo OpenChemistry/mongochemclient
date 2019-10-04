@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Button, Input, Typography, withStyles } from '@material-ui/core';
+import { Button, TextField, Typography, withStyles } from '@material-ui/core';
 
 import ContainerSelector from './container-selector';
 
@@ -10,6 +10,12 @@ import PageBody from '../page-body';
 const styles = theme => ({
   root: {
     display: 'flex'
+  },
+  imageNameField: {
+    margin: theme.spacing.unit
+  },
+  pullImageButton: {
+    margin: theme.spacing.unit
   }
 });
 
@@ -35,9 +41,6 @@ class ContainerManager extends Component {
   constructor(props) {
     super(props);
 
-    const { onPull } = props;
-    this.onPull = onPull;
-
     this.state = {
       imageName: defaultImageName,
       containerIndex: defaultContainerIndex
@@ -60,7 +63,7 @@ class ContainerManager extends Component {
   pullImage = () => {
     const imageName = this.state.imageName;
     const container = this.containerName().toLowerCase();
-    this.onPull(imageName, container);
+    this.props.onPull(imageName, container);
   };
 
   render() {
@@ -81,16 +84,19 @@ class ContainerManager extends Component {
             onChange={this.handleContainerChange}
             fields={containerFields}
           />
-          <Input
+          <TextField
+            label="Name"
             defaultValue={defaultImageName}
+            className={classes.imageNameField}
             onChange={this.handleImageChange}
             inputProps={{
               'aria-label': 'description'
             }}
           />
+          <br/>
           <Button
             onClick={this.pullImage}
-            className={classes.addButton}
+            className={classes.pullImageButton}
             variant="contained"
           >
             Pull Image

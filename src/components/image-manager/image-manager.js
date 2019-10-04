@@ -37,7 +37,7 @@ const containerFields = [
   }
 ];
 
-class ContainerManager extends Component {
+class ImageManager extends Component {
   constructor(props) {
     super(props);
 
@@ -73,10 +73,10 @@ class ContainerManager extends Component {
       <div>
         <PageHead>
           <Typography color="inherit" gutterBottom variant="display1">
-            Container Manager
+            Image Manager
           </Typography>
           <Typography variant="subheading" paragraph color="inherit">
-            Manage your containers here.
+            Manage your images here.
           </Typography>
         </PageHead>
         <PageBody>
@@ -107,4 +107,4 @@ class ContainerManager extends Component {
   }
 }
 
-export default withStyles(styles)(ContainerManager);
+export default withStyles(styles)(ImageManager);

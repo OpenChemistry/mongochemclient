@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import ContainerManager from '../../components/container-manager/container-manager';
+import ImageManager from '../../components/image-manager/image-manager';
 
 import { cumulus } from '@openchemistry/redux';
 
-class ContainerManagerContainer extends Component {
+class ImageManagerContainer extends Component {
   onPull = (imageName, container, clusterId) => {
     const { dispatch } = this.props;
     const taskFlowClass = 'taskflows.ContainerPullTaskFlow';
@@ -15,7 +15,7 @@ class ContainerManagerContainer extends Component {
   };
 
   render() {
-    return <ContainerManager onPull={this.onPull} />;
+    return <ImageManager onPull={this.onPull} />;
   }
 }
 
@@ -23,4 +23,4 @@ function mapStateToProps(state) {
   return {};
 }
 
-export default connect(mapStateToProps)(ContainerManagerContainer);
+export default connect(mapStateToProps)(ImageManagerContainer);

@@ -5,7 +5,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import { auth as authUI} from '@openchemistry/girder-ui';
 
 import AdminMenu from '../../containers/administrator/menu-item';
-import ContainerManagerMenu from '../../containers/container-manager/menu-item';
+import ImageManagerMenu from '../../containers/image-manager/menu-item';
 import JupyterMenu from '../../containers/jupyterlab-integration/menu-item';
 import logo from '../../OpenChemistry_Logo.svg';
 import UserMenu from '../../containers/user/menu-item'
@@ -51,7 +51,7 @@ class Header extends Component {
           ? <authUI.UserMenu>
               <JupyterMenu/>
               <UserMenu/>
-              <ContainerManagerMenu/>
+              <ImageManagerMenu/>
               { !isNil(user) && user.admin
               ? <AdminMenu/>
               : null

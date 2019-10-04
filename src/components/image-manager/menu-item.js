@@ -3,15 +3,15 @@ import React, { Component } from 'react';
 import { MenuItem } from '@material-ui/core';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 
-class ContainerManagerMenuComponent extends Component {
+class ImageManagerMenuComponent extends Component {
   render() {
     const { onClick } = this.props;
     return (
       <MenuItem onClick={onClick}>
-        <LibraryBooksIcon /> Manage Containers
+        <LibraryBooksIcon /> Manage Images
       </MenuItem>
     );
   }
 }
 
-export default ContainerManagerMenuComponent;
+export default ImageManagerMenuComponent;

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
-import BasicInfo from '../../components/user/user-profile';
+import UserProfile from '../../components/user/user-profile';
 
 class BasicInfoContainer extends Component {
   render() {
     return (
-      <BasicInfo />
+      <UserProfile />
     )
   }
 }

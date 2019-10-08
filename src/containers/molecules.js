@@ -115,7 +115,11 @@ class MoleculesContainer extends Component {
 
   componentDidMount() {
     const { paginationOptions } = this.state;
-    this.props.dispatch(molecules.loadMolecules(paginationOptions));
+    var creatorId = ''
+    if (this.props.match.params.id) {
+      creatorId = this.props.match.params.id;
+    }
+    this.props.dispatch(molecules.loadMolecules({paginationOptions, creatorId}));
   }
 
   componentDidUpdate(prevProps) {
@@ -196,12 +200,17 @@ class MoleculesContainer extends Component {
       delete search.advanced
     }
     const options = {...pagination, ...search};
+    var creatorId = ''
+    if (this.props.match.params.id) {
+      creatorId = this.props.match.params.id;
+    }
+    
     const {sortIndex} = this.state;
     const {sortdir, sort, limit, offset} = pagination;
     const params = {sortIndex, sortdir, sort, limit, offset};
     const query = new URLSearchParams(params).toString();
 
-    this.props.dispatch(molecules.loadMolecules(options));
+    this.props.dispatch(molecules.loadMolecules({options, creatorId}));
     this.props.dispatch(push({pathname:'/molecules', search:query}));
   }
 

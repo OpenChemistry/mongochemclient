@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router'
 
 import SideBar from '../../components/sidebar';
+import { auth } from '@openchemistry/girder-redux';
 import {
   selectors
 } from '@openchemistry/redux';
@@ -19,9 +20,9 @@ class SideBarContainter extends Component {
   };
 
   render() {
-    const { showNotebooks } = this.props;
+    const { showNotebooks, userId } = this.props;
     return (
-      <SideBar pushRoute={this.pushRoute} showNotebooks={showNotebooks} />
+      <SideBar pushRoute={this.pushRoute} showNotebooks={showNotebooks} userId={userId}/>
     );
   }
 }
@@ -29,10 +30,14 @@ class SideBarContainter extends Component {
 const mapStateToProps = (state, ownProps) => {
 
   const config = selectors.configuration.getConfiguration(state);
+  const user = auth.selectors.getMe(state);
   const props = {}
 
   if (!_.isNil(config)) {
     props.showNotebooks = config.features.notebooks;
+  }
+  if (!_.isNil(user)) {
+    props.userId = user._id;
   }
 
   return props;

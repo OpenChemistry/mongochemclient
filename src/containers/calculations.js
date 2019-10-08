@@ -53,7 +53,11 @@ class CalculationsContainer extends Component {
 
   componentDidMount() {
     const { paginationOptions } = this.state;
-    this.props.dispatch(calculations.loadCalculations({options: paginationOptions, loadMolecules: true}));
+    var creatorId = ''
+    if (this.props.match.params.id) {
+      creatorId = this.props.match.params.id;
+    }
+    this.props.dispatch(calculations.loadCalculations({options: paginationOptions, loadMolecules: true, creatorId: creatorId}));
   }
 
   onOpen = (id) => {
@@ -105,7 +109,11 @@ class CalculationsContainer extends Component {
 
   onOptionsChange = (pagination, search) => {
     const options = {...pagination, ...search};
-    this.props.dispatch(calculations.loadCalculations({options, loadMolecules: true}));
+    var creatorId = ''
+    if (this.props.match.params.id) {
+      creatorId = this.props.match.params.id;
+    }
+    this.props.dispatch(calculations.loadCalculations({options, loadMolecules: true, creatorId}));
   }
 
   render() {

@@ -129,7 +129,9 @@ class App extends Component {
                   <route.Public path='/notebooks' component={NotebooksContainer} />
                   <route.Private path='/groups/:id/members' component={Members} />
                   <route.Private path='/groups' component={Groups} />
-                  <route.Private path='/user' component={User} />
+                  <route.Private exact path='/user' component={User} />
+                  <route.Private path='/user/:id/calculations' component={Calculations} />
+                  <route.Private path='/user/:id/molecules' component={Molecules} />
                 </Switch>
 
                 <authUI.LoginOptions girder={development}/>

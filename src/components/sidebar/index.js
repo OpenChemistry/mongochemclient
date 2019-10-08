@@ -71,7 +71,7 @@ class SideBar extends Component {
         <MenuItem
           dense
           style={style.menu}
-          onClick={() => pushRoute('/molecules') }
+          onClick={() => pushRoute('/molecules?limit=16&offset=0&sort=_id&sortdir=-1&sortIndex=0') }
         >
           <GroupIcon color="primary" />&nbsp;
           <Typography color="inherit" variant="subheading">Molecules</Typography>

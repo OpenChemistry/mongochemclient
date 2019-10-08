@@ -5,7 +5,7 @@ import { push } from 'connected-react-router';
 import { selectors } from '@openchemistry/redux'
 import { molecules } from '@openchemistry/redux'
 
-import { has, isNil } from 'lodash-es';
+import { has, isNil, isEqual } from 'lodash-es';
 
 import PaginationSort from '../components/pagination-sort';
 import Molecules from '../components/molecules';
@@ -100,10 +100,16 @@ class MoleculesContainer extends Component {
 
   constructor(props) {
     super(props);
+    const params = new URLSearchParams(props.location.search);
     this.state = {
-      sortIndex: 0,
-      paginationOptions: { limit: 16, offset: 0, sort: '_id', sortdir: -1 },
-      searchOptions: {}
+      sortIndex: params.get('sortIndex'),
+      paginationOptions: {
+        limit: params.get('limit'),
+        offset: params.get('offset'),
+        sort: params.get('sort').toString(),
+        sortdir: params.get('sortdir')
+      },
+      searchOptions: params.get('searchOptions')
     }
   }
 
@@ -114,6 +120,30 @@ class MoleculesContainer extends Component {
       creatorId = this.props.match.params.id;
     }
     this.props.dispatch(molecules.loadMolecules({paginationOptions, creatorId}));
+  }
+
+  componentDidUpdate(prevProps) {
+    const currSearch = this.props.location.search;
+    const prevSearch = prevProps.location.search;
+    const params = new URLSearchParams(currSearch);
+    const reload = (
+      this.props.history.action === 'POP' || params.get('offset') == 0);
+    if (currSearch !== prevSearch && reload) {
+      var offset = params.get('offset')
+      this.setState({
+        sortIndex: params.get('sortIndex'),
+        paginationOptions: {
+          limit: params.get('limit'),
+          offset: offset,
+          sort: params.get('sort').toString(),
+          sortdir: params.get('sortdir')
+        },
+        searchOptions: params.get('searchOptions')
+      }, () => {
+        const { paginationOptions } = this.state;
+        this.props.dispatch(molecules.loadMolecules(paginationOptions));
+      });
+    }
   }
 
   onOpen = (inchikey) => {
@@ -174,7 +204,14 @@ class MoleculesContainer extends Component {
     if (this.props.match.params.id) {
       creatorId = this.props.match.params.id;
     }
+    
+    const {sortIndex} = this.state;
+    const {sortdir, sort, limit, offset} = pagination;
+    const params = {sortIndex, sortdir, sort, limit, offset};
+    const query = new URLSearchParams(params).toString();
+
     this.props.dispatch(molecules.loadMolecules({options, creatorId}));
+    this.props.dispatch(push({pathname:'/molecules', search:query}));
   }
 
   render() {

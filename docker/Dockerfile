@@ -7,4 +7,7 @@ RUN cd /mongochemclient && \
   npm run build
 
 FROM nginx
+
+COPY docker/default.conf /etc/nginx/conf.d/default.conf
+
 COPY --from=build /mongochemclient/build /usr/share/nginx/html

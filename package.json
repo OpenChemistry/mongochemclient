@@ -18,7 +18,7 @@
     "@openchemistry/girder-client": "^0.0.23",
     "@openchemistry/girder-ui": "^0.0.39",
     "@openchemistry/molecule": "^0.4.29",
-    "@openchemistry/redux": "^0.3.29",
+    "@openchemistry/redux": "^0.3.27",
     "@openchemistry/rest": "^0.3.30",
     "@openchemistry/sagas": "^0.3.42",
     "@openchemistry/utils": "^0.6.17",

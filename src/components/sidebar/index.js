@@ -80,7 +80,7 @@ class SideBar extends Component {
         {userId
           ? <MenuItem
             style={style.submenu}
-            onClick={() => pushRoute('/user/' + userId + '/molecules') }
+            onClick={() => pushRoute('/user/' + userId + '/molecules?limit=16&offset=0&sort=_id&sortdir=-1&sortIndex=0') }
           >
             <GroupIcon style={style.subicon} color="primary" />&nbsp;
             <Typography color="inherit" variant="subtitle2">My Molecules</Typography>

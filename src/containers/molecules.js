@@ -114,12 +114,12 @@ class MoleculesContainer extends Component {
   }
 
   componentDidMount() {
-    const { paginationOptions } = this.state;
-    var creatorId = ''
+    const options = this.state.paginationOptions;
+    var creatorId = null;
     if (this.props.match.params.id) {
       creatorId = this.props.match.params.id;
     }
-    this.props.dispatch(molecules.loadMolecules({paginationOptions, creatorId}));
+    this.props.dispatch(molecules.loadMolecules({options, creatorId}));
   }
 
   componentDidUpdate(prevProps) {
@@ -140,8 +140,12 @@ class MoleculesContainer extends Component {
         },
         searchOptions: params.get('searchOptions')
       }, () => {
-        const { paginationOptions } = this.state;
-        this.props.dispatch(molecules.loadMolecules(paginationOptions));
+        const options = this.state.paginationOptions;
+        var creatorId = null;
+        if (this.props.match.params.id) {
+          creatorId = this.props.match.params.id;
+        }
+        this.props.dispatch(molecules.loadMolecules({options, creatorId}));
       });
     }
   }
@@ -200,7 +204,7 @@ class MoleculesContainer extends Component {
       delete search.advanced
     }
     const options = {...pagination, ...search};
-    var creatorId = ''
+    var creatorId = null;
     if (this.props.match.params.id) {
       creatorId = this.props.match.params.id;
     }

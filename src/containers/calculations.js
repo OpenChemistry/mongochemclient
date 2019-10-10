@@ -53,7 +53,7 @@ class CalculationsContainer extends Component {
 
   componentDidMount() {
     const { paginationOptions } = this.state;
-    var creatorId = ''
+    var creatorId = null;
     if (this.props.match.params.id) {
       creatorId = this.props.match.params.id;
     }
@@ -109,7 +109,7 @@ class CalculationsContainer extends Component {
 
   onOptionsChange = (pagination, search) => {
     const options = {...pagination, ...search};
-    var creatorId = ''
+    var creatorId = null;
     if (this.props.match.params.id) {
       creatorId = this.props.match.params.id;
     }

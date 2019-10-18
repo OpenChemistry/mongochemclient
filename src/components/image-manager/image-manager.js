@@ -30,12 +30,15 @@ const containerFields = [
   {
     value: 1,
     label: 'Singularity'
-  },
-  {
-    value: 2,
-    label: 'Shifter'
   }
 ];
+
+if (process.env.OC_SITE == 'NERSC') {
+  // Add shifter as an option
+  const value = 2;
+  const label = 'Shifter';
+  containerFields.push({ value, label });
+}
 
 class ImageManager extends Component {
   constructor(props) {

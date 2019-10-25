@@ -102,12 +102,12 @@ class MoleculesContainer extends Component {
     super(props);
     const params = new URLSearchParams(props.location.search);
     this.state = {
-      sortIndex: params.get('sortIndex'),
+      sortIndex: params.get('sortIndex') || 0,
       paginationOptions: {
-        limit: params.get('limit'),
-        offset: params.get('offset'),
-        sort: params.get('sort').toString(),
-        sortdir: params.get('sortdir')
+        limit: params.get('limit') || 16,
+        offset: params.get('offset') || 0,
+        sort: params.get('sort') ? params.get('sort').toString() : '_id',
+        sortdir: params.get('sortdir') || -1
       },
       searchOptions: {
         formula: params.get('formula') || '',
@@ -140,12 +140,12 @@ class MoleculesContainer extends Component {
     if (currSearch !== prevSearch && reload) {
       var offset = params.get('offset')
       this.setState({
-        sortIndex: params.get('sortIndex'),
+        sortIndex: params.get('sortIndex') || 0,
         paginationOptions: {
-          limit: params.get('limit'),
-          offset: offset,
-          sort: params.get('sort').toString(),
-          sortdir: params.get('sortdir')
+          limit: params.get('limit') || 16,
+          offset: params.get('offset') || 0,
+          sort: params.get('sort') ? params.get('sort').toString() : '_id',
+          sortdir: params.get('sortdir') || -1
         },
         searchOptions: {
           formula: params.get('formula') || '',

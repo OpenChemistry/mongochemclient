@@ -109,16 +109,25 @@ class MoleculesContainer extends Component {
         sort: params.get('sort').toString(),
         sortdir: params.get('sortdir')
       },
-      searchOptions: params.get('searchOptions')
+      searchOptions: {
+        formula: params.get('formula') || '',
+        name: params.get('name') || '',
+        inchi: params.get('inchi') || '',
+        inchikey: params.get('inchikey') || '',
+        smiles: params.get('smiles') || ''
+      }
     }
   }
 
   componentDidMount() {
-    const options = this.state.paginationOptions;
+    const { paginationOptions, searchOptions } = this.state;
     var creatorId = null;
     if (this.props.match.params.id) {
       creatorId = this.props.match.params.id;
     }
+    const options = {...paginationOptions, ...searchOptions}
+    Object.keys(options).forEach(
+      (key) => (options[key] == '') && delete options[key]);
     this.props.dispatch(molecules.loadMolecules({options, creatorId}));
   }
 
@@ -138,9 +147,17 @@ class MoleculesContainer extends Component {
           sort: params.get('sort').toString(),
           sortdir: params.get('sortdir')
         },
-        searchOptions: params.get('searchOptions')
+        searchOptions: {
+          formula: params.get('formula') || '',
+          name: params.get('name') || '',
+          inchi: params.get('inchi') || '',
+          inchikey: params.get('inchikey') || '',
+          smiles: params.get('smiles') || ''
+        }
       }, () => {
-        const options = this.state.paginationOptions;
+        const options = {...this.state.paginationOptions, ...this.state.searchOptions};
+        Object.keys(options).forEach(
+          (key) => (options[key] == '') && delete options[key]);
         var creatorId = null;
         if (this.props.match.params.id) {
           creatorId = this.props.match.params.id;
@@ -208,12 +225,19 @@ class MoleculesContainer extends Component {
     if (this.props.match.params.id) {
       creatorId = this.props.match.params.id;
     }
-    
+
     const {sortIndex} = this.state;
     const {sortdir, sort, limit, offset} = pagination;
-    const params = {sortIndex, sortdir, sort, limit, offset};
+    for (let val in search) {
+      if (search[val] === undefined) {
+        search[val] = '';
+      }
+    }
+    const params = {sortIndex, sortdir, sort, limit, offset, ...search};
     const query = new URLSearchParams(params).toString();
 
+    Object.keys(options).forEach(
+      (key) => (options[key] == '') && delete options[key]);
     this.props.dispatch(molecules.loadMolecules({options, creatorId}));
     this.props.dispatch(push({pathname:'/molecules', search:query}));
   }

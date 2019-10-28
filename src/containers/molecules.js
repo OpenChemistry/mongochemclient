@@ -5,7 +5,7 @@ import { push } from 'connected-react-router';
 import { selectors } from '@openchemistry/redux'
 import { molecules } from '@openchemistry/redux'
 
-import { has, isNil, isEqual } from 'lodash-es';
+import { has, isNil, isUndefined } from 'lodash-es';
 
 import PaginationSort from '../components/pagination-sort';
 import Molecules from '../components/molecules';
@@ -229,7 +229,7 @@ class MoleculesContainer extends Component {
     const {sortIndex} = this.state;
     const {sortdir, sort, limit, offset} = pagination;
     for (let val in search) {
-      if (search[val] === undefined) {
+      if (isUndefined(search[val])) {
         search[val] = '';
       }
     }

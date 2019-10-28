@@ -5,7 +5,7 @@ import { push } from 'connected-react-router';
 import { selectors } from '@openchemistry/redux'
 import { calculations, molecules } from '@openchemistry/redux'
 
-import { isNil } from 'lodash-es';
+import { isNil, isUndefined } from 'lodash-es';
 
 import PaginationSort from '../components/pagination-sort';
 import Calculations from '../components/calculations';
@@ -163,7 +163,7 @@ class CalculationsContainer extends Component {
     const {sortIndex} = this.state;
     const {sortdir, sort, limit, offset} = pagination;
     for (let val in search) {
-      if (search[val] === undefined) {
+      if (isUndefined(search[val])) {
         search[val] = '';
       }
     }

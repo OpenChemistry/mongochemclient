@@ -46,9 +46,9 @@ const limitOptions = [
 const searchFields = [
   {name: 'formula', type: 'text', label: 'Formula', initialValue: ''},
   {name: 'name', type: 'text', label: 'Name', initialValue: ''},
-  {name: 'inchi', type: 'text', label: 'Inchi', initialValue: ''},
-  {name: 'inchikey', type: 'text', label: 'Inchi Key', initialValue: ''},
-  {name: 'smiles', type: 'text', label: 'Smiles', initialValue: ''},
+  {name: 'inchi', type: 'text', label: 'InChi', initialValue: ''},
+  {name: 'inchikey', type: 'text', label: 'InChi Key', initialValue: ''},
+  {name: 'smiles', type: 'text', label: 'SMILES', initialValue: ''},
   {name: 'advanced', type: 'text', label: 'Advanced', initialValue: ''}
 ]
 

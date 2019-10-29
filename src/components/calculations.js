@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { has } from 'lodash-es';
+import { has, filter, eq } from 'lodash-es';
 import { withStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -52,7 +52,10 @@ class Calculations extends Component {
                 const title = this.getName(calculation);
                 const image = `${window.location.origin}/api/v1/molecules/${calculation.moleculeId}/svg`;
                 const pending = has(calculation, 'properties.pending');
-                const properties = getCalculationProperties(calculation);
+                let properties = getCalculationProperties(calculation);
+                properties = filter(properties, function(obj) {
+                  return !eq(obj.label, 'Version');
+                  });
 
                 return (
                   <Grid key={calculation._id} item xs={12} sm={6} md={4} lg={3}>

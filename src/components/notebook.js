@@ -3,14 +3,22 @@ import PropTypes from 'prop-types';
 import Iframe from 'react-iframe'
 
 import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
 
 import PageHead from './page-head';
 import PageBody from './page-body';
 
-export default class Notebook extends Component {
+const appStyles = theme => ({
+  iframe: {
+    width: '100%',
+    height: '-webkit-fill-available'
+  }
+})
+
+class Notebook extends Component {
 
    render = () => {
-    const {fileId} = this.props;
+    const {classes, fileId} = this.props;
     const baseUrl =  `${window.location.origin}/api/v1`;
     return (
       <div>
@@ -20,10 +28,7 @@ export default class Notebook extends Component {
           </Typography>
         </PageHead>
         <PageBody>
-          <Iframe url={`${baseUrl}/notebooks/${fileId}/html`}
-            width="100%"
-            height="60rem"
-          />
+          <Iframe className={classes.iframe} url={`${baseUrl}/notebooks/${fileId}/html`}/>
         </PageBody>
       </div>
     );
@@ -39,3 +44,4 @@ Notebook.defaultProps = {
   fileId: null,
 }
 
+export default withStyles(appStyles)(Notebook)

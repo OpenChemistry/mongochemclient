@@ -26,6 +26,7 @@ import JupyterIntegration from './containers/jupyterlab-integration/instructions
 import Groups from './containers/administrator/group-manager';
 import Members from './containers/administrator/member-manager';
 import User from './containers/user/user-profile';
+import Creator from './containers/user/creator-profile';
 
 import { history } from './store';
 
@@ -118,10 +119,12 @@ class App extends Component {
                 <Switch>
                   <route.Public exact path='/' component={Home}/>
                   <route.Public exact path='/molecules/:id' component={MoleculeContainer}/>
+                  <route.Public exact path='/molecules/:id/creator' component={Creator}/>
                   <route.Public exact path='/molecules/inchikey/:inchikey' component={MoleculeContainer}/>
                   <route.Public exact path='/molecules' component={Molecules}/>
                   <route.Public exact path='/chart' component={VibrationalModesChartContainer}/>
                   <route.Public exact path='/freechart' component={FreeEnergyChartContainer}/>
+                  <route.Public exact path='/calculations/:id/creator' component={Creator}/>
                   <route.Public path='/calculations/:id/orbital/:iOrbital' component={CalculationContainer}/>
                   <route.Public path='/calculations/:id' component={CalculationContainer}/>
                   <route.Public path='/calculations' component={Calculations}/>

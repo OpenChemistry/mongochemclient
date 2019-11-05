@@ -97,7 +97,9 @@ class Calculation extends Component {
       colors,
       colorsX,
       opacities,
-      opacitiesX
+      opacitiesX,
+      creator,
+      onCreatorClick
     } = this.props;
 
     const cjson = calculation.cjson;
@@ -171,6 +173,29 @@ class Calculation extends Component {
     };
 
     sections.push(outputSection);
+
+    let creatorName = [];
+    if (has(creator, 'firstName')) {
+      creatorName.push({label: 'First', value: creator.firstName});
+    } else {
+      creatorName.push({label: 'First', value:'Unknown'});
+    }
+    if (has(creator, 'lastName')) {
+      creatorName.push({label: 'Last', value: creator.lastName});
+    } else {
+      creatorName.push({label: 'Last', value: 'Unknown'});
+    }
+    const creatorSection = {
+      label: 'Creator',
+      items: [
+        {
+          properties: creatorName,
+          onClick: () => {onCreatorClick(creator)}
+        }
+      ]
+    }
+
+    sections.push(creatorSection);
 
     const fileFormats = ['cjson', 'xyz'];
     const fileOptions = fileFormats.map(format => ({

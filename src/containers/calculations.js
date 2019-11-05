@@ -5,7 +5,7 @@ import { push } from 'connected-react-router';
 import { selectors } from '@openchemistry/redux'
 import { calculations, molecules } from '@openchemistry/redux'
 
-import { isNil } from 'lodash-es';
+import { isNil, isUndefined } from 'lodash-es';
 
 import PaginationSort from '../components/pagination-sort';
 import Calculations from '../components/calculations';
@@ -44,22 +44,68 @@ class CalculationsContainer extends Component {
 
   constructor(props) {
     super(props);
+    const params = new URLSearchParams(props.location.search);
     this.state = {
-      sortIndex: 0,
-      paginationOptions: { limit: 16, offset: 0, sort: '_id', sortdir: -1 },
-      searchOptions: {}
+      sortIndex: params.get('sortIndex') || 0,
+      paginationOptions: {
+        limit: params.get('limit') || 16,
+        offset: params.get('offset') || 0,
+        sort: params.get('sort') ? params.get('sort').toString() : '_id',
+        sortdir: params.get('sortdir') || -1
+      },
+      searchOptions: {
+        formula: params.get('formula') || '',
+        name: params.get('name') || '',
+        inchi: params.get('inchi') || '',
+        inchikey: params.get('inchikey') || '',
+        smiles: params.get('smiles') || ''
+      }
     }
   }
 
   componentDidMount() {
-    const { paginationOptions } = this.state;
+    const { paginationOptions, searchOptions } = this.state;
     var creatorId = null;
     if (this.props.match.params.id) {
       creatorId = this.props.match.params.id;
     }
-    this.props.dispatch(calculations.loadCalculations({options: paginationOptions, loadMolecules: true, creatorId: creatorId}));
+    const options = {...paginationOptions, ...searchOptions}
+    this.props.dispatch(calculations.loadCalculations({options, loadMolecules: true, creatorId: creatorId}));
   }
 
+  componentDidUpdate(prevProps) {
+    const currSearch = this.props.location.search;
+    const prevSearch = prevProps.location.search;
+    const params = new URLSearchParams(currSearch);
+    const reload = (
+      this.props.history.action === 'POP' || params.get('offset') == 0);
+    if (currSearch !== prevSearch && reload) {
+      var offset = params.get('offset')
+      this.setState({
+        sortIndex: params.get('sortIndex') || 0,
+        paginationOptions: {
+          limit: params.get('limit') || 16,
+          offset: params.get('offset') || 0,
+          sort: params.get('sort') ? params.get('sort').toString() : '_id',
+          sortdir: params.get('sortdir') || -1
+        },
+        searchOptions: {
+          formula: params.get('formula') || '',
+          name: params.get('name') || '',
+          inchi: params.get('inchi') || '',
+          inchikey: params.get('inchikey') || '',
+          smiles: params.get('smiles') || ''
+        }
+      }, () => {
+        const options = {...this.state.paginationOptions, ...this.state.searchOptions};
+        var creatorId = null;
+        if (this.props.match.params.id) {
+          creatorId = this.props.match.params.id;
+        }
+        this.props.dispatch(calculations.loadCalculations({options, loadMolecules: true, creatorId}));
+      });
+    }
+  }
   onOpen = (id) => {
     this.props.dispatch(push(`/calculations/${id}?mo=homo`));
   }
@@ -113,7 +159,19 @@ class CalculationsContainer extends Component {
     if (this.props.match.params.id) {
       creatorId = this.props.match.params.id;
     }
+
+    const {sortIndex} = this.state;
+    const {sortdir, sort, limit, offset} = pagination;
+    for (let val in search) {
+      if (isUndefined(search[val])) {
+        search[val] = '';
+      }
+    }
+    const params = {sortIndex, sortdir, sort, limit, offset, ...search};
+    const query = new URLSearchParams(params).toString();
+
     this.props.dispatch(calculations.loadCalculations({options, loadMolecules: true, creatorId}));
+    this.props.dispatch(push({pathname:'/calculations', search:query}));
   }
 
   render() {

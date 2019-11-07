@@ -8,8 +8,12 @@ import {
   CardActionArea
 } from '@material-ui/core';
 
+import FileUpload from '../file-upload/index';
+
 import KeyBoardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
+
+import { eq } from 'lodash-es'
 
 const style = (theme) => (
   {
@@ -47,7 +51,7 @@ class CardComponent extends Component {
   }
 
   render() {
-    const {title, items, expand, classes} = this.props;
+    const {title, items, onCalculationUpload, classes} = this.props;
     const {collapsed} = this.state;
 
     return (
@@ -80,6 +84,9 @@ class CardComponent extends Component {
                   </Wrapper>
                 )
               })}
+              {eq(title, 'Calculations')
+                ? <FileUpload onCalculationUpload={onCalculationUpload}/>
+                : null}
           </CardContent>
         </Collapse>
       </Card>

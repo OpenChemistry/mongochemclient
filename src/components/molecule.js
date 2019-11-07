@@ -76,7 +76,7 @@ class Molecule extends Component {
   }
 
   render = () => {
-    const {molecule, calculations, onCalculationClick, classes} = this.props;
+    const {molecule, calculations, onCalculationClick, onCalculationUpload, classes} = this.props;
 
     const sections = [];
     let moleculeProperties = [];
@@ -143,6 +143,7 @@ class Molecule extends Component {
                   title={section.label}
                   items={section.items}
                   collapsed={section.collapsed}
+                  onCalculationUpload={onCalculationUpload}
                 />
               )}
               <CollapsibleCard title='Download Data'>

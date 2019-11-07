@@ -42,12 +42,29 @@ class MoleculeContainer extends Component {
     dispatch(push(`/calculations/${calculation._id}`));
   }
 
+  onCalculationUpload = (file) => {
+    const { molecule, inchikey, dispatch } = this.props;
+    let fileReader = new FileReader();
+    let json = {};
+    fileReader.readAsText(file);
+    fileReader.onload = (e) => {
+      json = JSON.parse(e.target.result);
+      dispatch(calculations.createCalculation(json));
+      this.fetchMoleculeCalculations();
+    }
+  }
+
   render() {
     const { molecule, calculations } = this.props;
 
     if (molecule) {
       return (
-        <Molecule molecule={molecule} calculations={calculations} onCalculationClick={this.onCalculationClick}/>
+        <Molecule
+          molecule={molecule}
+          calculations={calculations}
+          onCalculationClick={this.onCalculationClick}
+          onCalculationUpload={this.onCalculationUpload}
+        />
       );
     } else {
       return null;

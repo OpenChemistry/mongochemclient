@@ -19,7 +19,7 @@ const styles = () => ({
   container: {
     overflow: 'hidden',
     position: 'relative',
-    paddingTop: '72%'
+    paddingTop: '100%'
   }
 });
 

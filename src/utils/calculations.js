@@ -38,6 +38,9 @@ export const getCalculationProperties = (calculation) => {
   if (has(calculation, 'image.repository')) {
     properties.push({label: 'Code', value: formatCode(calculation.image.repository)});
   }
+  if (has(calculation, 'code.version')) {
+    properties.push({label: 'Version', value: calculation.code.version});
+  }
   if (has(calculation, 'input.parameters.task')) {
     properties.push({label: 'Type', value: formatTask(calculation.input.parameters.task)});
   }

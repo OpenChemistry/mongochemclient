@@ -90,10 +90,10 @@ class Molecule extends Component {
       moleculeProperties.push({label: 'Mass', value: molecule.properties.mass.toFixed(2)});
     }
     if (has(molecule, 'inchi')) {
-      moleculeProperties.push({label: 'Inchi', value: molecule.inchi});
+      moleculeProperties.push({label: 'InChi', value: molecule.inchi});
     }
     if (has(molecule, 'smiles')) {
-      moleculeProperties.push({label: 'Smiles', value: molecule.smiles});
+      moleculeProperties.push({label: 'SMILES', value: molecule.smiles});
     }
 
     const moleculeSection = {

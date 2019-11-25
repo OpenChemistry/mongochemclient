@@ -42,12 +42,23 @@ class MoleculeContainer extends Component {
     dispatch(push(`/calculations/${calculation._id}`));
   }
 
+  onCreatorClick = (creator) => {
+    const { id, dispatch } = this.props;
+    dispatch(push(`/molecules/${id}/creator`, {creator, type:'molecule', id:id}));
+  }
+
   render() {
-    const { molecule, calculations } = this.props;
+    const { molecule, calculations, creator } = this.props;
 
     if (molecule) {
       return (
-        <Molecule molecule={molecule} calculations={calculations} onCalculationClick={this.onCalculationClick}/>
+        <Molecule
+          molecule={molecule}
+          calculations={calculations}
+          onCalculationClick={this.onCalculationClick}
+          creator={creator}
+          onCreatorClick={this.onCreatorClick}
+          />
       );
     } else {
       return null;
@@ -72,9 +83,11 @@ MoleculeContainer.defaultProps = {
 function mapStateToProps(state, ownProps) {
   let id = ownProps.match.params.id || null;
   let inchikey = ownProps.match.params.inchikey || null;
+  let creator = selectors.molecules.getMoleculeCreator(state);
   let props = {
     id,
-    inchikey
+    inchikey,
+    creator
   }
 
   let molecules = selectors.molecules.getMoleculesById(state);

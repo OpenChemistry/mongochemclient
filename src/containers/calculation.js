@@ -77,8 +77,13 @@ class CalculationContainer extends Component {
     dispatch(push(`/molecules/${molecule._id}`));
   }
 
+  onCreatorClick = (creator) => {
+    const { id, dispatch } = this.props;
+    dispatch(push(`/calculations/${id}/creator`, {creator, type:'calculation', id:id}));
+  }
+
   render() {
-    const { id, calculation, showNotebooks, molecule} = this.props;
+    const { id, calculation, showNotebooks, molecule, creator} = this.props;
     if (isNil(calculation) || isNil(calculation.cjson)) {
       return null;
     }
@@ -88,9 +93,11 @@ class CalculationContainer extends Component {
           calculation={calculation}
           molecule={molecule}
           id={id}
+          creator={creator}
           onIOrbitalChanged={this.onIOrbitalChanged}
           onMoleculeClick={this.onMoleculeClick}
           showNotebooks={showNotebooks}
+          onCreatorClick={this.onCreatorClick}
           {...this.props}
         />
       </div>
@@ -154,6 +161,7 @@ CalculationContainer.defaultProps = {
 function mapStateToProps(state, ownProps) {
   let id = ownProps.match.params.id;
   let iOrbital = ownProps.match.params.iOrbital;
+  let creator = selectors.calculations.getCalculationCreator(state);
   let cjson;
   let calculationInput;
   let molecule;
@@ -163,7 +171,8 @@ function mapStateToProps(state, ownProps) {
     mo: iOrbital,
     cjson,
     calculationInput,
-    molecule
+    molecule,
+    creator
   }
 
   const params = new URLSearchParams(ownProps.location.search);

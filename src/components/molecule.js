@@ -76,7 +76,7 @@ class Molecule extends Component {
   }
 
   render = () => {
-    const {molecule, calculations, onCalculationClick, classes} = this.props;
+    const {molecule, calculations, onCalculationClick, creator, onCreatorClick, classes} = this.props;
 
     const sections = [];
     let moleculeProperties = [];
@@ -114,6 +114,29 @@ class Molecule extends Component {
     }
 
     sections.push(calculationsSection);
+
+    let creatorName = [];
+    if (has(creator, 'firstName')) {
+      creatorName.push({label: 'First', value: creator.firstName});
+    } else {
+      creatorName.push({label: 'First', value:'Unknown'});
+    }
+    if (has(creator, 'lastName')) {
+      creatorName.push({label: 'Last', value: creator.lastName});
+    } else {
+      creatorName.push({label: 'Last', value: 'Unknown'});
+    }
+    const creatorSection = {
+      label: 'Creator',
+      items: [
+        {
+          properties: creatorName,
+          onClick: () => {onCreatorClick(creator)}
+        }
+      ]
+    }
+
+    sections.push(creatorSection);
 
     const fileFormats = ['cjson', 'xyz', 'sdf', 'cml'];
     const fileOptions = fileFormats.map(format => ({

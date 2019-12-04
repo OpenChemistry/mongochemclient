@@ -1,11 +1,15 @@
 import React, {Component} from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { Switch } from 'react-router'
+import { connect } from 'react-redux';
+
+import { isNil } from 'lodash-es';
 
 import MoleculeContainer from './containers/molecule';
 import CalculationContainer from './containers/calculation';
 import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './containers/charts';
 
+import { selectors } from '@openchemistry/redux';
 import { auth as authUI, route } from '@openchemistry/girder-ui';
 
 // @material-ui components
@@ -71,10 +75,11 @@ class App extends Component {
   }
 
   render() {
-    const {classes} = this.props;
+    const {site, classes} = this.props;
+
     let development = false;
     if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ||
-        process.env.REACT_APP_DEPLOYMENT === 'development') {
+        site === 'development') {
       development = true;
     }
 
@@ -153,5 +158,21 @@ class App extends Component {
     );
   }
 }
+
+function mapStateToProps(state, _ownProps) {
+
+  const props = {
+    site: ''
+  };
+
+  const config = selectors.configuration.getConfiguration(state);
+  if (!isNil(config) && !isNil(config.deployment)) {
+    props.site = config.deployment.site;
+  }
+
+  return props;
+}
+
+App = connect(mapStateToProps)(App)
 
 export default withStyles(appStyles)(App);

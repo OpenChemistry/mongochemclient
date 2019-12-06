@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import GirderClient from '@openchemistry/girder-client';
 import { auth } from '@openchemistry/girder-redux';
 import { selectors, jupyterlab } from '@openchemistry/redux';
 import InstructionsComponent from '../../components/jupyterlab-integration/instructions';
@@ -13,8 +14,11 @@ class InstructionsContainer extends Component {
   render() {
     const { show, apiKey, config } = this.props;
 
+    const appUrl = window.location.origin;
+    const apiUrl = GirderClient().getBaseURL();
+
     return (
-      <InstructionsComponent apiKey={apiKey} show={show} handleClose={this.handleClose} config={config}/>
+      <InstructionsComponent apiKey={apiKey} apiUrl={apiUrl} appUrl={appUrl} show={show} handleClose={this.handleClose} config={config}/>
     )
   }
 }

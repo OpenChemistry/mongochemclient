@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { withStyles, Grid, Card, Typography } from '@material-ui/core';
+import { withStyles, Grid, Card, Typography, Link } from '@material-ui/core';
 
-import { has } from 'lodash-es';
+import { has, isNil } from 'lodash-es';
 
 import PageHead from './page-head';
 import PageBody from './page-body';
@@ -75,6 +75,13 @@ class Molecule extends Component {
     }
   }
 
+  formatLink = (props) => {
+    if (!isNil(props.name)) {
+      return <a href src={props.wiki}>{props.name}</a>
+    }
+    return <a href src={props.wiki}>{props.wiki}</a>
+  }
+
   render = () => {
     const {molecule, calculations, onCalculationClick, creator, onCreatorClick, classes} = this.props;
 
@@ -94,6 +101,14 @@ class Molecule extends Component {
     }
     if (has(molecule, 'smiles')) {
       moleculeProperties.push({label: 'SMILES', value: molecule.smiles});
+    }
+    if (has(molecule, 'properties.wiki')) {
+      moleculeProperties.push({
+        label: 'Wikipedia',
+        value:  <Link target="_blank" rel="noopener" href={molecule.properties.wiki}>
+                  {isNil(molecule.name) ? molecule.properties.wiki : molecule.name}
+                </Link>
+      });
     }
 
     const moleculeSection = {

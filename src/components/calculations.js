@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
+import FileUpload from './file-upload/index';
 import PageHead from './page-head';
 import PageBody from './page-body';
 import CardComponent from './item-card';
@@ -33,7 +34,7 @@ class Calculations extends Component {
   }
 
   render = () => {
-    const {calculations, onOpen, before, after, classes} = this.props;
+    const {calculations, onOpen, before, after, showUpload, classes, onCalculationUpload} = this.props;
 
     return (
       <div>
@@ -46,6 +47,10 @@ class Calculations extends Component {
         </PageHead>
         <PageBody>
           {before}
+          {showUpload
+            ? <FileUpload onCalculationUpload={onCalculationUpload}/>
+            : null
+          }
           <Grid container spacing={24} className={classes.grid}>
             {
               calculations.map(calculation => {

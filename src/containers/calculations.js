@@ -5,8 +5,9 @@ import { push } from 'connected-react-router';
 import { selectors } from '@openchemistry/redux'
 import { calculations, molecules } from '@openchemistry/redux'
 
-import { isNil, isUndefined } from 'lodash-es';
+import { isNil, isUndefined, eq } from 'lodash-es';
 
+import { uploadCalculation } from '../utils/molecules';
 import PaginationSort from '../components/pagination-sort';
 import Calculations from '../components/calculations';
 import SearchForm from '../components/search';
@@ -64,13 +65,7 @@ class CalculationsContainer extends Component {
   }
 
   componentDidMount() {
-    const { paginationOptions, searchOptions } = this.state;
-    var creatorId = null;
-    if (this.props.match.params.id) {
-      creatorId = this.props.match.params.id;
-    }
-    const options = {...paginationOptions, ...searchOptions}
-    this.props.dispatch(calculations.loadCalculations({options, loadMolecules: true, creatorId: creatorId}));
+    this.loadCalculations();
   }
 
   componentDidUpdate(prevProps) {
@@ -97,15 +92,21 @@ class CalculationsContainer extends Component {
           smiles: params.get('smiles') || ''
         }
       }, () => {
-        const options = {...this.state.paginationOptions, ...this.state.searchOptions};
-        var creatorId = null;
-        if (this.props.match.params.id) {
-          creatorId = this.props.match.params.id;
-        }
-        this.props.dispatch(calculations.loadCalculations({options, loadMolecules: true, creatorId}));
+        this.loadCalculations();
       });
     }
   }
+
+  loadCalculations = () => {
+    const { paginationOptions, searchOptions } = this.state;
+    var creatorId = null;
+    if (this.props.match.params.id) {
+      creatorId = this.props.match.params.id;
+    }
+    const options = {...paginationOptions, ...searchOptions}
+    this.props.dispatch(calculations.loadCalculations({options, loadMolecules: true, creatorId: creatorId}));
+  }
+
   onOpen = (id) => {
     this.props.dispatch(push(`/calculations/${id}?mo=homo`));
   }
@@ -154,12 +155,6 @@ class CalculationsContainer extends Component {
   }
 
   onOptionsChange = (pagination, search) => {
-    const options = {...pagination, ...search};
-    var creatorId = null;
-    if (this.props.match.params.id) {
-      creatorId = this.props.match.params.id;
-    }
-
     const {sortIndex} = this.state;
     const {sortdir, sort, limit, offset} = pagination;
     for (let val in search) {
@@ -170,12 +165,19 @@ class CalculationsContainer extends Component {
     const params = {sortIndex, sortdir, sort, limit, offset, ...search};
     const query = new URLSearchParams(params).toString();
 
-    this.props.dispatch(calculations.loadCalculations({options, loadMolecules: true, creatorId}));
+    this.loadCalculations();
     this.props.dispatch(push({pathname:'/calculations', search:query}));
   }
 
+  onCalculationUpload = async(file) => {
+    const { dispatch } = this.props;
+    let { data } = await uploadCalculation(file);
+    dispatch(calculations.createCalculation(data));
+    this.loadCalculations();
+  }
+
   render() {
-    const { calculations, molecules, matches } = this.props;
+    const { calculations, molecules, matches, match } = this.props;
     if (isNil(calculations)) {
       return null;
     }
@@ -183,6 +185,7 @@ class CalculationsContainer extends Component {
     const { limit, offset } = paginationOptions;
     return (
       <Calculations calculations={calculations} molecules={molecules} onOpen={this.onOpen}
+        showUpload={match.params.id} onCalculationUpload={this.onCalculationUpload}
         before={
           <SearchForm
             fields={searchFields}

@@ -76,8 +76,7 @@ class Molecule extends Component {
   }
 
   render = () => {
-    const {molecule, calculations, onCalculationClick, creator, onCreatorClick, classes} = this.props;
-
+    const {molecule, calculations, onCalculationClick, creator, onCreatorClick, onCalculationUpload, classes} = this.props;
     const sections = [];
     let moleculeProperties = [];
     if (has(molecule, 'properties.formula')) {
@@ -166,6 +165,7 @@ class Molecule extends Component {
                   title={section.label}
                   items={section.items}
                   collapsed={section.collapsed}
+                  onCalculationUpload={onCalculationUpload}
                 />
               )}
               <CollapsibleCard title='Download Data'>

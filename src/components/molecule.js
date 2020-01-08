@@ -77,9 +77,9 @@ class Molecule extends Component {
 
   formatLink = (props) => {
     if (!isNil(props.name)) {
-      return <a href src={props.wiki}>{props.name}</a>
+      return <a href src={props.wikipediaUrl}>{props.name}</a>
     }
-    return <a href src={props.wiki}>{props.wiki}</a>
+    return <a href src={props.wikipediaUrl}>Wikipedia Page</a>
   }
 
   render = () => {
@@ -102,11 +102,11 @@ class Molecule extends Component {
     if (has(molecule, 'smiles')) {
       moleculeProperties.push({label: 'SMILES', value: molecule.smiles});
     }
-    if (has(molecule, 'properties.wiki')) {
+    if (has(molecule, 'properties.wikipediaUrl')) {
       moleculeProperties.push({
         label: 'Wikipedia',
-        value:  <Link target="_blank" rel="noopener" href={molecule.properties.wiki}>
-                  {isNil(molecule.name) ? molecule.properties.wiki : molecule.name}
+        value:  <Link target="_blank" rel="noopener" href={molecule.properties.wikipediaUrl}>
+                  {isNil(molecule.name) ? molecule.properties.wikipediaUrl : molecule.name}
                 </Link>
       });
     }

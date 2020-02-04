@@ -82,6 +82,7 @@ class App extends Component {
         site === 'development') {
       development = true;
     }
+    const nersc = site === 'nersc';
 
     return (
       <ConnectedRouter history={history}>
@@ -142,9 +143,9 @@ class App extends Component {
                   <route.Private path='/user/:id/molecules' component={Molecules} />
                 </Switch>
 
-                <authUI.LoginOptions girder={development}/>
-                <authUI.GirderLogin/>
-                <authUI.NerscLogin/>
+                <authUI.LoginOptions girder={development} nersc={nersc}/>
+                {development && <authUI.GirderLogin/>}
+                {nersc && <authUI.NerscLogin/>}
                 <authUI.OauthRedirect/>
                 <JupyterIntegration/>
               </div>

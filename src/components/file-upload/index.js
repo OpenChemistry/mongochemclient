@@ -87,7 +87,7 @@ function FileDialog(props) {
           Upload
           <CloudUpload color={isEmpty(fileName) ? 'disabled' : 'primary'} className={classes.icon}/>
         </Button>
-        <Button className={classes.fab} type='submit' onSubmit={handleClose}>
+        <Button className={classes.fab} onClick={handleClose}>
           Cancel
           <Cancel color='secondary' className={classes.icon}/>
         </Button>

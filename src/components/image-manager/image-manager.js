@@ -2,75 +2,52 @@ import React, { Component } from 'react';
 
 import { Button, TextField, Typography, withStyles } from '@material-ui/core';
 
-import ContainerSelector from './container-selector';
-
 import PageHead from '../page-head';
 import PageBody from '../page-body';
+
+import ImagesTable from './table';
 
 const styles = theme => ({
   root: {
     display: 'flex'
   },
   imageNameField: {
-    margin: theme.spacing.unit
+    margin: theme.spacing.unit,
+    width: '30ch'
   },
   pullImageButton: {
     margin: theme.spacing.unit
   }
 });
 
-const defaultImageName = 'openchemistry/chemml';
-const defaultContainerIndex = 0;
-
-const containerFields = [
-  {
-    value: 0,
-    label: 'Docker'
-  },
-  {
-    value: 1,
-    label: 'Singularity'
-  }
-];
-
-if (process.env.OC_SITE == 'NERSC') {
-  // Add shifter as an option
-  const value = 2;
-  const label = 'Shifter';
-  containerFields.push({ value, label });
-}
+const defaultImageName = 'openchemistry/chemml:latest';
 
 class ImageManager extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      imageName: defaultImageName,
-      containerIndex: defaultContainerIndex
+      imageName: defaultImageName
     };
   }
 
-  containerName = () => {
-    const res = containerFields.find(e => e.value == this.state.containerIndex);
-    return res.label;
+  imageType = () => {
+    // FIXME: this should be set by some internal setting
+    return 'Docker';
   };
 
   handleImageChange = event => {
     this.setState({ imageName: event.target.value });
   };
 
-  handleContainerChange = event => {
-    this.setState({ containerIndex: event.target.value });
-  };
-
   pullImage = () => {
     const imageName = this.state.imageName;
-    const container = this.containerName().toLowerCase();
-    this.props.onPull(imageName, container);
+    const type = this.imageType().toLowerCase();
+    this.props.onPull(imageName, type);
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, images } = this.props;
 
     return (
       <div>
@@ -83,10 +60,6 @@ class ImageManager extends Component {
           </Typography>
         </PageHead>
         <PageBody>
-          <ContainerSelector
-            onChange={this.handleContainerChange}
-            fields={containerFields}
-          />
           <TextField
             label="Name"
             defaultValue={defaultImageName}
@@ -104,6 +77,9 @@ class ImageManager extends Component {
           >
             Pull Image
           </Button>
+          <ImagesTable
+            images={images}
+          />
         </PageBody>
       </div>
     );

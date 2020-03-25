@@ -3,9 +3,14 @@ import { connect } from 'react-redux';
 
 import ImageManager from '../../components/image-manager/image-manager';
 
-import { cumulus } from '@openchemistry/redux';
+import { cumulus, images as redux_images, selectors } from '@openchemistry/redux';
 
 class ImageManagerContainer extends Component {
+
+  componentDidMount() {
+    this.props.dispatch(redux_images.requestUniqueImages());
+  }
+
   onPull = (imageName, container, clusterId) => {
     const { dispatch } = this.props;
     const taskFlowClass = 'taskflows.ContainerPullTaskFlow';
@@ -15,12 +20,14 @@ class ImageManagerContainer extends Component {
   };
 
   render() {
-    return <ImageManager onPull={this.onPull} />;
+    const { images } = this.props;
+    return <ImageManager onPull={this.onPull} images={images} />;
   }
 }
 
 function mapStateToProps(state) {
-  return {};
+  const images = selectors.images.getUniqueImages(state);
+  return { images };
 }
 
 export default connect(mapStateToProps)(ImageManagerContainer);

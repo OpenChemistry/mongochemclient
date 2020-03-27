@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { withStyles, Fab } from '@material-ui/core';
 import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
+import { isNil } from 'lodash-es';
 
 const styles = theme => ({
   root: {
@@ -24,7 +25,9 @@ const DownloadSelector = ({options, classes}) => {
   const [selectedOption, setSelectedOption] = useState(0);
 
   const handleSelect = (_event, selected) => {
-    setSelectedOption(selected);
+    if (!isNil(selected)) {
+      setSelectedOption(selected);
+    }
   }
 
   const { downloadUrl, fileName } = options[selectedOption];
@@ -33,7 +36,7 @@ const DownloadSelector = ({options, classes}) => {
     <div className={classes.root}>
       <ToggleButtonGroup exclusive value={selectedOption} onChange={handleSelect} className={classes.selectButtonGroup}>
         {options.map(({label}, i) => (
-          <ToggleButton value={i} className={classes.selectButton}>
+          <ToggleButton key={i} value={i} className={classes.selectButton}>
             {label}
           </ToggleButton>
         ))}

@@ -66,7 +66,8 @@ class ImageManager extends Component {
             className={classes.imageNameField}
             onChange={this.handleImageChange}
             inputProps={{
-              'aria-label': 'description'
+              'aria-label': 'description',
+              spellCheck: 'false'
             }}
           />
           <br/>

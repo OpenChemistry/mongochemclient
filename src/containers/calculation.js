@@ -23,27 +23,21 @@ class CalculationContainer extends Component {
     this.onOrbital = this.onOrbital.bind(this);
   }
 
-  componentWillMount() {
-    const { dispatch, id, mo } = this.props;
-    dispatch(calculations.loadCalculationById(id));
+  componentDidMount() {
+    const { dispatch, id, mo, cjson } = this.props;
+
+    if (!isNil(id)) {
+      dispatch(calculations.loadCalculationById(id));
+    }
+
     if (!isNil(mo)) {
       dispatch(calculations.loadOrbital(id, mo));
     }
+
     this.fetchMolecule();
   }
 
-  componentDidMount() {
-    if (this.state.id && !this.props.cjson) {
-      this.props.dispatch(calculations.loadCalculationById(this.state.id));
-
-    }
-
-    if (this.state.id && this.state.orbital) {
-        this.props.dispatch(calculations.loadOrbital(this.state.id, this.state.orbital));
-    }
-  }
-
-  componentWillUpdate() {
+  componentDidUpdate() {
     this.fetchMolecule();
   }
 

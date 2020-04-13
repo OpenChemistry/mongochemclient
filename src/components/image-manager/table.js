@@ -13,6 +13,17 @@ const styles = theme => {
   return ret;
 };
 
+const formatIsoString = (s) => {
+  const options = {
+    month: 'numeric',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute:'2-digit'
+  };
+  return new Date(s).toLocaleString([], options);
+};
+
 const columns = [
   {
     label: 'Repository',
@@ -28,7 +39,7 @@ const columns = [
   },
   {
     label: 'Created',
-    get: (v) => v.docker.timestamp
+    get: (v) => formatIsoString(v.docker.timestamp)
   },
 ];
 

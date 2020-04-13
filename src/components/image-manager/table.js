@@ -39,6 +39,19 @@ class ImagesTable extends Component {
 
   render() {
     const { images } = this.props;
+
+    // These are the 25 most recent images created.
+    // Sort them by repo and tag for the table.
+    images.sort((a, b) => {
+      if (a.repository == b.repository) {
+        if (a.tag == b.tag) {
+          return 0;
+        }
+        return a.tag < b.tag ? -1 : 1;
+      }
+      return a.repository < b.repository ? -1 : 1;
+    });
+
     return (
       <Table>
         <TableHead>

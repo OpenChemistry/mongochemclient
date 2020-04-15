@@ -11,8 +11,14 @@ class ImageManagerContainer extends Component {
     this.props.dispatch(redux_images.requestUniqueImages());
   }
 
-  onPull = (imageName, container, clusterId) => {
+  imageType = () => {
+    // FIXME: this should be set by some internal setting
+    return 'Docker';
+  };
+
+  onPull = (imageName, clusterId) => {
     const { dispatch } = this.props;
+    const container = this.imageType().toLowerCase();
     const taskFlowClass = 'taskflows.ContainerPullTaskFlow';
     dispatch(
       cumulus.launchTaskFlow(imageName, container, clusterId, taskFlowClass)

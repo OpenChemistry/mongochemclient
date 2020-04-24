@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { formatIsoString } from '../../utils/dates';
 
 import {
   withStyles, Table, TableBody, TableCell, TableHead, TableRow,
@@ -11,17 +12,6 @@ const styles = theme => {
     }
   };
   return ret;
-};
-
-const formatIsoString = (s) => {
-  const options = {
-    month: 'numeric',
-    day: 'numeric',
-    year: 'numeric',
-    hour: '2-digit',
-    minute:'2-digit'
-  };
-  return new Date(s).toLocaleString([], options);
 };
 
 const columns = [

@@ -79,7 +79,7 @@ function FileDialog(props) {
         <div><Typography className={classes.text}>
           {isEmpty(fileName)
           ? 'No File Selected'
-          : <div className={classes.file}><InsertDriveFile/> {fileName} </div>}
+          : <span className={classes.file}><InsertDriveFile/> {fileName} </span>}
         </Typography></div>
       </div>
       <div className={classes.upload}>

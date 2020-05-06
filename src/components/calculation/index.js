@@ -37,7 +37,8 @@ const styles = theme => ({
   moleculeContainer: {
     height: 80 * theme.spacing.unit,
     width: '100%',
-    marginBottom: 2 * theme.spacing.unit
+    marginBottom: 2 * theme.spacing.unit,
+    overflow: 'visible'
   }
 });
 

@@ -42,11 +42,6 @@ class MoleculeContainer extends Component {
     dispatch(push(`/calculations/${calculation._id}`));
   }
 
-  onCreatorClick = (creator) => {
-    const { id, dispatch } = this.props;
-    dispatch(push(`/molecules/${id}/creator`, {creator, type:'molecule', id:id}));
-  }
-
   render() {
     const { molecule, calculations, creator } = this.props;
 
@@ -57,7 +52,6 @@ class MoleculeContainer extends Component {
           calculations={calculations}
           onCalculationClick={this.onCalculationClick}
           creator={creator}
-          onCreatorClick={this.onCreatorClick}
           />
       );
     } else {

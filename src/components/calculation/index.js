@@ -202,7 +202,7 @@ class Calculation extends Component {
     const fileOptions = fileFormats.map(format => ({
       label: toUpperCase(format),
       downloadUrl: `/api/v1/calculations/${calculation._id}/${format}`,
-      fileName: `calculation.${format}`
+      fileName: `calculation_${calculation._id}.${format}`
     }));
 
     const {scratchFolderId} = calculation;
@@ -210,7 +210,7 @@ class Calculation extends Component {
       fileOptions.push({
         label: 'raw',
         downloadUrl: `/api/v1/folder/${scratchFolderId}/download`,
-        fileName: 'calculation.zip'
+        fileName: `calculation_${calculation._id}.zip`
       })
     }
 

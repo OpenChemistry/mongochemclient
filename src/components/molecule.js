@@ -155,7 +155,7 @@ class Molecule extends Component {
     const fileOptions = fileFormats.map(format => ({
       label: toUpperCase(format),
       downloadUrl: `/api/v1/molecules/${molecule._id}/${format}`,
-      fileName: `molecule.${format}`
+      fileName: `molecule_${molecule._id}.${format}`
     }));
 
     return (

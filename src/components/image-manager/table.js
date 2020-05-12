@@ -58,18 +58,22 @@ class ImagesTable extends Component {
         <TableHead>
           <TableRow>
             {columns.map(col => (
-              <TableCell>{col.label}</TableCell>
+              <TableCell key={col.label}>{col.label}</TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {images.map(image => (
+          {images.map(image => {
+            return (
             <TableRow key={image._id}>
               {columns.map(col => (
-                <TableCell>{col.get(image)}</TableCell>
+                <TableCell key={col.label + image._id}>
+                  {col.get(image)}
+                </TableCell>
               ))}
             </TableRow>
-          ))}
+            )}
+          )}
         </TableBody>
       </Table>
     );

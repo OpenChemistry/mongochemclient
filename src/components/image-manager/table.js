@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { formatIsoString } from '../../utils/dates';
+import { formatTime } from '../../utils/dates';
 
 import {
   withStyles, Table, TableBody, TableCell, TableHead, TableRow,
@@ -29,7 +29,7 @@ const columns = [
   },
   {
     label: 'Created',
-    get: (v) => formatIsoString(v.docker.timestamp)
+    get: (v) => formatTime(v.docker.timestamp)
   },
 ];
 

@@ -1,10 +1,5 @@
-export function formatIsoString(s) {
-  const options = {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: '2-digit',
-    minute:'2-digit'
-  };
-  return new Date(s).toLocaleString([], options);
+import moment from 'moment';
+
+export function formatTime(s) {
+  return moment(s).format('MMM D, YYYY, h:mm A');
 };

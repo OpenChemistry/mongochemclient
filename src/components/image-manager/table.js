@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { formatTime } from '../../utils/dates';
+
+import { fromNow } from '../../utils/dates';
 
 import {
   withStyles, Table, TableBody, TableCell, TableHead, TableRow,
@@ -29,7 +30,7 @@ const columns = [
   },
   {
     label: 'Created',
-    get: (v) => formatTime(v.docker.timestamp)
+    get: (v) => fromNow(v.docker.timestamp)
   },
 ];
 

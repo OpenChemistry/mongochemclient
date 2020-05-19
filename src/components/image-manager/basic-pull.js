@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import { Button, TextField, withStyles } from '@material-ui/core';
 
+import RegisterButton from './register-button';
+
 const styles = theme => ({
   root: {
     display: 'flex'
@@ -10,7 +12,7 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     width: '30ch'
   },
-  pullImageButton: {
+  buttons: {
     margin: theme.spacing.unit
   }
 });
@@ -34,6 +36,10 @@ class BasicPull extends Component {
     this.props.onPull(this.state.imageName);
   };
 
+  registerImages = () => {
+    this.props.onRegister();
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -51,11 +57,18 @@ class BasicPull extends Component {
         <br />
         <Button
           onClick={this.pullImage}
-          className={classes.pullImageButton}
+          className={classes.buttons}
           variant="contained"
         >
           Pull Image
         </Button>
+        <RegisterButton
+          onClick={this.registerImages}
+          className={classes.buttons}
+          variant="contained"
+        >
+          Register
+        </RegisterButton>
       </div>
     );
   };

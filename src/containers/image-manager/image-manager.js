@@ -25,9 +25,16 @@ class ImageManagerContainer extends Component {
     );
   };
 
+  onRegister = () => {
+    this.props.dispatch(redux_images.registerImages());
+  };
+
   render() {
     const { images } = this.props;
-    return <ImageManager onPull={this.onPull} images={images} />;
+    return <ImageManager
+              onPull={this.onPull}
+              onRegister={this.onRegister}
+              images={images} />;
   }
 }
 

@@ -20,7 +20,7 @@ class ImageManager extends Component {
   }
 
   render() {
-    const { images, onPull } = this.props;
+    const { images, onPull, onRegister } = this.props;
 
     return (
       <div>
@@ -35,6 +35,7 @@ class ImageManager extends Component {
         <PageBody>
           <PullTabs
             onPull={onPull}
+            onRegister={onRegister}
           />
           <ImagesTable
             images={images}

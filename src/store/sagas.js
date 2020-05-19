@@ -19,7 +19,8 @@ import {
   watchLoadConfiguration,
   watchAsyncOrbital,
   watchLaunchTaskFlow,
-  watchRequestUniqueImages
+  watchRequestUniqueImages,
+  watchRegisterImages
 } from '@openchemistry/sagas';
 
 import { auth, admin, user } from '@openchemistry/girder-redux';
@@ -44,6 +45,7 @@ export default function* root() {
   yield fork(watchAsyncOrbital)
   yield fork(watchLaunchTaskFlow)
   yield fork(watchRequestUniqueImages)
+  yield fork(watchRegisterImages)
 
   yield fork(auth.sagas.watchAuthenticate);
   yield fork(auth.sagas.watchFetchMe);

@@ -41,7 +41,7 @@ class PullTabs extends Component {
   }
 
   render() {
-    const { onPull } = this.props;
+    const { onPull, onRegister } = this.props;
 
     return (
       <div>
@@ -55,11 +55,13 @@ class PullTabs extends Component {
           <div hidden={this.state.tab !== 0}>
             <BasicPull
               onPull={onPull}
+              onRegister={onRegister}
             />
           </div>
           <div hidden={this.state.tab !== 1}>
             <AdvancedPull
               onPull={onPull}
+              onRegister={onRegister}
             />
           </div>
         </Paper>

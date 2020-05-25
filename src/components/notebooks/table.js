@@ -13,7 +13,8 @@ import InsertDriveFile from '@material-ui/icons/InsertDriveFile';
 import blue from '@material-ui/core/colors/blue';
 
 import filesize from 'filesize'
-import moment from 'moment'
+
+import { fromNow } from '../../utils/dates';
 
 const style = theme => ({
   iconColumn:  {
@@ -58,7 +59,7 @@ class NotebooksTable extends Component {
               </Avatar>
             </TableCell>
             <TableCell>{notebook.name}</TableCell>
-            <TableCell>{moment(notebook.created).fromNow()}</TableCell>
+            <TableCell>{fromNow(notebook.created)}</TableCell>
             <TableCell>{filesize(notebook.size)}</TableCell>
           </TableRow>
         )}

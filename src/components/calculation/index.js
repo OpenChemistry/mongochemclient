@@ -99,8 +99,8 @@ class Calculation extends Component {
       colorsX,
       opacities,
       opacitiesX,
-      creator,
-      onCreatorClick
+      molCreator,
+      calcCreator
     } = this.props;
 
     const cjson = calculation.cjson;
@@ -129,6 +129,9 @@ class Calculation extends Component {
     if (has(molecule, 'smiles')) {
       moleculeProperties.push({label: 'SMILES', value: molecule.smiles});
     }
+    let mFirst = has(molCreator, 'firstName') ? molCreator.firstName : '';
+    let mLast = has(molCreator, 'lastName') ? molCreator.lastName : '';
+    moleculeProperties.push({label: 'Creator', value: mFirst + ' ' + mLast});
 
     const moleculeSection = {
       label: 'Molecule',
@@ -143,7 +146,9 @@ class Calculation extends Component {
     sections.push(moleculeSection);
 
     let calculationProperties = getCalculationProperties(calculation);
-
+    let cFirst = has(calcCreator, 'firstName') ? calcCreator.firstName : '';
+    let cLast = has(calcCreator, 'lastName') ? calcCreator.lastName : '';
+    calculationProperties.push({label: 'Creator', value: cFirst + ' ' + cLast});
     const calculationSection = {
       label: 'Input',
       items: [
@@ -174,29 +179,6 @@ class Calculation extends Component {
     };
 
     sections.push(outputSection);
-
-    let creatorName = [];
-    if (has(creator, 'firstName')) {
-      creatorName.push({label: 'First', value: creator.firstName});
-    } else {
-      creatorName.push({label: 'First', value:'Unknown'});
-    }
-    if (has(creator, 'lastName')) {
-      creatorName.push({label: 'Last', value: creator.lastName});
-    } else {
-      creatorName.push({label: 'Last', value: 'Unknown'});
-    }
-    const creatorSection = {
-      label: 'Creator',
-      items: [
-        {
-          properties: creatorName,
-          onClick: () => {onCreatorClick(creator)}
-        }
-      ]
-    }
-
-    sections.push(creatorSection);
 
     const fileFormats = ['cjson', 'xyz'];
     const fileOptions = fileFormats.map(format => ({

@@ -8,8 +8,12 @@ import {
   CardActionArea
 } from '@material-ui/core';
 
+import FileUpload from '../file-upload/index';
+
 import KeyBoardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
+
+import { eq } from 'lodash-es'
 
 const style = (theme) => (
   {
@@ -47,7 +51,7 @@ class CardComponent extends Component {
   }
 
   render() {
-    const {title, items, expand, classes} = this.props;
+    const {title, items, onCalculationUpload, classes} = this.props;
     const {collapsed} = this.state;
 
     return (
@@ -65,21 +69,24 @@ class CardComponent extends Component {
         />
         <Collapse in={!collapsed}>
           <CardContent className={classes.cardContent}>
-              {(items||[]).map((item, i) => {
-                const properties = item.properties || [];
-                const onClick = item.onClick;
-                const Wrapper = onClick ? CardActionArea : 'div';
-                return (
-                  <Wrapper key={i} onClick={onClick} className={classes.cardActionArea} disabled={!onClick}>
-                    {properties.map(({label, value}, j) => (
-                      <div className={classes.row} key={j}>
-                        <Typography component='div' color='textSecondary'>{label}</Typography>
-                        <Typography component='div'>{value}</Typography>
-                      </div>
-                    ))}
-                  </Wrapper>
-                )
-              })}
+            {eq(title, 'Calculations')
+              ? <FileUpload onCalculationUpload={onCalculationUpload}/>
+              : null}
+            {(items||[]).map((item, i) => {
+              const properties = item.properties || [];
+              const onClick = item.onClick;
+              const Wrapper = onClick ? CardActionArea : 'div';
+              return (
+                <Wrapper key={i} onClick={onClick} className={classes.cardActionArea} disabled={!onClick}>
+                  {properties.map(({label, value}, j) => (
+                    <div className={classes.row} key={j}>
+                      <Typography component='div' color='textSecondary'>{label}</Typography>
+                      <Typography component='div'>{value}</Typography>
+                    </div>
+                  ))}
+                </Wrapper>
+              )
+            })}
           </CardContent>
         </Collapse>
       </Card>

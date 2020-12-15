@@ -20,8 +20,8 @@ import {
   watchAsyncOrbital,
   watchLaunchTaskFlow,
   watchRequestUniqueImages,
-  watchRegisterImages
-  watchCreateCalculation
+  watchRegisterImages,
+  watchCreateCalculation,
 } from '@openchemistry/sagas';
 
 import { auth, admin, user } from '@openchemistry/girder-redux';

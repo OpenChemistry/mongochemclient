@@ -17,7 +17,11 @@ import {
   watchLoadCalculationNotebooks,
   watchLoadCalculations,
   watchLoadConfiguration,
-  watchAsyncOrbital
+  watchAsyncOrbital,
+  watchLaunchTaskFlow,
+  watchRequestUniqueImages,
+  watchRegisterImages,
+  watchCreateCalculation,
 } from '@openchemistry/sagas';
 
 import { auth, admin, user } from '@openchemistry/girder-redux';
@@ -40,6 +44,10 @@ export default function* root() {
   yield fork(watchLoadCalculations)
   yield fork(watchLoadConfiguration)
   yield fork(watchAsyncOrbital)
+  yield fork(watchLaunchTaskFlow)
+  yield fork(watchRequestUniqueImages)
+  yield fork(watchRegisterImages)
+  yield fork(watchCreateCalculation)
 
   yield fork(auth.sagas.watchAuthenticate);
   yield fork(auth.sagas.watchFetchMe);
@@ -57,7 +65,7 @@ export default function* root() {
   yield fork(admin.sagas.watchRemoveMember)
   yield fork(admin.sagas.watchAddMember)
   yield fork(admin.sagas.watchRemoveGroup)
-  
+
   yield fork(user.sagas.watchFetchUserInformation);
   yield fork(user.sagas.watchUpdateUserInformation);
   yield fork(user.sagas.watchTwitterLogin);

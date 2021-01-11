@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 
-import { selectors } from '@openchemistry/redux'
-import { molecules, calculations } from '@openchemistry/redux'
+import { selectors, molecules, calculations } from '@openchemistry/redux';
+import { auth } from '@openchemistry/girder-redux';
 
 import Molecule from '../components/molecule';
+import { uploadCalculation } from '../utils/molecules';
+
 import { push } from 'connected-react-router';
 
 class MoleculeContainer extends Component {
@@ -17,7 +19,7 @@ class MoleculeContainer extends Component {
       dispatch(molecules.loadMoleculeById(id));
     }
     else if (inchikey != null) {
-      dispatch(molecules.loadMolecule(inchikey ));
+      dispatch(molecules.loadMolecule(inchikey));
     }
     this.fetchMoleculeCalculations();
   }
@@ -47,6 +49,13 @@ class MoleculeContainer extends Component {
     dispatch(push(`/molecules/${id}/creator`, {creator, type:'molecule', id:id}));
   }
 
+  onCalculationUpload = async(file) => {
+    const { dispatch } = this.props;
+    let { data } = await uploadCalculation(file);
+    dispatch(calculations.createCalculation(data));
+    this.fetchMoleculeCalculations();
+  }
+
   render() {
     const { molecule, calculations, creator } = this.props;
 
@@ -58,8 +67,8 @@ class MoleculeContainer extends Component {
           onCalculationClick={this.onCalculationClick}
           creator={creator}
           onCreatorClick={this.onCreatorClick}
-          />
-      );
+          onCalculationUpload={this.onCalculationUpload}/>
+        );
     } else {
       return null;
     }

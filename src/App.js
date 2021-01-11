@@ -1,11 +1,15 @@
 import React, {Component} from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { Switch } from 'react-router'
+import { connect } from 'react-redux';
+
+import { isNil } from 'lodash-es';
 
 import MoleculeContainer from './containers/molecule';
 import CalculationContainer from './containers/calculation';
 import {VibrationalModesChartContainer, FreeEnergyChartContainer} from './containers/charts';
 
+import { selectors } from '@openchemistry/redux';
 import { auth as authUI, route } from '@openchemistry/girder-ui';
 
 // @material-ui components
@@ -23,6 +27,7 @@ import Molecules from './containers/molecules';
 import Calculations from './containers/calculations';
 import Header from './containers/header';
 import JupyterIntegration from './containers/jupyterlab-integration/instructions';
+import ImageManager from './containers/image-manager/image-manager';
 import Groups from './containers/administrator/group-manager';
 import Members from './containers/administrator/member-manager';
 import User from './containers/user/user-profile';
@@ -71,12 +76,14 @@ class App extends Component {
   }
 
   render() {
-    const {classes} = this.props;
+    const {site, classes} = this.props;
+
     let development = false;
     if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ||
-        process.env.REACT_APP_DEPLOYMENT === 'development') {
+        site === 'development') {
       development = true;
     }
+    const nersc = site === 'nersc';
 
     return (
       <ConnectedRouter history={history}>
@@ -131,15 +138,16 @@ class App extends Component {
                   <route.Public path='/notebooks/:id' component={NotebookContainer}/>
                   <route.Public path='/notebooks' component={NotebooksContainer} />
                   <route.Private path='/groups/:id/members' component={Members} />
+                  <route.Private path='/images' component={ImageManager} />
                   <route.Private path='/groups' component={Groups} />
                   <route.Private exact path='/user' component={User} />
                   <route.Private path='/user/:id/calculations' component={Calculations} />
                   <route.Private path='/user/:id/molecules' component={Molecules} />
                 </Switch>
 
-                <authUI.LoginOptions girder={development}/>
-                <authUI.GirderLogin/>
-                <authUI.NerscLogin/>
+                <authUI.LoginOptions girder={development} nersc={nersc}/>
+                {development && <authUI.GirderLogin/>}
+                {nersc && <authUI.NerscLogin/>}
                 <authUI.OauthRedirect/>
                 <JupyterIntegration/>
               </div>
@@ -153,5 +161,21 @@ class App extends Component {
     );
   }
 }
+
+function mapStateToProps(state, _ownProps) {
+
+  const props = {
+    site: ''
+  };
+
+  const config = selectors.configuration.getConfiguration(state);
+  if (!isNil(config) && !isNil(config.deployment)) {
+    props.site = config.deployment.site;
+  }
+
+  return props;
+}
+
+App = connect(mapStateToProps)(App)
 
 export default withStyles(appStyles)(App);

@@ -17,7 +17,8 @@ const createRootReducer = (history) => combineReducers({
   form: formReducer,
   configuration: ocReducers.configuration,
   admin: admin.reducer,
-  user: user.reducer
+  user: user.reducer,
+  images: ocReducers.images,
 });
 
 const authSelector = (state) => state.auth;

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { withStyles, Grid, Card, Typography } from '@material-ui/core';
+import { withStyles, Grid, Card, Typography, Link } from '@material-ui/core';
 
-import { has } from 'lodash-es';
+import { has, isNil } from 'lodash-es';
 
 import PageHead from './page-head';
 import PageBody from './page-body';
@@ -23,7 +23,8 @@ const styles = theme => ({
   moleculeContainer: {
     height: 80 * theme.spacing.unit,
     width: '100%',
-    marginBottom: 2 * theme.spacing.unit
+    marginBottom: 2 * theme.spacing.unit,
+    overflow: 'visible'
   }
 });
 
@@ -75,9 +76,14 @@ class Molecule extends Component {
     }
   }
 
-  render = () => {
-    const {molecule, calculations, onCalculationClick, creator, onCreatorClick, classes} = this.props;
+  formatLink = (props) => {
+    return <Link target="_blank" rel="noopener" href={props.wikipediaUrl}>
+      {!isNil(props.name) ? props.name : 'Wikipedia Page'}
+    </Link>
+  }
 
+  render = () => {
+    const {molecule, calculations, onCalculationClick, creator, onCreatorClick, onCalculationUpload, classes} = this.props;
     const sections = [];
     let moleculeProperties = [];
     if (has(molecule, 'properties.formula')) {
@@ -95,6 +101,15 @@ class Molecule extends Component {
     if (has(molecule, 'smiles')) {
       moleculeProperties.push({label: 'SMILES', value: molecule.smiles});
     }
+    if (has(molecule, 'wikipediaUrl')) {
+      moleculeProperties.push({
+        label: 'Wikipedia',
+        value: this.formatLink(molecule)
+      });
+    }
+    let first = has(creator, 'firstName') ? creator.firstName : '';
+    let last = has(creator, 'lastName') ? creator.lastName : '';
+    moleculeProperties.push({label: 'Creator', value: first + ' ' + last});
 
     const moleculeSection = {
       label: 'Molecule Properties',
@@ -112,37 +127,15 @@ class Molecule extends Component {
         onClick: () => {onCalculationClick(calculation)}
       }))
     }
+    console.log('calculations: ', calculations);
 
     sections.push(calculationsSection);
-
-    let creatorName = [];
-    if (has(creator, 'firstName')) {
-      creatorName.push({label: 'First', value: creator.firstName});
-    } else {
-      creatorName.push({label: 'First', value:'Unknown'});
-    }
-    if (has(creator, 'lastName')) {
-      creatorName.push({label: 'Last', value: creator.lastName});
-    } else {
-      creatorName.push({label: 'Last', value: 'Unknown'});
-    }
-    const creatorSection = {
-      label: 'Creator',
-      items: [
-        {
-          properties: creatorName,
-          onClick: () => {onCreatorClick(creator)}
-        }
-      ]
-    }
-
-    sections.push(creatorSection);
 
     const fileFormats = ['cjson', 'xyz', 'sdf', 'cml'];
     const fileOptions = fileFormats.map(format => ({
       label: toUpperCase(format),
       downloadUrl: `/api/v1/molecules/${molecule._id}/${format}`,
-      fileName: `molecule.${format}`
+      fileName: `molecule_${molecule._id}.${format}`
     }));
 
     return (
@@ -166,6 +159,7 @@ class Molecule extends Component {
                   title={section.label}
                   items={section.items}
                   collapsed={section.collapsed}
+                  onCalculationUpload={onCalculationUpload}
                 />
               )}
               <CollapsibleCard title='Download Data'>

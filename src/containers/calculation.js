@@ -23,27 +23,21 @@ class CalculationContainer extends Component {
     this.onOrbital = this.onOrbital.bind(this);
   }
 
-  componentWillMount() {
-    const { dispatch, id, mo } = this.props;
-    dispatch(calculations.loadCalculationById(id));
+  componentDidMount() {
+    const { dispatch, id, mo, cjson } = this.props;
+
+    if (!isNil(id)) {
+      dispatch(calculations.loadCalculationById(id));
+    }
+
     if (!isNil(mo)) {
       dispatch(calculations.loadOrbital(id, mo));
     }
+
     this.fetchMolecule();
   }
 
-  componentDidMount() {
-    if (this.state.id && !this.props.cjson) {
-      this.props.dispatch(calculations.loadCalculationById(this.state.id));
-
-    }
-
-    if (this.state.id && this.state.orbital) {
-        this.props.dispatch(calculations.loadOrbital(this.state.id, this.state.orbital));
-    }
-  }
-
-  componentWillUpdate() {
+  componentDidUpdate() {
     this.fetchMolecule();
   }
 
@@ -77,13 +71,8 @@ class CalculationContainer extends Component {
     dispatch(push(`/molecules/${molecule._id}`));
   }
 
-  onCreatorClick = (creator) => {
-    const { id, dispatch } = this.props;
-    dispatch(push(`/calculations/${id}/creator`, {creator, type:'calculation', id:id}));
-  }
-
   render() {
-    const { id, calculation, showNotebooks, molecule, creator} = this.props;
+    const { id, calculation, showNotebooks, molecule, molCreator, calcCreator} = this.props;
     if (isNil(calculation) || isNil(calculation.cjson)) {
       return null;
     }
@@ -93,11 +82,11 @@ class CalculationContainer extends Component {
           calculation={calculation}
           molecule={molecule}
           id={id}
-          creator={creator}
+          molCreator={molCreator}
+          calcCreator={calcCreator}
           onIOrbitalChanged={this.onIOrbitalChanged}
           onMoleculeClick={this.onMoleculeClick}
           showNotebooks={showNotebooks}
-          onCreatorClick={this.onCreatorClick}
           {...this.props}
         />
       </div>
@@ -161,7 +150,8 @@ CalculationContainer.defaultProps = {
 function mapStateToProps(state, ownProps) {
   let id = ownProps.match.params.id;
   let iOrbital = ownProps.match.params.iOrbital;
-  let creator = selectors.calculations.getCalculationCreator(state);
+  let molCreator = selectors.molecules.getMoleculeCreator(state);
+  let calcCreator = selectors.calculations.getCalculationCreator(state);
   let cjson;
   let calculationInput;
   let molecule;
@@ -172,7 +162,8 @@ function mapStateToProps(state, ownProps) {
     cjson,
     calculationInput,
     molecule,
-    creator
+    molCreator,
+    calcCreator
   }
 
   const params = new URLSearchParams(ownProps.location.search);
